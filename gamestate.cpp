@@ -19,7 +19,7 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
     // Determine the locations of the servants on the board, as well as
     // seperating them out into teams.
     vector<Coordinate> servantLocations = new vector<Coordinate>;
-    int aCounter = 0, oCounter = 0;
+    int aCounter = 0, oCounter = 0, bCounter = 0;
     for (int i = 0; i < turnOrder.size(); i++)
     {
         if (turnOrder[i]->getTeam() == Alpha)
@@ -32,13 +32,31 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
             servantLocations.push_back(thisLoc);
             turnOrder[i]->currLoc = thisLoc;
         }
-        else
+        else if (turnOrder[i]->getTeam() == Omega)
         {
             omegaTeam.push_back(turnOrder[i]);
             Coordinate thisLoc;
             thisLoc.x = (w / 2) - 4 + oCounter;
             thisLoc.y = l - 1;
             oCounter++;
+            servantLocations.push_back(thisLoc);
+            turnOrder[i]->currLoc = thisLoc;
+        }
+        else // Boss Team
+        {
+            bossTeam.push_back(turnOrder[i]);
+            Coordinate thisLoc;
+            if (aCounter > 0)
+            {
+                thisLoc.x = (w / 2) - 1 + bCounter;
+                thisLoc.y = l - 1;
+            }
+            else
+            {
+                thisLoc.x = (w / 2) + 1 - bCounter;
+                thisLoc.y = 0;
+            }
+            bCounter++;
             servantLocations.push_back(thisLoc);
             turnOrder[i]->currLoc = thisLoc;
         }
@@ -80,6 +98,36 @@ bool GameState::isServantDead(Servant *s)
     return found;
 }
 
+bool isTeamDead(Team t)
+{
+    aDead = 0;
+    oDead = 0;
+    bDead = 0;
+
+    for (int i = 0; i < dead.size(); i++)
+    {
+        if (dead[i]->getTeam() == Alpha)
+            aDead++;
+        else if (dead[i]->getTeam() == Omega)
+            oDead++;
+        else
+            bDead++;
+    }
+
+    if (t == Alpha)
+    {
+        return (aDead == alphaTeam.size());
+    }
+    else if (t == Omega)
+    {
+        return (oDead == omegaTeam.size());
+    }
+    else
+    {
+        return (bDead == bossTeam.size());
+    }
+}
+
 /***** Retrievers *****/
 vector<Servant*> GameState::getTurnOrder()
 {
@@ -113,4 +161,9 @@ vector<Servant*> GameState::getAlphaTeam()
 vector<Servant*> GameState::getOmegaTeam()
 {
     return omegaTeam;
+}
+
+vector<Servant*> GameState::getBossTeam()
+{
+    return bossTeam;
 }

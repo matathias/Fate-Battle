@@ -22,9 +22,11 @@ class GameState
         void addDead(Servant* s);
         void removeDead(Servant* s);
         bool isServantDead(Servant* s); //Returns true if dead, false otherwise.
+        bool isTeamDead(Team t);
         
         vector<Servant*> getAlphaTeam();
         vector<Servant*> getOmegaTeam();
+        vector<Servant*> getBossTeam();
     
     protected:
         vector<Servant*> turnOrder; // Contains servant pointers in turn order.
@@ -37,6 +39,7 @@ class GameState
         
         vector<Servant*> alphaTeam;
         vector<Servant*> omegaTeam;
+        vector<Servant*> bossTeam;
         
         PlayField* field;
 }

@@ -43,6 +43,7 @@ class Servant
         Team getTeam();
 
         vector<Debuff*> getDebuffs();
+        vector<Debuff*> getCastedDebuffs();
         vector<Skill> getSkills();
 
         Coordinate getCurrLoc();
@@ -86,6 +87,7 @@ class Servant
         Team team;
 
         vector<Debuff*> debuffs;
+        vector<Debuff*> castedDebuffs;
         vector<Skill> skills;
 
         Coordinate currLoc;

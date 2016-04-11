@@ -124,6 +124,11 @@ vector<Debuff*> Servant::getDebuffs()
     return debuffs;
 }
 
+vector<Debuff*> Servant::getCastedDebuffs()
+{
+    return castedDebuffs;
+}
+
 vector<Skill> Servant::getSkills()
 {
     return skills;
