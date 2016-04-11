@@ -11,15 +11,12 @@
 
 /********** Function Definitions **********/
 // Constructor
-Skill::Skill(string n, string d0, string d1, string d2, bool al, int alvl)
+Skill::Skill(string n, string d, int alvl)
 {
     name = n;
 
-    description.push_back(d0);
-    description.push_back(d1);
-    description.push_back(d2);
+    description = d;
 
-    ascensionLocked = al;
     ascensionLvl = alvl;
 }
 
@@ -37,13 +34,10 @@ string Skill::getSklName()
 
 string Skill::getSklDescrip()
 {
-    if (ascensionLocked)
-        return description[0];
-    else
-        return description[ascensionLvl];
+    return description;
 }
 
-bool Skill::isAscensionLocked()
+int Skill::getAscensionLvl()
 {
-    return ascensionLocked;
+    return ascensionLvl;
 }

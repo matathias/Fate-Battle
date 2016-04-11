@@ -12,8 +12,7 @@
 // Constructor
 Servant::Servant(vector<int> h, vector<int> m, vector<int> mv, vector<int> st,
                  vector<int> mg, vector<int> d, vector<int> r, vector<int> sp,
-                 vector<int> sk, vector<int> l, int as, Class c, Team t, Weapon* w,
-                 vector<*Debuff> dbf, vector<Skill> sks)
+                 vector<int> sk, vector<int> l, int as, Team t)
 {
     maxHP = h;
     maxMP = m;
@@ -27,11 +26,7 @@ Servant::Servant(vector<int> h, vector<int> m, vector<int> mv, vector<int> st,
     luk = l;
 
     ascension = as;
-    clss = c;
     team = t;
-    weap = w;
-    debuffs = dbf;
-    skills = sks;
 
     setHP(getMaxHP());
     setMP(getMaxMP());
@@ -124,11 +119,6 @@ Team Servant::getTeam()
     return team;
 }
 
-Weapon* Servant::getWeapon()
-{
-    return weap;
-}
-
 vector<Debuff*> Servant::getDebuffs()
 {
     return debuffs;
@@ -142,4 +132,34 @@ vector<Skill> Servant::getSkills()
 Coordinate Servant::getCurrLoc()
 {
     return currLoc;
+}
+
+vector<string> Servant::getActionList()
+{
+    return actionList[ascension];
+}
+
+vector<ActionType> Servant::getActionListTypes()
+{
+    return actionListTypes[ascension];
+}
+
+vector<int> Servant::getActionMPCosts()
+{
+    return actionMPCosts[ascension];
+}
+
+vector<vector<string>> Servant::getNoblePhantasms()
+{
+    return noblePhantasms;
+}
+
+vector<vector<Coordinate>> Servant::getNPRanges()
+{
+    return npRanges;
+}
+
+vector<Coordinate> Servant::getNPRange(int np)
+{
+    return npRanges[np];
 }

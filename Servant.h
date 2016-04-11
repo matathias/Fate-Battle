@@ -11,7 +11,10 @@ using namespace std;
 enum Stat {HP, MP, MOV, STR, MAG, DEF, RES, SPD, SKL, LUK};
 enum Class {Saber, Lancer, Archer, Caster, Berserker, Rider, Assassin, Avenger};
 enum Team {Alpha, Omega, Boss};
- 
+
+//S = single target, A = AOE, T = territory creation, N = no target
+enum ActionType {S, A, T, N};
+
 class Servant
 {
     public:
@@ -43,6 +46,21 @@ class Servant
         vector<Skill> getSkills();
 
         Coordinate getCurrLoc();
+
+        // Functions intended for use by the subclasses
+        vector<string> getActionList();
+        vector<ActionType> getActionListTypes();
+        vector<int> getActionMPCosts();
+
+        vector<vector<string>> getNoblePhantasms();
+        vector<vector<Coordinate>> getNPRanges();
+        vector<Coordinate> getNPRange(int np);
+
+        void doAction(int actionNum, vector<Servant*> defenders, PlayField* pf);
+        void attack(vector<Servant*> defenders);
+        void activateNP1(vector<Servant*> defenders);
+        void activateNP2(vector<Servant*> defenders);
+        void activateNP3(vector<Servant*> defenders);
         
     protected:
         string name; // Based on the Servant's class and weapon.
@@ -73,5 +91,10 @@ class Servant
         Coordinate currLoc;
 
         // Fields intended for use by subclasses
-        vector<string> actionList;
+        vector<vector<string>> actionList;
+        vector<vector<ActionType>> actionListTypes;
+        vector<vector<int>> actionMPCosts;
+
+        vector<vector<string>> noblePhantasms; // Column 1: name, 2: description
+        vector<vector<Coordinate>> npRanges; // Ranges for NPs
 }

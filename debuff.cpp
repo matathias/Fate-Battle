@@ -17,7 +17,8 @@ using namespace std;
 
 /********** Function Definitions **********/
 // Constructor
-Debuff::Debuff(string dN, string dD, Team t, Stat dS, int dA, int tR)
+Debuff::Debuff(string dN, string dD, Team t, vector<Stat> dS, vector<int> dA,
+               int tR)
 {
     debuffName = dN;
     debuffDescrip = dD;
@@ -50,12 +51,12 @@ Team Debuff::getTargetTeam()
     return targetTeam;
 }
 
-Stat Debuff::getDebuffStat()
+vector<Stat> Debuff::getDebuffStats()
 {
     return debuffStat;
 }
 
-int Debuff::getDebuffAmount()
+vector<int> Debuff::getDebuffAmounts()
 {
     return debuffAmount;
 }
