@@ -63,8 +63,12 @@ Team playGame()
     {
         // Get the current Servant
 
+        // Decrement the turns remaining on any Debuffs this Servant has cast.
+        // Remove Debuffs as necessary. Territory and Reality Marble Debuffs
+        // are checked later.
+
         // Apply any relevant Debuffs, either that are on the Servant or the
-        // field. Decrement the turns remaining on any relevant Debuff.
+        // field.
 
         // Determine if there are any ongoing combat effects that belong to this
         // Servant (e.g. Reality Marbles or Caster Territories) and if the
