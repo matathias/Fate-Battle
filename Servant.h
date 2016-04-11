@@ -71,4 +71,7 @@ class Servant
         vector<Skill> skills;
 
         Coordinate currLoc;
+
+        // Fields intended for use by subclasses
+        vector<string> actionList;
 }
