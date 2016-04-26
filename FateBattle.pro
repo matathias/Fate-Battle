@@ -5,6 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui
+qtHaveModule(printsupport): QT += printsupport
+qtHaveModule(opengl): QT += opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -43,7 +45,10 @@ SOURCES += main.cpp\
     Servants/servantassassinshuriken.cpp \
     Servants/servantavengersai.cpp \
     Servants/servantavengerscythe.cpp \
-    Game.cpp
+    Game.cpp \
+    playfieldsquare.cpp \
+    view.cpp \
+    Servants/servanttest.cpp
 
 HEADERS  += mainwindow.h \
     Debuff.h \
@@ -75,6 +80,18 @@ HEADERS  += mainwindow.h \
     Servants/servantassassindagger.h \
     Servants/servantassassinshuriken.h \
     Servants/servantavengersai.h \
-    Servants/servantavengerscythe.h
+    Servants/servantavengerscythe.h \
+    playfieldsquare.h \
+    view.h \
+    datatypes.h \
+    Servants/servanttest.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    images.qrc
+
+DISTFILES += \
+    qt4logo.png \
+    zoomin.png \
+    zoomout.png

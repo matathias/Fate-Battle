@@ -3,27 +3,26 @@
 #pragma once
 
 #include <vector>
+#include <string>
+#include <cstdlib>
 
-#include "PlayField.h"
+#include "Debuff.h"
+#include "Skill.h"
+//#include "datatypes.h"
 
 using namespace std;
-
-enum Stat {HP, MP, MOV, STR, MAG, DEF, RES, SPD, SKL, LUK};
-enum Class {Saber, Lancer, Archer, Caster, Berserker, Rider, Assassin, Avenger};
-enum Team {Alpha, Omega, Boss};
-
-//S = single target, A = AOE, T = territory creation, N = no target
-enum ActionType {S, A, T, N};
 
 class Servant
 {
     public:
-        Servant(vector<int> h, vector<int> m, vector<int> mv, vector<int> st,
-                vector<int> mg, vector<int> d, vector<int> r, vector<int> sp,
-                vector<int> sk, vector<int> l, int as, Team t);
+        Servant(int as, Team t);
                 
         void setHP(int hp);
         void setMP(int mp);
+        void addHP(int hp);
+        void addMP(int mp);
+        void subHP(int hp);
+        void subMP(int mp);
         
         int getMaxHP();
         int getCurrHP();
@@ -43,10 +42,29 @@ class Servant
         Team getTeam();
 
         vector<Debuff*> getDebuffs();
+        void addDebuff(Debuff* d);
+        void decDebuffs();
         vector<Debuff*> getCastedDebuffs();
+        void addCastedDebuff(Debuff* d);
         vector<Skill> getSkills();
 
+        int getDebuffAmount(Stat s);
+
         Coordinate getCurrLoc();
+        bool isAdjacent(Servant * s);
+        bool isInRange(Servant *s);
+
+        int getLowRange();
+        int getHighRange();
+
+        // Functions related to battle formulas and damage calculation
+        int getHitRate();
+        vector<int> getEvade(); // This is a vector of ints to account for
+                                // Servants who have skills that offer multiple
+                                // evasion chances. Only the first value is
+                                // checked against hit rate
+        int getCriticalRate();
+        int getCriticalEvade();
 
         // Functions intended for use by the subclasses
         vector<string> getActionList();
@@ -57,11 +75,33 @@ class Servant
         vector<vector<Coordinate>> getNPRanges();
         vector<Coordinate> getNPRange(int np);
 
-        void doAction(int actionNum, vector<Servant*> defenders, PlayField* pf);
-        void attack(vector<Servant*> defenders);
-        void activateNP1(vector<Servant*> defenders);
-        void activateNP2(vector<Servant*> defenders);
-        void activateNP3(vector<Servant*> defenders);
+        void setLoc(Coordinate newLoc);
+
+        // This function is defined in the Servant class, but servants with
+        // special skills attached to their attack should override the attack
+        // method.
+        // It returns 0 if it succeeds, and another value otherwise.
+        int attack(vector<Servant*> defenders);
+
+        // Like with attack, this function is defined in the Servant class but
+        // will need to be overridden if a Servant has more options availble to
+        // them than just attacking and their noble phantasms.
+        // The function returns 0 if it succeeds, and another value otherwise
+        // (i.e. the choice made is not valid).
+        int doAction(int actionNum, vector<Servant*> defenders);
+
+        // These functions actually need to be defined in the subclasses.
+        // They return 0 if they succeed, and another value otherwise.
+        int activateNP1(vector<Servant*> defenders);
+        int activateNP2(vector<Servant*> defenders);
+        int activateNP3(vector<Servant*> defenders);
+
+        // Generates a random number between 0 and 100 (inclusive) using fire
+        // emblem's "true hit" technique
+        int getRandNum();
+
+        // Placeholder. Will only really be used for Avengers.
+        Debuff* finalRevenge();
         
     protected:
         string name; // Based on the Servant's class and weapon.
@@ -82,6 +122,9 @@ class Servant
         
         int currHP;
         int currMP;
+
+        int lowRange;
+        int hiRange;
         
         Class clss;
         Team team;
@@ -99,4 +142,4 @@ class Servant
 
         vector<vector<string>> noblePhantasms; // Column 1: name, 2: description
         vector<vector<Coordinate>> npRanges; // Ranges for NPs
-}
+};

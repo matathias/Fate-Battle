@@ -1,3 +1,7 @@
+#pragma once
+
+#include <string>
+
 using namespace std;
 
 class Skill
@@ -12,6 +16,6 @@ class Skill
         
     protected:
         string name;
-        vector description;
+        string description;
         int ascensionLvl;
-}
+};

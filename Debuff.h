@@ -1,5 +1,9 @@
 
-#include "Servant.h"
+#pragma once
+
+#include "datatypes.h"
+#include <string>
+#include <vector>
 using namespace std;
 
 class Debuff
@@ -26,4 +30,4 @@ class Debuff
         vector<Stat> debuffStat;
         vector<int> debuffAmount;
         int turnsRemaining;
-}
+};

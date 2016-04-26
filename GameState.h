@@ -17,7 +17,9 @@ class GameState
         
         Servant* getNextServant();
         Servant* peekNextServant();
-        
+
+        vector<Coordinate> getValidMoves(Servant* s);
+
         vector<Servant*> getDead();
         void addDead(Servant* s);
         void removeDead(Servant* s);
@@ -42,4 +44,4 @@ class GameState
         vector<Servant*> bossTeam;
         
         PlayField* field;
-}
+};

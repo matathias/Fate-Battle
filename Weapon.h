@@ -30,4 +30,4 @@ class Weapon
         vector<Debuff> modStats;
         
         int mpCost;
-}
+};

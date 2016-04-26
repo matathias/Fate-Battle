@@ -18,8 +18,8 @@ vector<Servant*> allServants;
 vector<Servant*> activeServants;
 vector<Servant*> teamA;
 vector<Servant*> teamB;
-Team teamA;
-Team teamB;
+Team teamAType;
+Team teamBType;
 
 // Initialize everything. Servants, Skills, etc.
 void initialize()
@@ -43,6 +43,12 @@ void setup()
     // field.
     // TODO: gui programming
 
+    /*** Alternatively: have option to load file that specifies field size and
+     * what servants are on what team. Would then only need to make one gui
+     * window for the game itself. After that is working, could go back and try
+     * to make a setup screen.
+     ***/
+
     /*** When the setup screen is done, process the input data ***/
     // Determine the turn order based on servant speed
 
@@ -59,43 +65,46 @@ void setup()
 Team playGame()
 {
     /*** Continuously loop until an entire team is dead. ***/
-    while (!isTeamDead(teamA) && !isTeamDead(teamB))
+    while (!game->isTeamDead(teamAType) && !game->isTeamDead(teamBType))
     {
-        // Get the current Servant
+        // --Get the current Servant
 
-        // Decrement the turns remaining on any Debuffs this Servant has cast.
+        // --Decrement the turns remaining on any Debuffs this Servant has cast.
         // Remove Debuffs as necessary. Territory and Reality Marble Debuffs
         // are checked later.
 
-        // Apply any relevant Debuffs, either that are on the Servant or the
+        // --Apply any relevant Debuffs, either that are on the Servant or the
         // field.
 
-        // Determine if there are any ongoing combat effects that belong to this
-        // Servant (e.g. Reality Marbles or Caster Territories) and if the
+        // --Determine if there are any ongoing combat effects that belong to
+        // this Servant (e.g. Reality Marbles or Caster Territories) and if the
         // player wants to continue them.
 
-        // Let the player move
+        // --Let the player move
 
         /*** Actions ***/
         // Get a list of player actions and have the player select one
 
-        // If the action is single-target, get the range and have the player
+        // -If the action is single-target, get the range and have the player
         // select a target from within that range.
 
-        // If the action is AOE, have the player determine the direction of
+        // -If the action is AOE, have the player determine the direction of
         // application and get all targets in that range.
 
-        // Apply damage or whatever to the targets.
+        // --Apply damage or whatever to the targets.
 
-        // If the player is a Rider, allow them to use the rest of their
+        // --If the player is a Rider, allow them to use the rest of their
         // movement points.
 
-        // End the turn
+        // --Check if the player's target location has any relevant debuffs and
+        // apply them
 
-        // Check if anyone has died or revived and modify the death list in the
-        // GameState accordingly
+        // --End the turn
+
+        // --Check if anyone has died or revived and modify the death list in
+        // the GameState accordingly
     }
 
     // Show the final screen
-    finalScreen();
+    //finalScreen();
 }

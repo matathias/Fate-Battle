@@ -25,4 +25,4 @@ class NoblePhantasm
         
         vector<Coordinate> range; // Coordinate range relative to the Servant's
                                   // position. Default direction is north.
-}
+};

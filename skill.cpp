@@ -7,7 +7,6 @@
  */
 
 #include "Skill.h"
-#include <vector>
 
 /********** Function Definitions **********/
 // Constructor
