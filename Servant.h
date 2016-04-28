@@ -21,7 +21,7 @@ class Servant
         void setMP(int mp);
         void addHP(int hp);
         void addMP(int mp);
-        void subHP(int hp);
+        void subHP(int hp, DamageType dt);
         void subMP(int mp);
         
         int getMaxHP();
@@ -46,7 +46,12 @@ class Servant
         void decDebuffs();
         vector<Debuff*> getCastedDebuffs();
         void addCastedDebuff(Debuff* d);
+        void decCastedDebuffs();
         vector<Skill> getSkills();
+
+        // Only relevant to casters
+        bool isTerritoryActive();
+        void removeTerritory();
 
         int getDebuffAmount(Stat s);
 
@@ -70,6 +75,10 @@ class Servant
         vector<string> getActionList();
         vector<ActionType> getActionListTypes();
         vector<int> getActionMPCosts();
+
+        ActionType getActionType(int action);
+        int getActionMPCost(int action);
+        vector<Coordinate> getActionRange(int action);
 
         vector<vector<string>> getNoblePhantasms();
         vector<vector<Coordinate>> getNPRanges();
@@ -132,6 +141,8 @@ class Servant
         vector<Debuff*> debuffs;
         vector<Debuff*> castedDebuffs;
         vector<Skill> skills;
+
+        bool territoryActive; // Only relevant to casters
 
         Coordinate currLoc;
 

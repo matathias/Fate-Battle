@@ -15,6 +15,8 @@ Servant::Servant(int as, Team t)
 {
     ascension = as;
     team = t;
+
+    territoryActive = false;
 }
 
 //***** Manipulators *****
@@ -58,7 +60,7 @@ void Servant::addMP(int mp)
         currMP = 0;
 }
 
-void Servant::subHP(int hp)
+void Servant::subHP(int hp, DamageType dt)
 {
     currHP -= hp;
     int mhp = getMaxHP();
@@ -242,6 +244,20 @@ void Servant::addCastedDebuff(Debuff *d)
     castedDebuffs.push_back(d);
 }
 
+void Servant::decCastedDebuffs()
+{
+
+    for (int i = 0; i < debuffs.size(); i++)
+    {
+        castedDebuffs[i]->decrementTurnsRemaining();
+        if (castedDebuffs[i]->getTurnsRemaining() == 0)
+        {
+            castedDebuffs.erase(castedDebuffs.begin()+i);
+            i--;
+        }
+    }
+}
+
 int Servant::getDebuffAmount(Stat s)
 {
     int d = 0;
@@ -262,6 +278,25 @@ int Servant::getDebuffAmount(Stat s)
 vector<Skill> Servant::getSkills()
 {
     return skills;
+}
+
+// Caster territory functions
+bool Servant::isTerritoryActive()
+{
+    return territoryActive;
+}
+
+void Servant::removeTerritory()
+{
+    for (int i = 0; i < castedDebuffs.size(); i++)
+    {
+        string n = castedDebuffs[i]->getDebuffName();
+        if (n.compare("Territory") == 0)
+        {
+            castedDebuffs.erase(castedDebuffs.begin()+i);
+            i--;
+        }
+    }
 }
 
 // Current location
@@ -328,6 +363,31 @@ int Servant::getCriticalEvade()
 }
 
 // Action retrievers
+ActionType Servant::getActionType(int action)
+{
+    return actionListTypes[ascension][action];
+}
+
+int Servant::getActionMPCost(int action)
+{
+    return actionMPCosts[ascension][action];
+}
+
+vector<Coordinate> Servant::getActionRange(int action)
+{
+    // Figure out what action this is and return the appropriate range
+    // TODO
+    vector<Coordinate> range;
+
+
+    Coordinate placeholder;
+    placeholder.x = 1;
+    placeholder.y = 0;
+    range.push_back(placeholder);
+
+    return range;
+}
+
 vector<string> Servant::getActionList()
 {
     return actionList[ascension];
@@ -397,13 +457,13 @@ int Servant::attack(vector<Servant *> defenders)
                                  defenders[i]->getCriticalEvade();
                 r = getRandNum();
                 if (critChance >= r)
-                    attackMult = 3;
+                    attackMult *= 3;
 
                 // Deal the damage
                 dam = (getStr() - defenders[i]->getDef()) * attackMult;
                 if (dam < 0)
                     dam = 0;
-                defenders[i]->subHP(dam);
+                defenders[i]->subHP(dam, D_STR);
             }
 
             // Check to see if the defender is dead. If they are, do not call
@@ -424,7 +484,7 @@ int Servant::attack(vector<Servant *> defenders)
                     {
                         // Mad Counter activated! The attacking servant takes
                         // damage equal to the damage they dealt.
-                        subHP(dam);
+                        subHP(dam, C_STR);
                     }
                 }
                 // Call "attack" on the defending servant for their
@@ -445,7 +505,7 @@ int Servant::attack(vector<Servant *> defenders)
                     addDebuff(finRev);
                     if (defenders[i]->getAscensionLvl() == 2)
                     {
-                        subHP(.1 * getMaxHP());
+                        subHP(.1 * getMaxHP(), OMNI);
                         subMP(.1 * getMaxMP());
 
                         if (getCurrHP() == 0)
@@ -492,7 +552,7 @@ int Servant::getRandNum()
     return (rand1 + rand2) / 2;
 }
 
-// Placeholder definitions. Override in subclasses.
+/* Placeholder definitions. Override in subclasses. */
 Debuff* Servant::finalRevenge()
 {
     vector<Stat> s;
@@ -505,15 +565,15 @@ Debuff* Servant::finalRevenge()
 
 int Servant::activateNP1(vector<Servant *> defenders)
 {
-    return 10;
+    return 10 + defenders.size();
 }
 
 int Servant::activateNP2(vector<Servant *> defenders)
 {
-    return 10;
+    return 10 + defenders.size();
 }
 
 int Servant::activateNP3(vector<Servant *> defenders)
 {
-    return 10;
+    return 10 + defenders.size();
 }

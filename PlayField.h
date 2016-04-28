@@ -22,12 +22,26 @@ class PlayField
         Coordinate moveServant(Servant* s, Coordinate c); // returns the
                                                           // Servant's previous
                                                           // location
+
+        bool isRealityMarbleOn();
+        Servant* realityMarbleServant(); // returns null if there is no active
+                                         // reality marble
+
+        void startRealityMarble(Servant* owner);
+        void endRealityMarble();
         
+        bool doesSpaceHaveServant(Coordinate c);
+        vector<Coordinate> pruneRange(vector<Coordinate> range);
         vector<Servant*> getAllInRange(Servant* s, vector<Coordinate> range);
+        Servant* getServantOnSpace(Coordinate c);
+        Debuff* getDebuffOnSpace(Coordinate c);
         
     protected:
         int length;
         int width;
+
+        bool realityMarbleOn;
+        Servant *rmServant;
         
         vector<vector<Servant*>> field; // length x width playing field. If a 
                                         // Servant is occupying the spot, then

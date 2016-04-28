@@ -23,6 +23,9 @@ PlayField::PlayField(int l, int w, vector<Servant *> servantList,
     length = l; // corresponds to the y coordinate
     width = w;  // corresponds to the x coordinate
 
+    realityMarbleOn = false;
+    rmServant = NULL;
+
     for (int i = 0; i < w; i++)
     {
         vector<Servant*> tField;
@@ -59,6 +62,18 @@ Coordinate PlayField::moveServant(Servant *s, Coordinate c)
     return oldLoc;
 }
 
+void PlayField::startRealityMarble(Servant *owner)
+{
+    realityMarbleOn = true;
+    rmServant = owner;
+}
+
+void PlayField::endRealityMarble()
+{
+    realityMarbleOn = false;
+    rmServant = NULL;
+}
+
 /***** Retrievers *****/
 vector<vector<Servant*>> PlayField::getServantLocations()
 {
@@ -74,6 +89,24 @@ bool PlayField::isValidCoordinate(Coordinate c)
 {
     return (c.x >= 0 && c.x < width && c.y >= 0 && c.y < length &&
             field[c.x][c.y] == NULL);
+}
+
+bool PlayField::doesSpaceHaveServant(Coordinate c)
+{
+    return field[c.x][c.y] != NULL;
+}
+
+vector<Coordinate> PlayField::pruneRange(vector<Coordinate> range)
+{
+    for (int i = 0; i < range.size(); i++)
+    {
+        if(!doesSpaceHaveServant(range[i]))
+        {
+            range.erase(range.begin()+i);
+            i--;
+        }
+    }
+    return range;
 }
 
 vector<Servant*> PlayField::getAllInRange(Servant *s, vector<Coordinate> range)
@@ -96,4 +129,24 @@ vector<Servant*> PlayField::getAllInRange(Servant *s, vector<Coordinate> range)
     }
 
     return targets;
+}
+
+bool PlayField::isRealityMarbleOn()
+{
+    return realityMarbleOn;
+}
+
+Servant* PlayField::realityMarbleServant()
+{
+    return rmServant;
+}
+
+Servant* PlayField::getServantOnSpace(Coordinate c)
+{
+    return field[c.x][c.y];
+}
+
+Debuff* PlayField::getDebuffOnSpace(Coordinate c)
+{
+    return tempEffects[c.x][c.y];
 }

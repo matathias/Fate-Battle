@@ -71,10 +71,10 @@ ServantTest::ServantTest(int as, Team t) : Servant(as, t)
     np1.push_back("Attack straight-on for thrice normal damage.");
     vector<string> np2;
     np2.push_back("Side Slash");
-    np2.push_back("Attack from the side, catching your opponent off-guard and dealing undodgeable five times normal damage. No counterattacks or enemy skill activations.");
+    np2.push_back("Attack from the side, catching your opponent off-guard and dealing undodgeable five times normal damage.");
     vector<string> np3;
     np3.push_back("Omni Slash");
-    np3.push_back("Attack all adjacent opponents for five times normal damage. No counterattacks or enemy skill activations.");
+    np3.push_back("Attack all adjacent opponents for undodgeable five times normal damage. No counterattacks or enemy skill activations.");
     noblePhantasms.push_back(np1);
     noblePhantasms.push_back(np2);
     noblePhantasms.push_back(np3);
@@ -107,23 +107,216 @@ ServantTest::ServantTest(int as, Team t) : Servant(as, t)
     npRanges.push_back(npc3);
 }
 
+// Straight Slash
+// Attack straight-on for thrice normal damage.
 int ServantTest::activateNP1(vector<Servant *> defenders)
 {
-    // TODO
     int ret = 0;
+    if (actionMPCosts[ascension][1] > currMP)
+        return 1; // Not enough MP to attack
+    else
+    {
+        subMP(actionMPCosts[ascension][1]);
+        for (int i = 0; i < defenders.size(); i++)
+        {
+            int dam = 0;
+            // Check if you hit the targets
+            vector<int> opEvade = defenders[i]->getEvade();
+            bool hit = false;
+            // Calculate accuracy
+            int accuracy = getHitRate() - opEvade[0];
+
+            int r = getRandNum();
+            if (accuracy >= r)
+                hit = true;
+            else if (opEvade.size() > 1)
+            {
+                for (int j = 1; j < opEvade.size() && !hit; j++)
+                {
+                    r = getRandNum();
+                    if (opEvade[j] >= r)
+                        hit = true;
+                }
+            }
+
+            // If you hit, calculate crit chance
+            if (hit)
+            {
+                int attackMult = 3;
+                int critChance = getCriticalRate() -
+                                 defenders[i]->getCriticalEvade();
+                r = getRandNum();
+                if (critChance >= r)
+                    attackMult *= 3;
+
+                // Deal the damage
+                dam = (getStr() - defenders[i]->getDef()) * attackMult;
+                if (dam < 0)
+                    dam = 0;
+                defenders[i]->subHP(dam, NP_STR);
+            }
+
+            // Check to see if the defender is dead. If they are, do not call
+            // the counterattack. Additionally, if they are an Avenger and they
+            // die, activate Final Revenge.
+            // If they are not dead but they are a Berserker, check to see if
+            // Mad Counter activates.
+            if(defenders[i]->getCurrHP() > 0)
+            {
+                // Check if the defender is a Berserker. If they are, and they
+                // are adjacent to this unit, check to see if Mad Counter
+                // activates.
+                if (defenders[i]->getClass() == Berserker &&
+                    isAdjacent(defenders[i]))
+                {
+                    r = getRandNum();
+                    if (defenders[i]->getLuk() >= r)
+                    {
+                        // Mad Counter activated! The attacking servant takes
+                        // damage equal to the damage they dealt.
+                        subHP(dam, C_STR);
+                    }
+                }
+                // Call "attack" on the defending servant for their
+                // counterattack, if you are in their range.
+                if (defenders[i]->isInRange(this))
+                {
+                    vector<Servant *> you;
+                    you.push_back(this);
+                    defenders[i]->attack(you);
+                }
+            }
+            else
+            {
+                if (defenders[i]->getClass() == Avenger)
+                {
+                    // Activate Final Revenge
+                    Debuff *finRev = defenders[i]->finalRevenge();
+                    addDebuff(finRev);
+                    if (defenders[i]->getAscensionLvl() == 2)
+                    {
+                        subHP(.1 * getMaxHP(), OMNI);
+                        subMP(.1 * getMaxMP());
+
+                        if (getCurrHP() == 0)
+                        {
+                            setHP(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     return ret;
 }
 
+// Side Slash
+// Attack from the side, catching your opponent off-guard and dealing
+// undodgeable five times normal damage.
 int ServantTest::activateNP2(vector<Servant *> defenders)
 {
-    // TODO
-    int ret = 0;
-    return ret;
+    if (actionMPCosts[ascension][2] > currMP)
+        return 1; // Not enough MP to attack
+    else
+    {
+        subMP(actionMPCosts[ascension][2]);
+        for (int i = 0; i < defenders.size(); i++)
+        {
+            // Check to see if you get a critical
+            int attackMult = 5;
+            int critChance = getCriticalRate() -
+                             defenders[i]->getCriticalEvade();
+            int r = getRandNum();
+            if (critChance >= r)
+                attackMult *= 3;
+
+            // Deal the damage
+            int dam = (getStr() - defenders[i]->getDef()) * attackMult;
+            if (dam < 0)
+                dam = 0;
+            defenders[i]->subHP(dam, NP_STR);
+
+            // Check to see if the defender is dead. If they are, do not call
+            // the counterattack. Additionally, if they are an Avenger and they
+            // die, activate Final Revenge.
+            // If they are not dead but they are a Berserker, check to see if
+            // Mad Counter activates.
+            if(defenders[i]->getCurrHP() > 0)
+            {
+                // Check if the defender is a Berserker. If they are, and they
+                // are adjacent to this unit, check to see if Mad Counter
+                // activates.
+                if (defenders[i]->getClass() == Berserker &&
+                    isAdjacent(defenders[i]))
+                {
+                    r = getRandNum();
+                    if (defenders[i]->getLuk() >= r)
+                    {
+                        // Mad Counter activated! The attacking servant takes
+                        // damage equal to the damage they dealt.
+                        subHP(dam, C_STR);
+                    }
+                }
+                // Call "attack" on the defending servant for their
+                // counterattack, if you are in their range.
+                if (defenders[i]->isInRange(this))
+                {
+                    vector<Servant *> you;
+                    you.push_back(this);
+                    defenders[i]->attack(you);
+                }
+            }
+            else
+            {
+                if (defenders[i]->getClass() == Avenger)
+                {
+                    // Activate Final Revenge
+                    Debuff *finRev = defenders[i]->finalRevenge();
+                    addDebuff(finRev);
+                    if (defenders[i]->getAscensionLvl() == 2)
+                    {
+                        subHP(.1 * getMaxHP(), OMNI);
+                        subMP(.1 * getMaxMP());
+
+                        if (getCurrHP() == 0)
+                        {
+                            setHP(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
 }
 
+// Omni Slash
+// Attack all adjacent opponents for undodgeable five times normal damage. No
+// counterattacks or enemy skill activations.
 int ServantTest::activateNP3(vector<Servant *> defenders)
 {
-    // TODO
-    int ret = 0;
-    return ret;
+    if (actionMPCosts[ascension][3] > currMP)
+        return 1; // Not enough MP to attack
+    else
+    {
+        subMP(actionMPCosts[ascension][3]);
+        for (int i = 0; i < defenders.size(); i++)
+        {
+            // Check to see if you get a critical
+            int attackMult = 5;
+            int critChance = getCriticalRate() -
+                             defenders[i]->getCriticalEvade();
+            int r = getRandNum();
+            if (critChance >= r)
+                attackMult *= 3;
+
+            // Deal the damage
+            int dam = (getStr() - defenders[i]->getDef()) * attackMult;
+            if (dam < 0)
+                dam = 0;
+            defenders[i]->subHP(dam, NP_STR);
+        }
+    }
+    return 0;
 }

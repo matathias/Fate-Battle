@@ -15,10 +15,13 @@ using namespace std;
 GameState::GameState(vector<Servant *> tO, int l, int w)
 {
     turnOrder = tO;
+    archerSecondTurn = false;
+    clickedX = 0;
+    clickedY = 0;
 
     // Determine the locations of the servants on the board, as well as
     // seperating them out into teams.
-    vector<Coordinate> servantLocations;// = new vector<Coordinate>;
+    vector<Coordinate> servantLocations;
     int aCounter = 0, oCounter = 0, bCounter = 0;
     for (int i = 0; i < turnOrder.size(); i++)
     {
@@ -84,15 +87,23 @@ void GameState::removeDead(Servant *s)
     }
 }
 
+void GameState::setClickedX(int x)
+{
+    clickedX = x;
+}
+
+void GameState::setClickedY(int y)
+{
+    clickedY = y;
+}
+
 bool GameState::isServantDead(Servant *s)
 {
     bool found = false;
     for (int i = 0; i < dead.size() && !found; i++)
     {
         if (dead[i] == s)
-        {
             found = true;
-        }
     }
 
     return found;
@@ -295,4 +306,296 @@ vector<Servant*> GameState::getOmegaTeam()
 vector<Servant*> GameState::getBossTeam()
 {
     return bossTeam;
+}
+
+/* All functions having to do with the turn state */
+int GameState::getTurnState()
+{
+    return turnState;
+}
+
+int GameState::nextTurnState()
+{
+    switch(turnState)
+    {
+        case 0:
+            turnState++;
+            turnStateMove();
+            break;
+        case 1:
+            turnState++;
+            turnStateChoseAction();
+            break;
+        case 2:
+            turnState++;
+            turnStateChoseTargets();
+            break;
+        case 3:
+            turnState++;
+            turnStateApplyAction();
+            break;
+        case 4:
+            turnState++;
+            turnStateExtraMove();
+            break;
+        case 5:
+            turnState++;
+            turnStatePostTurn();
+            break;
+        default:
+    }
+    return turnState;
+}
+
+int GameState::prevTurnState()
+{
+    switch(turnState)
+    {
+        case 2:
+            turnState--;
+            currentServant->setLoc(servStart);
+            turnStateMove();
+            break;
+        case 3:
+            turnState--;
+            turnStateChoseAction();
+            break;
+        case 4:
+            turnState--;
+            turnStateChoseTargets();
+            break;
+        case 5:
+            turnState--;
+            turnStateApplyAction();
+            break;
+        case 6:
+            turnState--;
+            turnStateExtraMove();
+            break;
+        default:
+    }
+
+    return turnState;
+}
+
+int GameState::turnStatePreTurn()
+{
+    // Decrement the turns remaining on any Debuffs on this Servant. Remove any
+    // Debuffs as necessary.
+    currentServant->decDebuffs();
+
+    // Apply any relevant Debuffs, either that are on the Servant or the field.
+    Debuff *tDebuff = field->getDebuffOnSpace(currentServant->getCurrLoc());
+    if (tDebuff->getTargetTeam() == currentServant->getTeam())
+    {
+        Debuff *newDebuff = (tDebuff->getDebuffName(),
+                             tDebuff->getDebuffDescrip(),
+                             tDebuff->getTargetTeam(),
+                             tDebuff->getDebuffStats(),
+                             tDebuff->getDebuffAmounts(), 1);
+        currentServant->addDebuff(newDebuff);
+    }
+    int hpSub = currentServant->getDebuffAmount(HP);
+    int mpSub = currentServant->getDebuffAmount(MP);
+    int currHP = currentServant->getCurrHP();
+
+    if (currHP - hpSub <= 0)
+        currentServant->setHP(1);
+    else
+        currentServant->subHP(hpSub, OMNI);
+
+    currentServant->subMP(mpSub);
+
+    // Determine if there are any ongoing combat effects that belong to this
+    // Servant (e.g. Reality Marbles or Caster Territories) and if the player
+    // wants to continue them.
+    // TODO
+    if (field->isRealityMarbleOn() &&
+        field->realityMarbleServant() == currentServant)
+    {
+        // Do some gui stuff
+        // Make a new turnState that can handle this dialogue?
+    }
+    else if (currentServant->getClass() == Caster &&
+             currentServant->isTerritoryActive())
+    {
+        // Do some gui stuff
+        // Make a new turnState that can handle this dialogue?
+    }
+
+    turnState++;
+    return 0;
+}
+
+int GameState::turnStateMove()
+{
+    // move the player
+    //servStart = currentServant->getCurrLoc();
+    currentServant->setLoc(tSCoord);
+    servEnd = tSCoord;
+
+    // Move the player on the Playing Field
+    servStart = field->moveServant(currentServant, tsCoord);
+
+    // Display a list of possible actions at their location.
+    actionList = currentServant->getActionList();
+    actionListTypes = currentServant->getActionListTypes();
+    actionMPCosts = currentServant->getActionMPCosts();
+
+    // TODO: Display it somehow?? Have a gui method parse the action list?
+
+    turnState++;
+    return 0;
+}
+
+int GameState::turnStateChoseAction()
+{
+    // Ensure that an action was actually chosen
+    if (chosenAction < 0)
+        return 1;
+
+    // Verify that the chosen action is legitimate (i.e. isn't a noble phantasm
+    // that isn't available, player has enough MP)
+    int mpCost = currentServant->getActionMPCost(chosenAction);
+    if (mpCost < currentServant->getCurrMP())
+    {
+        chosenAction = -1;
+        return 2;
+    }
+
+    chosenActionType = currentServant->getActionType(chosenAction);
+
+    // If the chosen action is single-target, get the range and have the player
+    // select a target from within that range.
+    if (chosenActionType == S)
+    {
+        selectionRange = currentServant->getActionRange(chosenAction);
+        selectionRange = field->pruneRange(selectionRange);
+    }
+
+    // If the action is AOE, have the player determine the direction of
+    // application and get all the targets in that range.
+    else if (chosenActionType == A)
+    {
+        Coordinate n, s, e, w;
+        n.x = 0;
+        n.y = 1;
+        s.x = 0;
+        s.y = -1;
+        e.x = 1;
+        e.y = 0;
+        w.x = -1;
+        w.y = 0;
+        selectionRange.push_back(n);
+        selectionRange.push_back(s);
+        selectionRange.push_back(e);
+        selectionRange.push_back(w);
+    }
+
+    // If the action is territory creation, skip straight to the apply action
+    // turn state and apply the action.
+    else if (chosenActionType == T)
+    {
+        turnState = 4;
+        turnStateApplyAction();
+        return 0;
+    }
+
+    // If the action is targetting a dead servant, give the player a list of
+    // dead servants to select from.
+    // TODO
+    else if (chosenActionType == D)
+    {
+
+    }
+
+    // If the action does not have any targets then process it accordingly.
+    // TODO
+    else
+    {
+        turnState = 4;
+        turnStateApplyAction();
+        return 0;
+    }
+
+    turnState++;
+    return 0;
+}
+
+int GameState::turnStateChoseTargets()
+{
+    // Ensure that the chosen targets are valid (?) and then call the apply
+    // action turn state
+    // This turn state may not actually be necessary...
+    // TODO
+    if (chosenActionType == S)
+    {
+        //
+    }
+    else if (chosenActionType == A)
+    {
+        //
+    }
+    else if (chosenActionType == D)
+    {
+        //
+    }
+    else
+    {
+        // Why are we here??
+        return 1;
+    }
+
+    return 0;
+}
+
+int GameState::turnStateApplyAction()
+{
+    // Apply the chosen action to the chosen targets.
+    // TODO
+
+    // If the Servant is a Rider, allow them to move again.
+    // TODO
+
+    // If the Servant is an Archer, check against their LUK if they get a
+    // second turn. If they do, set archerSecondTurn to true and go back to
+    // the beginning move turn state. If archerSecondTurn is already true then
+    // end the Servant's turn.
+    // TODO
+
+    // End the non-Rider turn by calling the Post-turn turn state.
+    // TODO
+
+    return 0;
+}
+
+int GameState::turnStateExtraMove()
+{
+    // move the player
+    servStart = currentServant->getCurrLoc();
+    currentServant->setLoc(tSCoord);
+    servEnd = tSCoord;
+
+    // Move the player on the Playing Field
+    // TODO
+
+    // End the turn by calling the Post-turn turn state.
+    // TODO
+
+    return 0;
+}
+
+int GameState::turnStatePostTurn()
+{
+    // Check if the player's target location has any relevant debuffs and apply
+    // them.
+    // TODO
+
+    // Check if anyone has died and modify the death list accordingly.
+    // TODO
+
+    // Reset the turnState and all relevant variables and get the next Servant.
+    // TODO
+
+    return 0;
 }
