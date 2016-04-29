@@ -45,6 +45,7 @@ class GameState
         vector<Servant*> getAlphaTeam();
         vector<Servant*> getOmegaTeam();
         vector<Servant*> getBossTeam();
+        vector<Servant*> getEnemyTeam(Servant* s);
 
         /* Functions to track the turn state and help process everything. */
         int getTurnState();

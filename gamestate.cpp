@@ -329,24 +329,55 @@ vector<Coordinate> GameState::getFullMoveRange(Servant *s, int moveRange)
     return moves;
 }
 
-// rewrite/modify to work from within GameState instead of PlayField
 vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
 {
     Coordinate baseLoc = s->getCurrLoc();
     vector<Coordinate> moves = getFullMoveRange(s, mov);
 
-    if (true) //unit is provoked by opponent saber*)
+    // Find if the unit has a "provoked" debuff
+    bool isProvoked = false;
+    vector<Debuff*> tempDebuffs = s->getDebuffs();
+    for (int i = 0; i < tempDebuffs.size() && !isProvoked; i++)
     {
-        // ***** TODO *****
+        if (tempDebuffs[i]->getDebuffName().compare("Provoked") == 0)
+            isProvoked = true;
+    }
+
+    if (isProvoked) //unit is provoked by opponent saber
+    {
+        // Get the location of the enemy saber
+        vector<Servant*> enemies = getEnemyTeam(s);
+        Coordinate saberLoc;
+        bool foundSaber = false;
+        for (int i = 0; i < enemies.size() && !foundSaber; i++)
+        {
+            if (enemies[i]->getClass() == Saber)
+            {
+                foundSaber = true;
+                saberLoc = enemies[i]->getCurrLoc();
+            }
+        }
+
+        if (foundSaber) //If the saber is not found then we just return the full
+                        // moverange
+        {
+            Coordinate moveLocation = getAdjacentInRange(saberLoc, moves, true);
+
+            int i = 0;
+            while (i < moves.size())
+            {
+                if (moveLocation.x == moves[i].x &&
+                        moveLocation.y == moves[i].y)
+                    i++;
+                else
+                    moves.erase(moves.begin()+i);
+            }
+        }
     }
     else if (s->getClass() == Berserker)
     {
         // Find closest enemy unit, then locate closest tile to said unit
-        vector<Servant*> enemies;
-        if (s->getTeam() == Alpha)
-            enemies = getOmegaTeam();
-        else
-            enemies = getAlphaTeam();
+        vector<Servant*> enemies = getEnemyTeam(s);
 
         int minDist = 1000;
         Servant* closest = NULL;
@@ -400,6 +431,37 @@ vector<Servant*> GameState::getOmegaTeam()
 vector<Servant*> GameState::getBossTeam()
 {
     return bossTeam;
+}
+
+vector<Servant*> GameState::getEnemyTeam(Servant *s)
+{
+    vector<Servant*> enemies;
+    vector<Servant*> a = getAlphaTeam();
+    vector<Servant*> o = getOmegaTeam();
+    vector<Servant*> b = getBossTeam();
+    if (s->getTeam() == Alpha)
+    {
+        for (int i = 0; i < o.size(); i++)
+            enemies.push_back(o[i]);
+        for (int i = 0; i < b.size(); i++)
+            enemies.push_back(b[i]);
+    }
+    else if (s->getTeam() == Omega)
+    {
+        for (int i = 0; i < a.size(); i++)
+            enemies.push_back(a[i]);
+        for (int i = 0; i < b.size(); i++)
+            enemies.push_back(b[i]);
+    }
+    else
+    {
+        for (int i = 0; i < o.size(); i++)
+            enemies.push_back(o[i]);
+        for (int i = 0; i < a.size(); i++)
+            enemies.push_back(a[i]);
+    }
+
+    return enemies;
 }
 
 /* All functions having to do with the turn state */
