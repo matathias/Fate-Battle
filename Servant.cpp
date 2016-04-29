@@ -246,7 +246,6 @@ void Servant::addCastedDebuff(Debuff *d)
 
 void Servant::decCastedDebuffs()
 {
-
     for (int i = 0; i < debuffs.size(); i++)
     {
         castedDebuffs[i]->decrementTurnsRemaining();
@@ -255,6 +254,16 @@ void Servant::decCastedDebuffs()
             castedDebuffs.erase(castedDebuffs.begin()+i);
             i--;
         }
+    }
+}
+
+void Servant::remCastedDebuffs()
+{
+    int i = 0;
+    while (i < castedDebuffs.size())
+    {
+        castedDebuffs[i]->setTurnsRemaining(1);
+        castedDebuffs.erase(castedDebuffs.begin()+i);
     }
 }
 
@@ -286,17 +295,21 @@ bool Servant::isTerritoryActive()
     return territoryActive;
 }
 
-void Servant::removeTerritory()
+string Servant::removeTerritory()
 {
+    string territoryName = "";
     for (int i = 0; i < castedDebuffs.size(); i++)
     {
         string n = castedDebuffs[i]->getDebuffName();
         if (n.compare("Territory") == 0)
         {
+            territoryName = castedDebuffs[i]->getDebuffDescrip();
             castedDebuffs.erase(castedDebuffs.begin()+i);
             i--;
         }
     }
+
+    return territoryName;
 }
 
 // Current location

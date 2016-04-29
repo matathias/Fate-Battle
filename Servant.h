@@ -47,11 +47,12 @@ class Servant
         vector<Debuff*> getCastedDebuffs();
         void addCastedDebuff(Debuff* d);
         void decCastedDebuffs();
+        void remCastedDebuffs();
         vector<Skill> getSkills();
 
         // Only relevant to casters
         bool isTerritoryActive();
-        void removeTerritory();
+        string removeTerritory();
 
         int getDebuffAmount(Stat s);
 
@@ -93,7 +94,7 @@ class Servant
         int attack(vector<Servant*> defenders);
 
         // Like with attack, this function is defined in the Servant class but
-        // will need to be overridden if a Servant has more options availble to
+        // will need to be overridden if a Servant has more options available to
         // them than just attacking and their noble phantasms.
         // The function returns 0 if it succeeds, and another value otherwise
         // (i.e. the choice made is not valid).

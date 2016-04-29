@@ -9,15 +9,37 @@
 #pragma once
 
 #include "GameState.h"
+#include <cmath>
 using namespace std;
 
 /********** Function Definitions **********/
 GameState::GameState(vector<Servant *> tO, int l, int w)
 {
-    turnOrder = tO;
-    archerSecondTurn = false;
-    clickedX = 0;
-    clickedY = 0;
+    // Get the turn order (based on speed) from
+    while (tO.size() > 0)
+    {
+        int highestSpeed = 0;
+        Servant *fastest = NULL;
+        int index = 0;
+        for (int i = 0; i < tO.size(); i++)
+        {
+            if(tO[i]->getSpd() > highestSpeed)
+            {
+                highestSpeed = tO[i]->getSpd();
+                fastest = tO[i];
+                index = i;
+            }
+        }
+        turnOrder.push_back(fastest);
+        tO.erase(tO.begin()+index);
+
+        if (fastest->getTeam() == Alpha)
+            alphaTeam.push_back(fastest);
+        else if (fastest->getTeam() == Omega)
+            omegaTeam.push_back(fastest);
+        else
+            bossTeam.push_back(fastest);
+    }
 
     // Determine the locations of the servants on the board, as well as
     // seperating them out into teams.
@@ -27,7 +49,6 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
     {
         if (turnOrder[i]->getTeam() == Alpha)
         {
-            alphaTeam.push_back(turnOrder[i]);
             Coordinate thisLoc;
             thisLoc.x = (w / 2) + 4 - aCounter;
             thisLoc.y = 0;
@@ -37,7 +58,6 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
         }
         else if (turnOrder[i]->getTeam() == Omega)
         {
-            omegaTeam.push_back(turnOrder[i]);
             Coordinate thisLoc;
             thisLoc.x = (w / 2) - 4 + oCounter;
             thisLoc.y = l - 1;
@@ -47,17 +67,21 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
         }
         else // Boss Team
         {
-            bossTeam.push_back(turnOrder[i]);
             Coordinate thisLoc;
-            if (aCounter > 0)
+            if (alphaTeam.size() > 0 && omegaTeam.size() == 0)
             {
                 thisLoc.x = (w / 2) - 1 + bCounter;
                 thisLoc.y = l - 1;
             }
-            else
+            else if (alphaTeam.size() == 0 && omegaTeam.size() > 0)
             {
                 thisLoc.x = (w / 2) + 1 - bCounter;
                 thisLoc.y = 0;
+            }
+            else
+            {
+                thisLoc.x = (w / 2) + 1 - bCounter;
+                thisLoc.y = l / 2;
             }
             bCounter++;
             servantLocations.push_back(thisLoc);
@@ -65,13 +89,37 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
         }
     }
 
+    if (aCounter > 0)
+        activeTeams.push_back(Alpha);
+    if (oCounter > 0)
+        activeTeams.push_back(Omega);
+    if (bCounter > 0)
+        activeTeams.push_back(Boss);
+
     field = new PlayField(l, w, turnOrder, servantLocations);
+    resetTurnValues();
+    currentServant = getNextServant();
 }
 
 /***** Manipulators *****/
 void GameState::addDead(Servant *s)
 {
     dead.push_back(s);
+    // Remove all casted debuffs
+    // Check if there is an active territory -- if there is, delete all
+    //     "territory" debuffs in the casted debuff list and remove all
+    //     "territory" debuffs tied to this servant from the playing
+    //     field
+    if (s->isTerritoryActive())
+    {
+        string terrName = s->removeTerritory();
+        field->eraseTerritory(terrName);
+    }
+
+    // Put all other casted debuffs at 1 turn remaining so that they are
+    // eliminated at the beginning of the Servant's turn who is
+    // suffering them.
+    s->remCastedDebuffs();
 }
 
 void GameState::removeDead(Servant *s)
@@ -147,24 +195,145 @@ vector<Servant*> GameState::getTurnOrder()
 
 Servant* GameState::getNextServant()
 {
-    Servant* next = turnOrder.front();
-    turnOrder.erase(turnOrder.begin());
-    turnOrder.push_back(next);
+    Servant* next = NULL;
+
+    int servantCount = turnOrder.size();
+    bool foundAlive = false;
+    for (int i = 0; i < servantCount && !foundAlive; i++)
+    {
+        next = turnOrder.front();
+        turnOrder.erase(turnOrder.begin());
+        turnOrder.push_back(next);
+
+        if(!isServantDead(next))
+        {
+            foundAlive = true;
+        }
+    }
 
     return next;
 }
 
 Servant* GameState::peekNextServant()
 {
-    return turnOrder.front();
+    int index = 0;
+    bool foundAlive = false;
+    for (int i = 0; i < turnOrder.size() && !foundAlive; i++)
+    {
+        if (!isServantDead(turnOrder[i]))
+        {
+            foundAlive = true;
+            index = i;
+        }
+    }
+    return turnOrder[index];
+}
+
+// Returns the four adjacent spaces to c.
+// If a space is out of bounds or occupied it is not included.
+vector<Coordinate> GameState::getAdjacentSpaces(Coordinate c)
+{
+    vector<Coordinate> spaces;
+    Coordinate north, south, east, west;
+    north.x = south.x = c.x;
+    north.y = c.y + 1;
+    south.y = c.y - 1;
+
+    east.y = west.y = c.y;
+    east.x = c.x - 1;
+    west.x = c.x + 1;
+
+    if (field->isValidCoordinate(north))
+        spaces.push_back(north);
+    if (field->isValidCoordinate(south))
+        spaces.push_back(south);
+    if (field->isValidCoordinate(east))
+        spaces.push_back(east);
+    if (field->isValidCoordinate(west))
+        spaces.push_back(west);
+
+    return spaces;
+}
+
+// If c is not adjacent to any space in range and getClosest is false,
+// the returned coordinate will have x = y = -1.
+// If c is not adjacent to any space in range and getClosest is true,
+// the returned coordinate will be the coordinate in range that is
+// closest to c.
+// Otherwise, returns a coordinate in range adjacent to c.
+Coordinate GameState::getAdjacentInRange(Coordinate c, vector<Coordinate> range,
+                                         bool getClosest)
+{
+    int minDist = 1000;
+    Coordinate retLoc;
+    retLoc.x = retLoc.y = -1;
+    bool found = false;
+
+    for (int i = 0; i < range.size() && !found; i++)
+    {
+        int dist = abs(range[i].x - c.x) + abs(range[i].y - c.y);
+
+        if (dist == 1)
+        {
+            retLoc.x = range[i].x;
+            retLoc.y = range[i].y;
+            found = true;
+        }
+        else if (getClosest && dist < minDist)
+        {
+            minDist = dist;
+            retLoc.x = range[i].x;
+            retLoc.y = range[i].y;
+        }
+    }
+
+    return retLoc;
+}
+
+// Returns the full possible movement range of the servant, accounting for
+// obstacles like other servants and the edge of the map
+vector<Coordinate> GameState::getFullMoveRange(Servant *s, int moveRange)
+{
+    Coordinate baseLoc = s->getCurrLoc();
+    vector<Coordinate> moves;
+    moves.push_back(baseLoc);
+    int startIndex = 0;
+    int endIndex = 0;
+    int i = 0;
+    while (moveRange > 0)
+    {
+        startIndex = endIndex;
+        endIndex = moves.size();
+        i = startIndex;
+        while (i >= startIndex && i < endIndex)
+        {
+            vector<Coordinate> tempMoves = getAdjacentSpaces(moves[i]);
+            for (int j = 0; j < tempMoves.size(); j++)
+            {
+                bool alreadyIn = false;
+                for (int k = 0; k < moves.size() && !alreadyIn; k++)
+                {
+                    if (tempMoves[j].x == moves[k].x &&
+                        tempMoves[j].y == moves[k].y)
+                        alreadyIn = true;
+                }
+
+                if (!alreadyIn)
+                    moves.push_back(tempMoves[j]);
+            }
+            i++;
+        }
+        moveRange--;
+    }
+
+    return moves;
 }
 
 // rewrite/modify to work from within GameState instead of PlayField
-/*vector<Coordinate> GameState::getValidMoves(Servant *s)
+vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
 {
-    Coordinate baseLoc = s->currLoc;
-    vector<Coordinate> moves;
-    int mov = s->getMov();
+    Coordinate baseLoc = s->getCurrLoc();
+    vector<Coordinate> moves = getFullMoveRange(s, mov);
 
     if (true) //unit is provoked by opponent saber*)
     {
@@ -175,9 +344,9 @@ Servant* GameState::peekNextServant()
         // Find closest enemy unit, then locate closest tile to said unit
         vector<Servant*> enemies;
         if (s->getTeam() == Alpha)
-            enemies = gs->getOmegaTeam();
+            enemies = getOmegaTeam();
         else
-            enemies = gs->getAlphaTeam();
+            enemies = getAlphaTeam();
 
         int minDist = 1000;
         Servant* closest = NULL;
@@ -187,8 +356,7 @@ Servant* GameState::peekNextServant()
         for (int i = 0; i < enemies.size(); i++)
         {
             Coordinate enLoc = enemies[i]->getCurrLoc();
-            int dist = sqrt(pow((enLoc.x - baseLoc.x), 2) +
-                            pow((enLoc.y - baseLoc.y), 2));
+            int dist = abs(enLoc.x - baseLoc.x) + abs(enLoc.y - baseLoc.y);
             if (dist < minDist)
             {
                 minDist = dist;
@@ -197,96 +365,22 @@ Servant* GameState::peekNextServant()
             }
         }
 
-        // Find the closest valid moves to the closest enemy unit
-        if (abs(closeLoc.x - baseLoc.x) + abs(closeLoc.y - baseLoc.y) > mov)
+        // Get a coordinate either adjacent to the nearest servant, or closest
+        // to the nearest servant.
+        Coordinate moveLocation = getAdjacentInRange(closeLoc, moves, true);
+
+        int i = 0;
+        while (i < moves.size())
         {
-            // If the Berserker cannot reach the enemy this turn...
-            Coordinate newLoc;
-            if (abs(closeLoc.y - baseLoc.y) <= mov)
-            {
-                // If the Berserker has enough movement to close the entire
-                // north-south distance...
-                // Move the Berserker up to the same y coordinate, and then
-                // move as close on the x coordinate as possible.
-                newLoc.y = closeLoc.y;
-                mov -= abs(closeLoc.y - baseLoc.y);
-                if (baseLoc.x < closeLoc.x)
-                {
-                    newLoc.x = baseLoc.x + mov;
-                }
-                else
-                {
-                    newLoc.x = baseLoc.x - mov;
-                }
-            }
+            if (moveLocation.x == moves[i].x && moveLocation.y == moves[i].y)
+                i++;
             else
-            {
-                // If the Berserker does NOT have enough movement to close the
-                // entire north-south distance...
-                // Move the Berserker as far as possible along the north-south
-                // distance.
-                if (baseLoc.y < closeLoc.y)
-                {
-                    newLoc.x = baseLoc.x;
-                    newLoc.y = baseLoc.y + mov;
-                }
-                else
-                {
-                    newLoc.x = baseLoc.x;
-                    newLoc.y = baseLoc.y - mov;
-                }
-            }
-            moves.push_back(newLoc);
+                moves.erase(moves.begin()+i);
         }
-        else
-        {
-            // If the Berserker CAN reach the enemy this turn...
-            // Get the four adjacent squares to the enemy and check which ones
-            // are closest.
-
-            Coordinate north, south, east, west;
-            north.x = closeLoc.x;
-            north.y = closeLoc.y + 1;
-
-            south.x = closeLoc.x;
-            south.y = closeLoc.y - 1;
-
-            east.x = closeLoc.x - 1;
-            east.y = closeLoc.y;
-
-            west.x = closeLoc.x + 1;
-            west.y = closeLoc.y;
-
-            northDist = abs(north.x - baseLoc.x) + abs(north.y - baseLoc.y);
-            southDist = abs(south.x - baseLoc.x) + abs(south.y - baseLoc.y);
-            eastDist = abs(east.x - baseLoc.x) + abs(east.y - baseLoc.y);
-            westDist = abs(west.x - baseLoc.x) + abs(west.y - baseLoc.y);
-
-            if (isValidCoordinate(north) && northDist < southDist &&
-                    northDist < eastDist && northDist < westDist)
-                moves.push_back(north);
-            else if (isValidCoordinate(south) && southDist < northDist &&
-                     southDist < eastDist && southDist < westDist)
-                moves.push_back(south);
-            else if (isValidCoordinate(east) && eastDist < northDist &&
-                     eastDist < southDist && eastDist < westDist)
-                moves.push_back(east);
-            else if (isValidCoordinate(west))
-                moves.push_back(west);
-            else
-                // Should never get here, since it means there's no valid
-                // adjacent space
-                moves.push_back(baseLoc);
-        }
-    }
-    else
-    {
-        moves.push_back(baseLoc);
-        // ***** TODO *****
     }
 
     return moves;
-}*/
+}
 
 vector<Servant*> GameState::getDead()
 {
@@ -319,30 +413,29 @@ int GameState::nextTurnState()
     switch(turnState)
     {
         case 0:
-            turnState++;
-            turnStateMove();
+            turnStatePreTurn();
             break;
         case 1:
-            turnState++;
-            turnStateChoseAction();
+            turnStateMove();
             break;
         case 2:
-            turnState++;
-            turnStateChoseTargets();
+            turnStateChoseAction();
             break;
         case 3:
-            turnState++;
-            turnStateApplyAction();
+            turnStateChoseTargets();
             break;
         case 4:
-            turnState++;
-            turnStateExtraMove();
+            turnStateApplyAction();
             break;
         case 5:
-            turnState++;
+            turnStateExtraMove();
+            break;
+        case 6:
             turnStatePostTurn();
             break;
         default:
+            // Shouldn't ever get here...
+            break;
     }
     return turnState;
 }
@@ -353,7 +446,7 @@ int GameState::prevTurnState()
     {
         case 2:
             turnState--;
-            currentServant->setLoc(servStart);
+            field->moveServant(currentServant, servStart);
             turnStateMove();
             break;
         case 3:
@@ -373,6 +466,8 @@ int GameState::prevTurnState()
             turnStateExtraMove();
             break;
         default:
+            // Shouldn't ever get here...
+            break;
     }
 
     return turnState;
@@ -385,14 +480,16 @@ int GameState::turnStatePreTurn()
     currentServant->decDebuffs();
 
     // Apply any relevant Debuffs, either that are on the Servant or the field.
+    // TODO: check if the debuff is a Dimensional Gate territory and do things
+    //       accordingly. Also check for the various Reality Marble effects.
     Debuff *tDebuff = field->getDebuffOnSpace(currentServant->getCurrLoc());
     if (tDebuff->getTargetTeam() == currentServant->getTeam())
     {
-        Debuff *newDebuff = (tDebuff->getDebuffName(),
-                             tDebuff->getDebuffDescrip(),
-                             tDebuff->getTargetTeam(),
-                             tDebuff->getDebuffStats(),
-                             tDebuff->getDebuffAmounts(), 1);
+        Debuff *newDebuff = new Debuff(tDebuff->getDebuffName(),
+                                       tDebuff->getDebuffDescrip(),
+                                       tDebuff->getTargetTeam(),
+                                       tDebuff->getDebuffStats(),
+                                       tDebuff->getDebuffAmounts(), 1);
         currentServant->addDebuff(newDebuff);
     }
     int hpSub = currentServant->getDebuffAmount(HP);
@@ -423,19 +520,36 @@ int GameState::turnStatePreTurn()
         // Make a new turnState that can handle this dialogue?
     }
 
+    // Get the valid moves for the servant
+    validMoves = getValidMoves(currentServant, currentServant->getMov());
+
     turnState++;
     return 0;
 }
 
 int GameState::turnStateMove()
 {
-    // move the player
-    //servStart = currentServant->getCurrLoc();
-    currentServant->setLoc(tSCoord);
-    servEnd = tSCoord;
+    // Verify that the clicked space is valid
+    bool isValid = false;
+    for (int i = 0; i < validMoves.size() && !isValid; i++)
+    {
+        if (validMoves[i].x == clickedX && validMoves[i].y == clickedY)
+            isValid = true;
+    }
+    if (!isValid)
+    {
+        // The selected space was not valid!
+        return 1;
+    }
+
+    servEnd.x = clickedX;
+    servEnd.y = clickedY;
 
     // Move the player on the Playing Field
-    servStart = field->moveServant(currentServant, tsCoord);
+    servStart = field->moveServant(currentServant, servEnd);
+
+    remainingMove = currentServant->getMov() -
+            (abs(servEnd.x - servStart.x) + abs(servEnd.y - servStart.y));
 
     // Display a list of possible actions at their location.
     actionList = currentServant->getActionList();
@@ -454,8 +568,7 @@ int GameState::turnStateChoseAction()
     if (chosenAction < 0)
         return 1;
 
-    // Verify that the chosen action is legitimate (i.e. isn't a noble phantasm
-    // that isn't available, player has enough MP)
+    // Verify that the player has enough MP
     int mpCost = currentServant->getActionMPCost(chosenAction);
     if (mpCost < currentServant->getCurrMP())
     {
@@ -503,14 +616,12 @@ int GameState::turnStateChoseAction()
 
     // If the action is targetting a dead servant, give the player a list of
     // dead servants to select from.
-    // TODO
     else if (chosenActionType == D)
     {
-
+        // TODO
     }
 
     // If the action does not have any targets then process it accordingly.
-    // TODO
     else
     {
         turnState = 4;
@@ -526,76 +637,246 @@ int GameState::turnStateChoseTargets()
 {
     // Ensure that the chosen targets are valid (?) and then call the apply
     // action turn state
-    // This turn state may not actually be necessary...
-    // TODO
     if (chosenActionType == S)
     {
-        //
+        // Ensure that the target space is within the selectionRange and has
+        // a servant; form a defender vector from the target servant
+        int servID = -1;
+        Coordinate target;
+        for (int i = 0; i < selectionRange.size() && servID == -1; i++)
+        {
+            if (selectionRange[i].x == clickedX &&
+                selectionRange[i].y == clickedY)
+            {
+                servID = i;
+                target.x = clickedX;
+                target.y = clickedY;
+            }
+        }
+        if (servID == -1) // not a valid selection!
+        {
+            return 1;
+        }
+
+        chosenDefenders.push_back(field->getServantOnSpace(target));
     }
     else if (chosenActionType == A)
     {
-        //
+        // Ensure the target space is within the selectionRange
+        bool found = false;
+        for (int i = 0; i < selectionRange.size() && !found; i++)
+        {
+            if (selectionRange[i].x == clickedX &&
+                selectionRange[i].y == clickedY)
+            {
+                found = true;
+                switch(i)
+                {
+                    case 0:
+                        chosenDirection = NORTH;
+                        break;
+                    case 1:
+                        chosenDirection = SOUTH;
+                        break;
+                    case 2:
+                        chosenDirection = EAST;
+                        break;
+                    case 3:
+                        chosenDirection = WEST;
+                        break;
+                    default:
+                        // we should never reach here!
+                        return 2;
+                        break;
+                }
+            }
+        }
+        if (!found) // not a valid selection!
+        {
+            return 1;
+        }
+
+        // Calculate the true selectionRange based on the direction
+        selectionRange = currentServant->getActionRange(chosenAction);
+        for (int i = 0; i < selectionRange.size(); i++)
+        {
+            int tempX = 0;
+            switch(chosenDirection)
+            {
+            case NORTH: // All ranges are defined in the NORTH direction, so
+                        // no need to do anything
+                break;
+            case SOUTH: // i.e. rotate 180 degrees
+                selectionRange[i].x *= -1;
+                selectionRange[i].y *= -1;
+                break;
+            case EAST: // i.e. rotate 90 degrees clockwise
+                tempX = selectionRange[i].x;
+                selectionRange[i].x = selectionRange[i].y;
+                selectionRange[i].y = tempX * -1;
+                break;
+            case WEST: // i.e. rotate 90 degrees counterclockwise
+                tempX = selectionRange[i].x;
+                selectionRange[i].x = selectionRange[i].y * -1;
+                selectionRange[i].y = tempX;
+                break;
+            default:
+                // We should never reach here!
+                return 3;
+            }
+        }
+
+        // get all Servants in that range and form a defender vector from that
+        // list
+        chosenDefenders = field->getAllInRange(currentServant, selectionRange);
     }
     else if (chosenActionType == D)
     {
-        //
+        // TODO
+        // Verify the selection
+
+        // form a defender vector from the selection
     }
     else
     {
-        // Why are we here??
-        return 1;
+        // Why are we here?? We should never be here.
+        return 666;
     }
 
+    turnState++;
+    turnStateApplyAction();
     return 0;
 }
 
 int GameState::turnStateApplyAction()
 {
     // Apply the chosen action to the chosen targets.
-    // TODO
+    int ret = currentServant->doAction(chosenAction, chosenDefenders);
+    if (ret != 0)
+    {
+        // Something went wrong! Return now.
+        return ret;
+    }
 
     // If the Servant is a Rider, allow them to move again.
     // TODO
+    if (currentServant->getClass() == Rider)
+    {
+        // Get the valid moves for the servant
+        validMoves = getValidMoves(currentServant, remainingMove);
+        turnState++;
+        return 0;
+    }
 
     // If the Servant is an Archer, check against their LUK if they get a
     // second turn. If they do, set archerSecondTurn to true and go back to
     // the beginning move turn state. If archerSecondTurn is already true then
     // end the Servant's turn.
     // TODO
+    else if (currentServant->getClass() == Archer && !archerSecondTurn)
+    {
+        //
+        int r = currentServant->getRandNum();
+        if (r <= currentServant->getLuk())
+        {
+            archerSecondTurn = true;
+            turnState = 0;
+            validMoves = getValidMoves(currentServant, currentServant->getMov());
+        }
+        turnState++;
+        return 0;
+    }
 
     // End the non-Rider turn by calling the Post-turn turn state.
-    // TODO
-
-    return 0;
+    else
+    {
+        turnState += 2;
+        turnStatePostTurn();
+        return 0;
+    }
 }
 
 int GameState::turnStateExtraMove()
 {
-    // move the player
-    servStart = currentServant->getCurrLoc();
-    currentServant->setLoc(tSCoord);
-    servEnd = tSCoord;
+    // Verify that the clicked space is valid
+    bool isValid = false;
+    for (int i = 0; i < validMoves.size() && !isValid; i++)
+    {
+        if (validMoves[i].x == clickedX && validMoves[i].y == clickedY)
+            isValid = true;
+    }
+    if (!isValid)
+    {
+        // The selected space was not valid!
+        return 1;
+    }
+
+    servEnd.x = clickedX;
+    servEnd.y = clickedY;
 
     // Move the player on the Playing Field
-    // TODO
+    servStart = field->moveServant(currentServant, servEnd);
+
+    // TODO: Display it somehow?? Have a gui method parse the action list?
 
     // End the turn by calling the Post-turn turn state.
-    // TODO
-
+    turnState++;
+    turnStatePostTurn();
     return 0;
 }
 
+// If this function returns 1000, then team Alpha is dead. If it returns 1001,
+// team Omegaa is dead. If it returns 1002, team Boss is dead.
 int GameState::turnStatePostTurn()
 {
-    // Check if the player's target location has any relevant debuffs and apply
-    // them.
-    // TODO
+    int returnValue = 0;
 
     // Check if anyone has died and modify the death list accordingly.
-    // TODO
+    for (int i = 0; i < turnOrder.size(); i++)
+    {
+        if (turnOrder[i]->getCurrHP() <= 0)
+        {
+            addDead(turnOrder[i]);
+        }
+    }
+
+    // Check if any of the teams have died.
+    for (int i = 0; i < activeTeams.size(); i++)
+    {
+        if (isTeamDead(activeTeams[i]))
+        {
+            if (activeTeams[i] == Alpha)
+                returnValue = 1000;
+            else if (activeTeams[i] == Omega)
+                returnValue = 1001;
+            else
+                returnValue = 1002;
+        }
+    }
 
     // Reset the turnState and all relevant variables and get the next Servant.
-    // TODO
+    resetTurnValues();
 
-    return 0;
+    currentServant = getNextServant();
+
+    return returnValue;
+}
+
+void GameState::resetTurnValues()
+{
+    turnState = 0;
+    clickedX = clickedY = 0;
+    servStart.x = servStart.y = servEnd.x = servEnd.y = 0;
+    chosenAction = 0;
+    chosenActionType = S;
+    chosenDirection = NORTH;
+    remainingMove = 0;
+    archerSecondTurn = false;
+
+    chosenDefenders.clear();
+    selectionRange.clear();
+    validMoves.clear();
+    actionList.clear();
+    actionListTypes.clear();
+    actionMPCosts.clear();
 }

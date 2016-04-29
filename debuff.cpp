@@ -35,6 +35,12 @@ int Debuff::decrementTurnsRemaining()
     return turnsRemaining;
 }
 
+int Debuff::setTurnsRemaining(int tr)
+{
+    turnsRemaining = tr;
+    return turnsRemaining;
+}
+
 //***** Retrievers *****
 string Debuff::getDebuffName()
 {

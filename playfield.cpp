@@ -53,25 +53,57 @@ PlayField::PlayField(int l, int w, vector<Servant *> servantList,
 /***** Active Functions *****/
 Coordinate PlayField::moveServant(Servant *s, Coordinate c)
 {
-    field[s->getCurrLoc().x][s->getCurrLoc().y] = NULL;
+    Coordinate oldLoc = s->getCurrLoc();
+
+    field[oldLoc.x][oldLoc.y] = NULL;
     field[c.x][c.y] = s;
 
-    Coordinate oldLoc = s->getCurrLoc();
     s->setLoc(c);
 
     return oldLoc;
 }
 
-void PlayField::startRealityMarble(Servant *owner)
+void PlayField::startRealityMarble(Servant *owner, Debuff* rm)
 {
     realityMarbleOn = true;
     rmServant = owner;
+
+    for (int i = 0; i < tempEffects.size(); i++)
+    {
+        for(int j = 0; j < tempEffects[i].size(); j++)
+        {
+            tempEffects[i][j] = rm;
+        }
+    }
 }
 
 void PlayField::endRealityMarble()
 {
     realityMarbleOn = false;
     rmServant = NULL;
+
+    for (int i = 0; i < tempEffects.size(); i++)
+    {
+        for(int j = 0; j < tempEffects[i].size(); j++)
+        {
+            tempEffects[i][j] = NULL;
+        }
+    }
+}
+
+void PlayField::eraseTerritory(string n)
+{
+    for (int i = 0; i < tempEffects.size(); i++)
+    {
+        for(int j = 0; j < tempEffects[i].size(); j++)
+        {
+            if (tempEffects[i][j] != NULL &&
+                tempEffects[i][j]->getDebuffDescrip().compare(n) == 0)
+            {
+                tempEffects[i][j] = NULL;
+            }
+        }
+    }
 }
 
 /***** Retrievers *****/

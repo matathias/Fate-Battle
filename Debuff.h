@@ -19,6 +19,7 @@ class Debuff
         int getTurnsRemaining();
         
         int decrementTurnsRemaining(); // Returns the number of turns remaining
+        int setTurnsRemaining(int tr);
     
     protected:
         // If a Debuff represents a Territory then its name will simply be

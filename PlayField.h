@@ -27,8 +27,9 @@ class PlayField
         Servant* realityMarbleServant(); // returns null if there is no active
                                          // reality marble
 
-        void startRealityMarble(Servant* owner);
+        void startRealityMarble(Servant* owner, Debuff* rm);
         void endRealityMarble();
+        void eraseTerritory(string n);
         
         bool doesSpaceHaveServant(Coordinate c);
         vector<Coordinate> pruneRange(vector<Coordinate> range);

@@ -6,7 +6,6 @@
 
 using namespace std;
 
-enum Direction {NORTH, SOUTH, EAST, WEST};
 
 class GameState
 {
@@ -20,7 +19,18 @@ class GameState
         Servant* getNextServant();
         Servant* peekNextServant();
 
-        vector<Coordinate> getValidMoves(Servant* s);
+        vector<Coordinate> getValidMoves(Servant* s, int moveRange);
+        vector<Coordinate> getFullMoveRange(Servant* s, int moveRange);
+        vector<Coordinate> getAdjacentSpaces(Coordinate c);
+
+        // If c is not adjacent to any space in range and getClosest is false,
+        // the returned coordinate will have x = y = -1.
+        // If c is not adjacent to any space in range and getClosest is true,
+        // the returned coordinate will be the coordinate in range that is
+        // closest to c.
+        // Otherwise, returns a coordinate in range adjacent to c.
+        Coordinate getAdjacentInRange(Coordinate c, vector<Coordinate> range,
+                                      bool getClosest);
 
         // Ensures that a registered click on the gameboard is meaningful and
         // valid. nextTurnState should be called from here.
@@ -56,6 +66,8 @@ class GameState
         int turnStateExtraMove();
         int turnStatePostTurn(); // Post Turn is also responsible for resetting
                                  // the turn state and getting the next Servant
+
+        void resetTurnValues();
     
     protected:
         vector<Servant*> turnOrder; // Contains servant pointers in turn order.
@@ -69,6 +81,8 @@ class GameState
         vector<Servant*> alphaTeam;
         vector<Servant*> omegaTeam;
         vector<Servant*> bossTeam;
+
+        vector<Team> activeTeams;
         
         PlayField* field;
 
@@ -84,7 +98,6 @@ class GameState
         // 6: End of turn. Do all post-turn processing before getting next
         //    Servant and setting turnState back to 1.
         int turnState;
-        Coordinate tSCoord;
 
         int clickedX;
         int clickedY;
@@ -96,9 +109,11 @@ class GameState
         int chosenAction;
         ActionType chosenActionType;
         Direction chosenDirection;
+        vector<Servant*> chosenDefenders;
         int remainingMove;
 
         vector<Coordinate> selectionRange;
+        vector<Coordinate> validMoves;
 
         vector<string> actionList;
         vector<ActionType> actionListTypes;
