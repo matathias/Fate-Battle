@@ -86,6 +86,11 @@ void Servant::setLoc(Coordinate newLoc)
 }
 
 //***** Retrievers *****
+string Servant::getName()
+{
+    return name;
+}
+
 // Stat Retrievers
 int Servant::getMaxHP()
 {

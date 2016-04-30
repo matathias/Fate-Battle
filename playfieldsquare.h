@@ -10,7 +10,7 @@
 class PlayFieldSquare : public QGraphicsItem
 {
 public:
-    PlayFieldSquare(/*GameState *gs,*/ const QColor &color, int x, int y);
+    PlayFieldSquare(GameState *gs, const QColor &color, int x, int y);
 
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     QPainterPath shape() const Q_DECL_OVERRIDE;

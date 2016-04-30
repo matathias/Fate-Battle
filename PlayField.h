@@ -36,6 +36,11 @@ class PlayField
         vector<Servant*> getAllInRange(Servant* s, vector<Coordinate> range);
         Servant* getServantOnSpace(Coordinate c);
         Debuff* getDebuffOnSpace(Coordinate c);
+
+        int getFieldLength();
+        int getFieldWidth();
+
+        Coordinate getRandomCoord();
         
     protected:
         int length;

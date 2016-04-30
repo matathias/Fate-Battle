@@ -18,6 +18,8 @@ class GameState
         
         Servant* getNextServant();
         Servant* peekNextServant();
+        Servant* getCurrentServant();
+        string getCurrentServantType();
 
         vector<Coordinate> getValidMoves(Servant* s, int moveRange);
         vector<Coordinate> getFullMoveRange(Servant* s, int moveRange);
@@ -35,6 +37,11 @@ class GameState
         // Ensures that a registered click on the gameboard is meaningful and
         // valid. nextTurnState should be called from here.
         bool isValidAction(Coordinate c);
+
+        // Returns the actionList material so it can be displayed.
+        vector<string> getActionList();
+        vector<ActionType> getActionListType();
+        vector<int> getActionMPCosts();
 
         vector<Servant*> getDead();
         void addDead(Servant* s);
@@ -54,6 +61,9 @@ class GameState
         int nextTurnState();
         int prevTurnState();
 
+        int getFieldWidth();
+        int getFieldLength();
+
         void setClickedX(int x);
         void setClickedY(int y);
 
@@ -69,6 +79,8 @@ class GameState
                                  // the turn state and getting the next Servant
 
         void resetTurnValues();
+
+        vector<string> getEventLog();
     
     protected:
         vector<Servant*> turnOrder; // Contains servant pointers in turn order.
@@ -121,4 +133,7 @@ class GameState
         vector<int> actionMPCosts;
 
         bool archerSecondTurn;
+
+        // Keep track of events as they happen
+        vector<string> eventLog;
 };

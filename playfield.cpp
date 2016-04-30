@@ -182,3 +182,29 @@ Debuff* PlayField::getDebuffOnSpace(Coordinate c)
 {
     return tempEffects[c.x][c.y];
 }
+
+Coordinate PlayField::getRandomCoord()
+{
+    bool validCoord = false;
+    Coordinate ret;
+    while (!validCoord)
+    {
+        ret.x = rand() % width;
+        ret.y = rand() % length;
+
+        if (field[ret.x][ret.y] == NULL)
+            validCoord = true;
+    }
+
+    return ret;
+}
+
+int PlayField::getFieldLength()
+{
+    return length;
+}
+
+int PlayField::getFieldWidth()
+{
+    return width;
+}

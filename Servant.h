@@ -24,6 +24,8 @@ class Servant
         void subHP(int hp, DamageType dt);
         void subMP(int mp);
         
+        string getName();
+
         int getMaxHP();
         int getCurrHP();
         int getMaxMP();

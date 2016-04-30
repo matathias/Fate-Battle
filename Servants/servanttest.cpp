@@ -40,6 +40,7 @@ ServantTest::ServantTest(int as, Team t) : Servant(as, t)
     hiRange = 1;
 
     clss = Saber;
+    name = "Saber Test";
 
     vector<string> actions;
     actions.push_back("1: Attack");

@@ -229,6 +229,17 @@ Servant* GameState::peekNextServant()
     return turnOrder[index];
 }
 
+Servant* GameState::getCurrentServant()
+{
+    return currentServant;
+}
+
+// Get the servant's class and weapon and return a string with both
+string GameState::getCurrentServantType()
+{
+    return currentServant->getName();
+}
+
 // Returns the four adjacent spaces to c.
 // If a space is out of bounds or occupied it is not included.
 vector<Coordinate> GameState::getAdjacentSpaces(Coordinate c)
@@ -413,6 +424,21 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
     return moves;
 }
 
+vector<string> GameState::getActionList()
+{
+    return actionList;
+}
+
+vector<ActionType> GameState::getActionListType()
+{
+    return actionListType;
+}
+
+vector<int> GameState::getActionMPCosts()
+{
+    return actionMPCosts;
+}
+
 vector<Servant*> GameState::getDead()
 {
     return dead;
@@ -462,6 +488,16 @@ vector<Servant*> GameState::getEnemyTeam(Servant *s)
     }
 
     return enemies;
+}
+
+int GameState::getFieldLength()
+{
+    return field->getFieldLength();
+}
+
+int GameState::getFieldWidth()
+{
+    return field->getFieldWidth();
 }
 
 /* All functions having to do with the turn state */
@@ -547,6 +583,12 @@ int GameState::turnStatePreTurn()
     Debuff *tDebuff = field->getDebuffOnSpace(currentServant->getCurrLoc());
     if (tDebuff->getTargetTeam() == currentServant->getTeam())
     {
+        // Check if the Debuff is a special Territory or a Reality Marble and
+        // act on the current servant accordingly. Otherwise, just add the
+        // debuff to the servant's debuff list with a turns remaining value of
+        // 1.
+        // TODO
+
         Debuff *newDebuff = new Debuff(tDebuff->getDebuffName(),
                                        tDebuff->getDebuffDescrip(),
                                        tDebuff->getTargetTeam(),
@@ -697,6 +739,10 @@ int GameState::turnStateChoseAction()
 
 int GameState::turnStateChoseTargets()
 {
+    // TODO:
+    // ASK THE PLAYER IF THEY ARE SURE THEY WANT TO TO THIS ACTION (also show
+    //    relevant stats like chance of hitting, how much damage would be done
+    //    or received, etc.)
     // Ensure that the chosen targets are valid (?) and then call the apply
     // action turn state
     if (chosenActionType == S)
@@ -941,4 +987,9 @@ void GameState::resetTurnValues()
     actionList.clear();
     actionListTypes.clear();
     actionMPCosts.clear();
+}
+
+vector<string> GameState::getEventLog()
+{
+    return eventLog;
 }

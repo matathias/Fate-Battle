@@ -3,12 +3,12 @@
 #include <QtWidgets>
 #include <iostream>
 
-PlayFieldSquare::PlayFieldSquare(/*GameState *gs,*/ const QColor &color, int x, int y)
+PlayFieldSquare::PlayFieldSquare(GameState *gs, const QColor &color, int x, int y)
 {
     this->x = x;
     this->y = y;
     this->color = color;
-    //this->gState = gs;
+    this->gState = gs;
     setZValue((x + y) % 2);
 
     setFlags(ItemIsSelectable);

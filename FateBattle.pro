@@ -84,7 +84,8 @@ HEADERS  += mainwindow.h \
     playfieldsquare.h \
     view.h \
     datatypes.h \
-    Servants/servanttest.h
+    Servants/servanttest.h \
+    allservants.h
 
 FORMS    += mainwindow.ui
 
@@ -94,4 +95,5 @@ RESOURCES += \
 DISTFILES += \
     qt4logo.png \
     zoomin.png \
-    zoomout.png
+    zoomout.png \
+    ServantIcons/SaberTest.png
