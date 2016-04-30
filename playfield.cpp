@@ -175,12 +175,18 @@ Servant* PlayField::realityMarbleServant()
 
 Servant* PlayField::getServantOnSpace(Coordinate c)
 {
-    return field[c.x][c.y];
+    if (c.x >= 0 && c.x < width && c.y >= 0 && c.y < length)
+        return field[c.x][c.y];
+    else
+        return NULL;
 }
 
 Debuff* PlayField::getDebuffOnSpace(Coordinate c)
 {
-    return tempEffects[c.x][c.y];
+    if (c.x >= 0 && c.x < width && c.y >= 0 && c.y < length)
+        return tempEffects[c.x][c.y];
+    else
+        return NULL;
 }
 
 Coordinate PlayField::getRandomCoord()

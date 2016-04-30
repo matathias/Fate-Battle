@@ -3,16 +3,40 @@
 #include <QtWidgets>
 #include <iostream>
 
-PlayFieldSquare::PlayFieldSquare(GameState *gs, const QColor &color, int x, int y)
+PlayFieldSquare::PlayFieldSquare(GameState *gs, const QColor &color, int x,
+                                 int y, string path, MainWindow *mw)
 {
     this->x = x;
     this->y = y;
     this->color = color;
     this->gState = gs;
+    window = mw;
     setZValue((x + y) % 2);
+
+    if (path != "")
+    {
+        QString p = QString::fromStdString(path);
+        pic.load(p);
+    }
 
     setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
+}
+
+int PlayFieldSquare::getX()
+{
+    return x;
+}
+
+int PlayFieldSquare::getY()
+{
+    return y;
+}
+
+void PlayFieldSquare::setPath(string p)
+{
+    QString pa = QString::fromStdString(p);
+    pic.load(pa);
 }
 
 QRectF PlayFieldSquare::boundingRect() const
@@ -32,7 +56,9 @@ void PlayFieldSquare::changeColor(const QColor &color)
     this->color = color;
 }
 
-void PlayFieldSquare::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void PlayFieldSquare::paint(QPainter *painter,
+                            const QStyleOptionGraphicsItem *option,
+                            QWidget *widget)
 {
     Q_UNUSED(widget);
 
@@ -51,6 +77,10 @@ void PlayFieldSquare::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->setBrush(QBrush(fillColor.dark(option->state & QStyle::State_Sunken ? 120 : 100)));
 
     painter->drawRect(QRect(0, 0, 100, 100));
+    if (!pic.isNull())
+    {
+        painter->drawPixmap(QRect(0,0,100,100), pic);
+    }
     painter->setBrush(b);
 }
 
@@ -75,7 +105,29 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseReleaseEvent(event);
     // on mouse release, send (x,y) to game class to handle the click
     // divide x,y by grid size to obtain grid coordinate, then do stuff
-    QPointF loc = event->lastScenePos();
-    std::cout << loc.x() / 100 << " " << loc.y() / 100 << "\n";
+    std::cout << x << " " << y << "\n" << std::flush;
+    gState->setClickedX(x);
+    gState->setClickedY(y);
+    int result = 1000;
+    if (gState->getTurnState() == 1)
+        result = gState->turnStateMove();
+    else if (gState->getTurnState() == 3)
+        result = gState->turnStateChoseTargets();
+    else if (gState->getTurnState() == 5)
+        result = gState->turnStateExtraMove();
+
+    if (result == 1)
+    {
+        gState->addToEventLog("Invalid space selection!");
+    }
+    else if (result != 0 && result != 1000)
+    {
+        gState->addToEventLog("An Error occurred??");
+    }
+    else if (result == 0)
+    {
+        window->reColorScene();
+    }
+
     update();
 }

@@ -4,12 +4,16 @@
 #include "view.h"
 #include "ui_mainwindow.h"
 #include "Servants/servanttest.h"
+#include "playfieldsquare.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QListView>
+#include <iostream>
+
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent)//,
@@ -26,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     startGameState();
     populateScene(gs->getFieldWidth(), gs->getFieldLength());
+    //connect(this, SIGNAL(eventLogUpdated()), this, SLOT(redrawEverything()));
 }
 
 MainWindow::~MainWindow()
@@ -33,8 +38,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+GameState *MainWindow::getGameState()
+{
+    return gs;
+}
+
 void MainWindow::mainSetup()
 {
+    clearLayout(layout());
+    delete layout();
+
     // Setup the play field display
     View *gameField = new View("Game Field");
     gameField->view()->setScene(scene);
@@ -180,6 +193,75 @@ void MainWindow::mainSetup()
 
     /* Servant Action List Widget */
     // TODO (use radio buttons?)
+    QVBoxLayout *actionList = new QVBoxLayout;
+    vector<string> actList = gs->getActionList();
+    vector<ActionType> actListType = gs->getActionListType();
+    vector<int> actListCost = gs->getActionMPCosts();
+
+    for (int i = 0; i < actList.size(); i++)
+    {
+        QString text = QString::fromStdString(actList[i] + " MP Cost: " +
+                                              to_string(actListCost[i]));
+        switch(i)
+        {
+            case 0:
+                button1 = new QRadioButton(text, this);
+                connect(button1, SIGNAL(clicked()), this, SLOT(but1()));
+                actionList->addWidget(button1);
+                break;
+            case 1:
+                button2 = new QRadioButton(text, this);
+                connect(button2, SIGNAL(clicked()), this, SLOT(but2()));
+                actionList->addWidget(button2);
+                break;
+            case 2:
+                button3 = new QRadioButton(text, this);
+                connect(button3, SIGNAL(clicked()), this, SLOT(but3()));
+                actionList->addWidget(button3);
+                break;
+            case 3:
+                button4 = new QRadioButton(text, this);
+                connect(button4, SIGNAL(clicked()), this, SLOT(but4()));
+                actionList->addWidget(button4);
+                break;
+            case 4:
+                button5 = new QRadioButton(text, this);
+                connect(button5, SIGNAL(clicked()), this, SLOT(but5()));
+                actionList->addWidget(button5);
+                break;
+            case 5:
+                button6 = new QRadioButton(text, this);
+                connect(button6, SIGNAL(clicked()), this, SLOT(but6()));
+                actionList->addWidget(button6);
+                break;
+            case 6:
+                button7 = new QRadioButton(text, this);
+                connect(button7, SIGNAL(clicked()), this, SLOT(but7()));
+                actionList->addWidget(button7);
+                break;
+            case 7:
+                button8 = new QRadioButton(text, this);
+                connect(button8, SIGNAL(clicked()), this, SLOT(but8()));
+                actionList->addWidget(button8);
+                break;
+            case 8:
+                button9 = new QRadioButton(text, this);
+                connect(button9, SIGNAL(clicked()), this, SLOT(but9()));
+                actionList->addWidget(button9);
+                break;
+            default:
+                // there's an extra action?? there shouldn't be!
+                break;
+        }
+    }
+
+    QLabel *a = new QLabel(this);
+    a->setText("---- Actions ----");
+    a->setAlignment(Qt::AlignCenter);
+
+    QVBoxLayout *wholeActionList = new QVBoxLayout;
+    wholeActionList->addWidget(a);
+    wholeActionList->addLayout(actionList);
 
     /* Event Log Widget */
     vector<string> eL = gs->getEventLog();
@@ -213,19 +295,20 @@ void MainWindow::mainSetup()
     layout2->addWidget(quitButton);
     layout2->addWidget(gameField);
 
-    QVBoxLayout *layout4 = new QVBoxLayout;
-    layout4->addWidget(nextServ);
-    layout4->addWidget(evLogWid);
+    QVBoxLayout *rightMost = new QVBoxLayout;
+    rightMost->addWidget(nextServ);
+    rightMost->addLayout(wholeActionList);
+    rightMost->addWidget(evLogWid);
 
     QHBoxLayout *playerInformation = new QHBoxLayout;
     playerInformation->addLayout(nameIcon);
-    playerInformation->addLayout(layout4);
+    playerInformation->addLayout(rightMost);
 
-    QHBoxLayout *layout3 = new QHBoxLayout;
-    layout3->addLayout(layout2);
-    layout3->addLayout(playerInformation);
+    mainLayout = new QHBoxLayout;
+    mainLayout->addLayout(layout2);
+    mainLayout->addLayout(playerInformation);
 
-    setLayout(layout3);
+    setLayout(mainLayout);
 
 
     setWindowTitle(tr("Final Fate / Emblem of the Holy Grail"));
@@ -235,36 +318,159 @@ void MainWindow::populateScene(int w, int l)
 {
     scene = new QGraphicsScene;
 
-    QImage image(":/qt4logo.png");
-
     // Populate scene
     int xx = 0;
     int nitems = 0;
     for (int i = 0; i < 100 * w; i += 100) {
-        ++xx;
         int yy = 0;
         for (int j = 0; j < 100 * l; j += 100) {
-            ++yy;
-            qreal x = (i + 11000) / 22000.0;
-            qreal y = (j + 7000) / 14000.0;
 
-            QColor color(image.pixel(int(image.width() * x), int(image.height() * y)));
-            //QColor color(0,0,200,255);
             // Determine the item's color based on whether or not a Servant is
             // there, and on what selection the player is currently making
             //     If Servant: show Servant Icon
             //     If No selection: gray
             //     If Selection for move: blue
             //     If selection for attack: red
-            QGraphicsItem *item = new PlayFieldSquare(gs, color, xx, yy);
+            int red = 150;
+            int green = 150;
+            int blue = 150;
+            if (gs->getTurnState() == 3 && gs->isSpaceSelection(xx,yy))
+            {
+                red = 255;
+            }
+            else if ((gs->getTurnState() == 1 || gs->getTurnState() == 5) &&
+                     gs->isSpaceMove(xx,yy))
+            {
+                blue = 255;
+            }
+            else if (gs->isSpaceRealityMarble(xx,yy))
+            {
+                green = 0;
+                blue = 0;
+            }
+            else if (gs->isSpaceDebuff(xx,yy))
+            {
+                Team spaceTeam = gs->spaceDebuffTeam(xx,yy);
+                if (spaceTeam == Alpha)
+                {
+                    blue = 100;
+                    red = 0;
+                    green = 0;
+                }
+                else if (spaceTeam == Omega)
+                {
+                    red = 100;
+                    blue = 0;
+                    green = 0;
+                }
+                else
+                {
+                    red = 0;
+                    green = 100;
+                    blue = 0;
+                }
+            }
+            string imgPath = "";
+            Servant* spaceServ = gs->isSpaceServant(xx,yy);
+            if (spaceServ != NULL)
+            {
+                imgPath = "../FateBattle/ServantIcons/" + spaceServ->getName()
+                          + ".png";
+            }
+            QColor color(red, green, blue, 255);
+            QGraphicsItem *item = new PlayFieldSquare(gs, color, xx, yy,
+                                                      imgPath, this);
+
             item->setPos(QPointF(i, j));
             scene->addItem(item);
 
             ++nitems;
+            ++yy;
         }
+        ++xx;
     }
 
     mainSetup();
+}
+
+void MainWindow::reColorScene()
+{
+    // Get the items in the scene
+    QList<QGraphicsItem*> allItems = scene->items();
+    for (int i = 0; i < allItems.size(); i++)
+    {
+        PlayFieldSquare* temp = dynamic_cast<PlayFieldSquare*>(allItems[i]);
+        int x = temp->getX();
+        int y = temp->getY();
+
+        int red = 150;
+        int green = 150;
+        int blue = 150;
+        if (gs->getTurnState() == 3 && gs->isSpaceSelection(x,y))
+        {
+            red = 255;
+        }
+        else if ((gs->getTurnState() == 1 || gs->getTurnState() == 5) &&
+                 gs->isSpaceMove(x,y))
+        {
+            blue = 255;
+        }
+        else if (gs->isSpaceRealityMarble(x,y))
+        {
+            green = 0;
+            blue = 0;
+        }
+        else if (gs->isSpaceDebuff(x,y))
+        {
+            Team spaceTeam = gs->spaceDebuffTeam(x,y);
+            if (spaceTeam == Alpha)
+            {
+                blue = 100;
+                red = 0;
+                green = 0;
+            }
+            else if (spaceTeam == Omega)
+            {
+                red = 100;
+                blue = 0;
+                green = 0;
+            }
+            else
+            {
+                red = 0;
+                green = 100;
+                blue = 0;
+            }
+        }
+        string imgPath = "";
+        Servant* spaceServ = gs->isSpaceServant(x,y);
+        if (spaceServ != NULL)
+        {
+            imgPath = "../FateBattle/ServantIcons/" + spaceServ->getName()
+                      + ".png";
+        }
+        QColor color(red, green, blue, 255);
+        temp->changeColor(color);
+        temp->setPath(imgPath);
+    }
+
+    mainSetup();
+}
+
+void MainWindow::clearLayout(QLayout *layout)
+{
+    QLayoutItem *item;
+    while(layout != NULL && (item = layout->takeAt(0)))
+    {
+        if (item->layout()) {
+            clearLayout(item->layout());
+            //delete item->layout();
+        }
+
+        delete item->widget();
+
+        delete item;
+    }
 }
 
 void MainWindow::open()
@@ -288,7 +494,6 @@ void MainWindow::open()
 
 void MainWindow::quit()
 {
-    //
     QMessageBox messageBox;
     messageBox.setWindowTitle(tr("Final Fate"));
     messageBox.setText(tr("Do you really want to quit?"));
@@ -298,9 +503,150 @@ void MainWindow::quit()
         qApp->quit();
 }
 
-void MainWindow::startGameState()
+void MainWindow::but1()
+{
+    gs->setChosenAction(0);
+    int result = gs->turnStateChoseAction();
+
+    if (result == 10)
+        gs->addToEventLog("Cannot choose action at this moment.");
+    else if (result == 1)
+        gs->addToEventLog("Invalid choice.");
+    else if (result == 2)
+        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+
+    mainSetup();
+}
+void MainWindow::but2()
+{
+    gs->setChosenAction(1);
+    int result = gs->turnStateChoseAction();
+
+    if (result == 10)
+        gs->addToEventLog("Cannot choose action at this moment.");
+    else if (result == 1)
+        gs->addToEventLog("Invalid choice.");
+    else if (result == 2)
+        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+
+    mainSetup();
+}
+void MainWindow::but3()
+{
+    gs->setChosenAction(2);
+    int result = gs->turnStateChoseAction();
+
+    if (result == 10)
+        gs->addToEventLog("Cannot choose action at this moment.");
+    else if (result == 1)
+        gs->addToEventLog("Invalid choice.");
+    else if (result == 2)
+        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+
+    mainSetup();
+}
+void MainWindow::but4()
+{
+    gs->setChosenAction(3);
+    int result = gs->turnStateChoseAction();
+
+    if (result == 10)
+        gs->addToEventLog("Cannot choose action at this moment.");
+    else if (result == 1)
+        gs->addToEventLog("Invalid choice.");
+    else if (result == 2)
+        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+
+    mainSetup();
+}
+void MainWindow::but5()
+{
+    gs->setChosenAction(4);
+    int result = gs->turnStateChoseAction();
+
+    if (result == 10)
+        gs->addToEventLog("Cannot choose action at this moment.");
+    else if (result == 1)
+        gs->addToEventLog("Invalid choice.");
+    else if (result == 2)
+        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+
+    mainSetup();
+}
+void MainWindow::but6()
+{
+    gs->setChosenAction(5);
+    int result = gs->turnStateChoseAction();
+
+    if (result == 10)
+        gs->addToEventLog("Cannot choose action at this moment.");
+    else if (result == 1)
+        gs->addToEventLog("Invalid choice.");
+    else if (result == 2)
+        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+
+    mainSetup();
+}
+void MainWindow::but7()
+{
+    gs->setChosenAction(6);
+    int result = gs->turnStateChoseAction();
+
+    if (result == 10)
+        gs->addToEventLog("Cannot choose action at this moment.");
+    else if (result == 1)
+        gs->addToEventLog("Invalid choice.");
+    else if (result == 2)
+        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+
+    mainSetup();
+}
+void MainWindow::but8()
+{
+    gs->setChosenAction(7);
+    int result = gs->turnStateChoseAction();
+
+    if (result == 10)
+        gs->addToEventLog("Cannot choose action at this moment.");
+    else if (result == 1)
+        gs->addToEventLog("Invalid choice.");
+    else if (result == 2)
+        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+
+    mainSetup();
+}
+void MainWindow::but9()
+{
+    gs->setChosenAction(8);
+    int result = gs->turnStateChoseAction();
+
+    if (result == 10)
+        gs->addToEventLog("Cannot choose action at this moment.");
+    else if (result == 1)
+        gs->addToEventLog("Invalid choice.");
+    else if (result == 2)
+        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+
+    mainSetup();
+}
+
+void MainWindow::endTurn()
 {
     //
+}
+
+void MainWindow::cancelAction()
+{
+    //
+}
+
+void MainWindow::redrawEverything()
+{
+    populateScene(gs->getFieldWidth(), gs->getFieldLength());
+}
+
+void MainWindow::startGameState()
+{
     Servant *first = new ServantTest(1, Alpha);
     Servant *second = new ServantTest(1, Omega);
 
@@ -315,4 +661,10 @@ void MainWindow::restartGameState(vector<string> team1, vector<string> team2,
                                   Team t1, Team t2, int ascensionLvl)
 {
     //
+}
+
+void MainWindow::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    //
+    cout << "test??\n" << std::flush;
 }

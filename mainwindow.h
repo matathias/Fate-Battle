@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include "playfieldsquare.h"
 #include "GameState.h"
 
 #include <QWidget>
@@ -13,6 +12,10 @@
 #include <QLabel>
 #include <QTableView>
 #include <QList>
+#include <QRadioButton>
+#include <QLayout>
+#include <QGraphicsSceneEvent>
+#include <typeinfo>
 
 QT_BEGIN_NAMESPACE
 class QGraphicsScene;
@@ -31,10 +34,30 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void populateScene(int x, int y);
+    void reColorScene();
+    GameState *getGameState();
+
+protected:
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private slots:
     void open();
     void quit();
+
+    void but1();
+    void but2();
+    void but3();
+    void but4();
+    void but5();
+    void but6();
+    void but7();
+    void but8();
+    void but9();
+
+    void endTurn();
+    void cancelAction();
+
+    void redrawEverything();
 
 private:
     Ui::MainWindow *ui;
@@ -46,6 +69,9 @@ private:
 
     void mainSetup();
     void initialSetup();
+
+    void clearLayout(QLayout *l);
+    int eventLogSize;
 
     QGraphicsScene *scene;
 
@@ -59,10 +85,22 @@ private:
     QLabel *icon;
     QLabel *nextServ;
 
+    QRadioButton *button1;
+    QRadioButton *button2;
+    QRadioButton *button3;
+    QRadioButton *button4;
+    QRadioButton *button5;
+    QRadioButton *button6;
+    QRadioButton *button7;
+    QRadioButton *button8;
+    QRadioButton *button9;
+
     QTableView *statsTable1;
     QTableView *statsTable2;
     QTableView *statsTable3;
     QTableView *debuffTable;
+
+    QHBoxLayout *mainLayout;
 
     GameState *gs;
 };

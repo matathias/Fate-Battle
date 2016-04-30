@@ -10,6 +10,8 @@
 
 #include "GameState.h"
 #include <cmath>
+#include <iostream>
+
 using namespace std;
 
 /********** Function Definitions **********/
@@ -99,6 +101,7 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
     field = new PlayField(l, w, turnOrder, servantLocations);
     resetTurnValues();
     currentServant = getNextServant();
+    turnStatePreTurn();
 }
 
 /***** Manipulators *****/
@@ -145,6 +148,12 @@ void GameState::setClickedY(int y)
     clickedY = y;
 }
 
+void GameState::setChosenAction(int a)
+{
+    chosenAction = a;
+    chosenActionType = actionListTypes[a];
+}
+
 bool GameState::isServantDead(Servant *s)
 {
     bool found = false;
@@ -188,6 +197,61 @@ bool GameState::isTeamDead(Team t)
 }
 
 /***** Retrievers *****/
+Servant* GameState::isSpaceServant(int x, int y)
+{
+    Coordinate temp;
+    temp.x = x;
+    temp.y = y;
+    return field->getServantOnSpace(temp);
+}
+
+bool GameState::isSpaceSelection(int x, int y)
+{
+    bool isSelection = false;
+    for (int i = 0; i < selectionRange.size() && !isSelection; i++)
+    {
+        if (x == selectionRange[i].x && y == selectionRange[i].y)
+            isSelection = true;
+    }
+    return isSelection;
+}
+
+bool GameState::isSpaceMove(int x, int y)
+{
+    bool isMove = false;
+    for (int i = 0; i < validMoves.size() && !isMove; i++)
+    {
+        if (x == validMoves[i].x && y == validMoves[i].y)
+            isMove = true;
+    }
+    return isMove;
+}
+
+bool GameState::isSpaceRealityMarble(int x, int y)
+{
+    return field->isRealityMarbleOn();
+}
+
+bool GameState::isSpaceDebuff(int x, int y)
+{
+    Coordinate temp;
+    temp.x = x;
+    temp.y = y;
+    return (field->getDebuffOnSpace(temp) != NULL);
+}
+
+Team GameState::spaceDebuffTeam(int x, int y)
+{
+    Coordinate temp;
+    temp.x = x;
+    temp.y = y;
+    Debuff *t = field->getDebuffOnSpace(temp);
+    if (t == NULL)
+        return Boss;
+    else
+        return t->getTargetTeam();
+}
+
 vector<Servant*> GameState::getTurnOrder()
 {
     return turnOrder;
@@ -431,7 +495,7 @@ vector<string> GameState::getActionList()
 
 vector<ActionType> GameState::getActionListType()
 {
-    return actionListType;
+    return actionListTypes;
 }
 
 vector<int> GameState::getActionMPCosts()
@@ -508,71 +572,76 @@ int GameState::getTurnState()
 
 int GameState::nextTurnState()
 {
+    int result = 999;
     switch(turnState)
     {
         case 0:
-            turnStatePreTurn();
+            result = turnStatePreTurn();
             break;
         case 1:
-            turnStateMove();
+            result = turnStateMove();
             break;
         case 2:
-            turnStateChoseAction();
+            result = turnStateChoseAction();
             break;
         case 3:
-            turnStateChoseTargets();
+            result = turnStateChoseTargets();
             break;
         case 4:
-            turnStateApplyAction();
+            result = turnStateApplyAction();
             break;
         case 5:
-            turnStateExtraMove();
+            result = turnStateExtraMove();
             break;
         case 6:
-            turnStatePostTurn();
+            result = turnStatePostTurn();
             break;
         default:
             // Shouldn't ever get here...
             break;
     }
-    return turnState;
+    return result;
 }
 
 int GameState::prevTurnState()
 {
+    int result = 999;
     switch(turnState)
     {
         case 2:
             turnState--;
             field->moveServant(currentServant, servStart);
-            turnStateMove();
+            result = turnStateMove();
             break;
         case 3:
             turnState--;
-            turnStateChoseAction();
+            result = turnStateChoseAction();
             break;
         case 4:
             turnState--;
-            turnStateChoseTargets();
+            result = turnStateChoseTargets();
             break;
         case 5:
             turnState--;
-            turnStateApplyAction();
+            result = turnStateApplyAction();
             break;
         case 6:
             turnState--;
-            turnStateExtraMove();
+            result = turnStateExtraMove();
             break;
         default:
             // Shouldn't ever get here...
             break;
     }
 
-    return turnState;
+    return result;
 }
 
 int GameState::turnStatePreTurn()
 {
+    if (turnState != 0)
+        return 10;
+
     // Decrement the turns remaining on any Debuffs on this Servant. Remove any
     // Debuffs as necessary.
     currentServant->decDebuffs();
@@ -581,7 +650,7 @@ int GameState::turnStatePreTurn()
     // TODO: check if the debuff is a Dimensional Gate territory and do things
     //       accordingly. Also check for the various Reality Marble effects.
     Debuff *tDebuff = field->getDebuffOnSpace(currentServant->getCurrLoc());
-    if (tDebuff->getTargetTeam() == currentServant->getTeam())
+    if (tDebuff != NULL && tDebuff->getTargetTeam() == currentServant->getTeam())
     {
         // Check if the Debuff is a special Territory or a Reality Marble and
         // act on the current servant accordingly. Otherwise, just add the
@@ -627,12 +696,20 @@ int GameState::turnStatePreTurn()
     // Get the valid moves for the servant
     validMoves = getValidMoves(currentServant, currentServant->getMov());
 
+    // Display a list of possible actions
+    actionList = currentServant->getActionList();
+    actionListTypes = currentServant->getActionListTypes();
+    actionMPCosts = currentServant->getActionMPCosts();
+
     turnState++;
     return 0;
 }
 
 int GameState::turnStateMove()
 {
+    if (turnState != 1)
+        return 10;
+
     // Verify that the clicked space is valid
     bool isValid = false;
     for (int i = 0; i < validMoves.size() && !isValid; i++)
@@ -655,11 +732,6 @@ int GameState::turnStateMove()
     remainingMove = currentServant->getMov() -
             (abs(servEnd.x - servStart.x) + abs(servEnd.y - servStart.y));
 
-    // Display a list of possible actions at their location.
-    actionList = currentServant->getActionList();
-    actionListTypes = currentServant->getActionListTypes();
-    actionMPCosts = currentServant->getActionMPCosts();
-
     // TODO: Display it somehow?? Have a gui method parse the action list?
 
     turnState++;
@@ -668,8 +740,11 @@ int GameState::turnStateMove()
 
 int GameState::turnStateChoseAction()
 {
+    if (turnState != 2)
+        return 10;
+
     // Ensure that an action was actually chosen
-    if (chosenAction < 0)
+    if (chosenAction < 0 || chosenAction >= actionList.size())
         return 1;
 
     // Verify that the player has enough MP
@@ -739,6 +814,9 @@ int GameState::turnStateChoseAction()
 
 int GameState::turnStateChoseTargets()
 {
+    if (turnState != 3)
+        return 10;
+
     // TODO:
     // ASK THE PLAYER IF THEY ARE SURE THEY WANT TO TO THIS ACTION (also show
     //    relevant stats like chance of hitting, how much damage would be done
@@ -858,6 +936,9 @@ int GameState::turnStateChoseTargets()
 
 int GameState::turnStateApplyAction()
 {
+    if (turnState != 4)
+        return 10;
+
     // Apply the chosen action to the chosen targets.
     int ret = currentServant->doAction(chosenAction, chosenDefenders);
     if (ret != 0)
@@ -906,6 +987,9 @@ int GameState::turnStateApplyAction()
 
 int GameState::turnStateExtraMove()
 {
+    if (turnState != 5)
+        return 10;
+
     // Verify that the clicked space is valid
     bool isValid = false;
     for (int i = 0; i < validMoves.size() && !isValid; i++)
@@ -937,6 +1021,9 @@ int GameState::turnStateExtraMove()
 // team Omegaa is dead. If it returns 1002, team Boss is dead.
 int GameState::turnStatePostTurn()
 {
+    if (turnState != 6)
+        return 10;
+
     int returnValue = 0;
 
     // Check if anyone has died and modify the death list accordingly.
@@ -992,4 +1079,9 @@ void GameState::resetTurnValues()
 vector<string> GameState::getEventLog()
 {
     return eventLog;
+}
+
+void GameState::addToEventLog(string s)
+{
+    eventLog.push_back(s);
 }

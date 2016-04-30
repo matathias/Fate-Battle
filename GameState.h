@@ -38,6 +38,15 @@ class GameState
         // valid. nextTurnState should be called from here.
         bool isValidAction(Coordinate c);
 
+        // These functions help the gui to determine what color a space should
+        // be
+        Servant* isSpaceServant(int x, int y);
+        bool isSpaceSelection(int x, int y);
+        bool isSpaceRealityMarble(int x, int y);
+        bool isSpaceDebuff(int x, int y);
+        bool isSpaceMove(int x, int y);
+        Team spaceDebuffTeam(int x, int y);
+
         // Returns the actionList material so it can be displayed.
         vector<string> getActionList();
         vector<ActionType> getActionListType();
@@ -66,6 +75,7 @@ class GameState
 
         void setClickedX(int x);
         void setClickedY(int y);
+        void setChosenAction(int a);
 
         // These functions return 0 if they finished successfully, and another
         // value otherwise.
@@ -81,6 +91,7 @@ class GameState
         void resetTurnValues();
 
         vector<string> getEventLog();
+        void addToEventLog(string s);
     
     protected:
         vector<Servant*> turnOrder; // Contains servant pointers in turn order.
