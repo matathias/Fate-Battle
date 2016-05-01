@@ -1,4 +1,7 @@
+#pragma once
+
 #include "servanttest.h"
+#include <iostream>
 
 ServantTest::ServantTest(int as, Team t) : Servant(as, t)
 {
@@ -184,7 +187,7 @@ int ServantTest::activateNP1(vector<Servant *> defenders)
                 {
                     vector<Servant *> you;
                     you.push_back(this);
-                    defenders[i]->attack(you);
+                    defenders[i]->attack(you, false);
                 }
             }
             else
@@ -217,6 +220,7 @@ int ServantTest::activateNP1(vector<Servant *> defenders)
 // undodgeable five times normal damage.
 int ServantTest::activateNP2(vector<Servant *> defenders)
 {
+    cout << "Starting...?\n" << std::flush;
     if (actionMPCosts[ascension][2] > currMP)
         return 1; // Not enough MP to attack
     else
@@ -265,7 +269,7 @@ int ServantTest::activateNP2(vector<Servant *> defenders)
                 {
                     vector<Servant *> you;
                     you.push_back(this);
-                    defenders[i]->attack(you);
+                    defenders[i]->attack(you, false);
                 }
             }
             else
@@ -289,6 +293,7 @@ int ServantTest::activateNP2(vector<Servant *> defenders)
             }
         }
     }
+    cout << "Ending...?\n" << std::flush;
     return 0;
 }
 

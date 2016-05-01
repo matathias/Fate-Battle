@@ -32,7 +32,7 @@ class PlayField
         void eraseTerritory(string n);
         
         bool doesSpaceHaveServant(Coordinate c);
-        vector<Coordinate> pruneRange(vector<Coordinate> range);
+        vector<Coordinate> pruneRange(vector<Coordinate> range, Servant* source);
         vector<Servant*> getAllInRange(Servant* s, vector<Coordinate> range);
         Servant* getServantOnSpace(Coordinate c);
         Debuff* getDebuffOnSpace(Coordinate c);

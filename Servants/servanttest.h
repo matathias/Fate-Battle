@@ -10,11 +10,11 @@ class ServantTest : public Servant
         ServantTest(int as, Team t);
 
         // Straight Slash
-        int activateNP1(vector<Servant *> defenders);
+        virtual int activateNP1(vector<Servant *> defenders);
         // Side Slash
-        int activateNP2(vector<Servant *> defenders);
+        virtual int activateNP2(vector<Servant *> defenders);
         // Omni Slash
-        int activateNP3(vector<Servant *> defenders);
+        virtual int activateNP3(vector<Servant *> defenders);
 };
 
 #endif // SERVANTTEST_H

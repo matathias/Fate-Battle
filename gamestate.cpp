@@ -210,7 +210,8 @@ bool GameState::isSpaceSelection(int x, int y)
     bool isSelection = false;
     for (int i = 0; i < selectionRange.size() && !isSelection; i++)
     {
-        if (x == selectionRange[i].x && y == selectionRange[i].y)
+        if (x == selectionRange[i].x + currentServant->getCurrLoc().x &&
+            y == selectionRange[i].y + currentServant->getCurrLoc().y)
             isSelection = true;
     }
     return isSelection;
@@ -759,7 +760,7 @@ int GameState::turnStateChoseAction()
     /***** TODO *****/
     // leave this the wrong way while testing, but inequality MUST BE FLIPPED
     // for function to work properly
-    if (mpCost < currentServant->getCurrMP())
+    if (mpCost > currentServant->getCurrMP())
     {
         chosenAction = -1;
         return 22;
@@ -772,7 +773,7 @@ int GameState::turnStateChoseAction()
     if (chosenActionType == S)
     {
         selectionRange = currentServant->getActionRange(chosenAction);
-        selectionRange = field->pruneRange(selectionRange);
+        selectionRange = field->pruneRange(selectionRange, currentServant);
     }
 
     // If the action is AOE, have the player determine the direction of
@@ -819,13 +820,12 @@ int GameState::turnStateChoseAction()
     }
 
     turnState++;
-    //cout << "End of GameState::turnStateChoseAction() (3).\n" << std::flush;
     return 0;
 }
 
 int GameState::turnStateChoseTargets()
 {
-    //cout << "Beginning of GameState::turnStateChoseTargets().\n" << std::flush;
+    cout << "Beginning of GameState::turnStateChoseTargets().\n" << std::flush;
     if (turnState != 3)
         return 40;
 
@@ -841,11 +841,13 @@ int GameState::turnStateChoseTargets()
         // a servant; form a defender vector from the target servant
         int servID = -1;
         Coordinate target;
+        Coordinate cLoc = currentServant->getCurrLoc();
         for (int i = 0; i < selectionRange.size() && servID == -1; i++)
         {
-            if (selectionRange[i].x == clickedX &&
-                selectionRange[i].y == clickedY)
+            if (selectionRange[i].x + cLoc.x == clickedX &&
+                selectionRange[i].y + cLoc.y == clickedY)
             {
+                cout << "in here?\n" << std::flush;
                 servID = i;
                 target.x = clickedX;
                 target.y = clickedY;
@@ -853,7 +855,7 @@ int GameState::turnStateChoseTargets()
         }
         if (servID == -1) // not a valid selection!
         {
-            return 1;
+            return 31;
         }
 
         chosenDefenders.push_back(field->getServantOnSpace(target));
@@ -862,10 +864,11 @@ int GameState::turnStateChoseTargets()
     {
         // Ensure the target space is within the selectionRange
         bool found = false;
+        Coordinate cLoc = currentServant->getCurrLoc();
         for (int i = 0; i < selectionRange.size() && !found; i++)
         {
-            if (selectionRange[i].x == clickedX &&
-                selectionRange[i].y == clickedY)
+            if (selectionRange[i].x + cLoc.x == clickedX &&
+                selectionRange[i].y + cLoc.y == clickedY)
             {
                 found = true;
                 switch(i)
@@ -942,13 +945,13 @@ int GameState::turnStateChoseTargets()
     }
 
     turnState++;
-    //cout << "End of GameState::turnStateChoseTargets().\n" << std::flush;
+    cout << "End of GameState::turnStateChoseTargets().\n" << std::flush;
     return turnStateApplyAction();
 }
 
 int GameState::turnStateApplyAction()
 {
-    //cout << "Beginning of GameState::turnStateApplyAction().\n" << std::flush;
+    cout << "Beginning of GameState::turnStateApplyAction().\n" << std::flush;
     if (turnState != 4)
         return 50;
 
@@ -957,6 +960,9 @@ int GameState::turnStateApplyAction()
     if (ret != 0)
     {
         // Something went wrong! Return now.
+        cout << "here??\n" << std::flush;
+        cout << "Action: " << chosenAction << "\n" << std::flush;
+        cout << "Result: " << ret << "\n" << std::flush;
         return ret;
     }
 
@@ -967,7 +973,7 @@ int GameState::turnStateApplyAction()
         // Get the valid moves for the servant
         validMoves = getValidMoves(currentServant, remainingMove);
         turnState++;
-        //cout << "End of GameState::turnStateApplyAction() (1).\n" << std::flush;
+        cout << "End of GameState::turnStateApplyAction() (1).\n" << std::flush;
         return 0;
     }
 
@@ -986,7 +992,7 @@ int GameState::turnStateApplyAction()
             validMoves = getValidMoves(currentServant, currentServant->getMov());
         }
         turnState++;
-        //cout << "End of GameState::turnStateApplyAction() (2).\n" << std::flush;
+        cout << "End of GameState::turnStateApplyAction() (2).\n" << std::flush;
         return 0;
     }
 
@@ -994,7 +1000,7 @@ int GameState::turnStateApplyAction()
     else
     {
         turnState += 2;
-        //cout << "End of GameState::turnStateApplyAction() (3).\n" << std::flush;
+        cout << "End of GameState::turnStateApplyAction() (3).\n" << std::flush;
         return turnStatePostTurn();
     }
 }
@@ -1034,7 +1040,7 @@ int GameState::turnStateExtraMove()
 // team Omegaa is dead. If it returns 1002, team Boss is dead.
 int GameState::turnStatePostTurn()
 {
-    //cout << "Beginning of GameState::turnStatePostTurn().\n" << std::flush;
+    cout << "Beginning of GameState::turnStatePostTurn().\n" << std::flush;
     if (turnState != 6)
         return 70;
 
@@ -1077,7 +1083,7 @@ int GameState::turnStatePostTurn()
         returnValue = turnStatePreTurn();
     }
 
-    //cout << "End of GameState::turnStatePostTurn().\n" << std::flush;
+    cout << "End of GameState::turnStatePostTurn().\n" << std::flush;
     return returnValue;
 }
 

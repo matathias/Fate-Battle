@@ -422,6 +422,14 @@ vector<Coordinate> Servant::getActionRange(int action)
     // TODO
     vector<Coordinate> range;
 
+    if (action == 0)
+    {
+        //
+    }
+    else
+    {
+        //
+    }
 
     Coordinate placeholder;
     placeholder.x = 1;
@@ -463,7 +471,7 @@ vector<Coordinate> Servant::getNPRange(int np)
 
 // This only needs to be overriden if the Servant has an attack that isn't
 // simply single-target.
-int Servant::attack(vector<Servant *> defenders)
+int Servant::attack(vector<Servant *> defenders, bool counter)
 {
     if (actionMPCosts[ascension][0] > currMP)
         return 1; // Not enough MP to attack
@@ -531,12 +539,13 @@ int Servant::attack(vector<Servant *> defenders)
                     }
                 }
                 // Call "attack" on the defending servant for their
-                // counterattack, if you are in their range.
-                if (defenders[i]->isInRange(this))
+                // counterattack, if you are in their range and you are the
+                // initiating servant.
+                if (defenders[i]->isInRange(this) && counter)
                 {
                     vector<Servant *> you;
                     you.push_back(this);
-                    defenders[i]->attack(you);
+                    defenders[i]->attack(you, false);
                 }
             }
             else
@@ -570,7 +579,7 @@ int Servant::doAction(int actionNum, vector<Servant *> defenders)
     switch (actionNum)
     {
         case 0:
-            ret = attack(defenders);
+            ret = attack(defenders, true);
             break;
         case 1:
             ret = activateNP1(defenders);

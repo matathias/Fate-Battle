@@ -97,7 +97,7 @@ class Servant
         // special skills attached to their attack should override the attack
         // method.
         // It returns 0 if it succeeds, and another value otherwise.
-        int attack(vector<Servant*> defenders);
+        int attack(vector<Servant*> defenders, bool counter);
 
         // Like with attack, this function is defined in the Servant class but
         // will need to be overridden if a Servant has more options available to
@@ -108,9 +108,9 @@ class Servant
 
         // These functions actually need to be defined in the subclasses.
         // They return 0 if they succeed, and another value otherwise.
-        int activateNP1(vector<Servant*> defenders);
-        int activateNP2(vector<Servant*> defenders);
-        int activateNP3(vector<Servant*> defenders);
+        virtual int activateNP1(vector<Servant*> defenders);
+        virtual int activateNP2(vector<Servant*> defenders);
+        virtual int activateNP3(vector<Servant*> defenders);
 
         // Generates a random number between 0 and 100 (inclusive) using fire
         // emblem's "true hit" technique

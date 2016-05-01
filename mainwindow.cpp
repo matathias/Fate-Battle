@@ -50,11 +50,8 @@ void MainWindow::reDrawMenus()
 
 void MainWindow::mainSetup()
 {
-    cout << "Beginning of MainWindow::mainSetup().\n" << std::flush;
     clearLayout(layout());
-    //cout << "In MainWindow::mainSetup(), after clearLayout() call.\n" << std::flush;
     delete layout();
-    cout << "In MainWindow::mainSetup(), after delete layout() call.\n" << std::flush;
 
     // Setup the play field display
     View *gameField = new View("Game Field");
@@ -367,7 +364,6 @@ void MainWindow::mainSetup()
     setLayout(mainLayout);
 
     setWindowTitle(tr("Final Fate / Emblem of the Holy Grail"));
-    cout << "End of MainWindow::mainSetup().\n\n" << std::flush;
 }
 
 void MainWindow::populateScene(int w, int l)
@@ -453,7 +449,6 @@ void MainWindow::populateScene(int w, int l)
 void MainWindow::reColorScene()
 {
     // Get the items in the scene
-    cout << "Beginning of reColorScene\n" << std::flush;
     QList<QGraphicsItem*> allItems = scene->items();
     for (int i = 0; i < allItems.size(); i++)
     {
@@ -466,6 +461,8 @@ void MainWindow::reColorScene()
         int blue = 150;
         if (gs->getTurnState() == 3 && gs->isSpaceSelection(x,y))
         {
+            blue = 0;
+            green = 0;
             red = 255;
         }
         else if ((gs->getTurnState() == 1 || gs->getTurnState() == 5) &&
@@ -514,9 +511,7 @@ void MainWindow::reColorScene()
         temp->setPath2(tPath);
     }
 
-    cout << "In reColorScene(), just before mainSetup() call.\n" << std::flush;
     mainSetup();
-    cout << "End of reColorScene().\n\n" << std::flush;
 }
 
 // This function is causing so many problems
@@ -527,38 +522,22 @@ void MainWindow::reColorScene()
 //     scene or something?
 void MainWindow::clearLayout(QLayout *layout)
 {
-    cout << "Beginning of MainWindow::clearLayout().\n" << std::flush;
     QLayoutItem *item;
-    /*while(layout != NULL && (item = layout->takeAt(0)))
-    {
-        if (item->layout() != NULL) {
-            clearLayout(item->layout());
-            //delete item->layout();
-        }
-
-        delete item->widget();
-
-        delete item;
-    }*/
     while (layout != NULL && (item = layout->takeAt(0)))
     {
         if (QWidget* widget = item->widget())
         {
-            cout << "\tdeleting widget\n" << std::flush;
             widget->deleteLater();
         }
         if (QLayout* childLayout = item->layout())
         {
-            cout << "\t\trecursive call\n" << std::flush;
             clearLayout(childLayout);
         }
-        cout << "deleting item\n" << std::flush;
         delete item;
     }
 
     //cout << "deleting layout\n" << std::flush;
     //delete layout;
-    cout << "End of MainWindow::clearLayout().\n" << std::flush;
 }
 
 void MainWindow::open()
@@ -603,7 +582,7 @@ void MainWindow::but1()
     else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
-    mainSetup();
+    reColorScene();
 }
 void MainWindow::but2()
 {
@@ -617,7 +596,7 @@ void MainWindow::but2()
     else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
-    mainSetup();
+    reColorScene();
 }
 void MainWindow::but3()
 {
@@ -631,7 +610,7 @@ void MainWindow::but3()
     else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
-    mainSetup();
+    reColorScene();
 }
 void MainWindow::but4()
 {
@@ -645,7 +624,7 @@ void MainWindow::but4()
     else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
-    mainSetup();
+    reColorScene();
 }
 void MainWindow::but5()
 {
@@ -659,7 +638,7 @@ void MainWindow::but5()
     else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
-    mainSetup();
+    reColorScene();
 }
 void MainWindow::but6()
 {
@@ -673,7 +652,7 @@ void MainWindow::but6()
     else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
-    mainSetup();
+    reColorScene();
 }
 void MainWindow::but7()
 {
@@ -687,7 +666,7 @@ void MainWindow::but7()
     else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
-    mainSetup();
+    reColorScene();
 }
 void MainWindow::but8()
 {
@@ -701,7 +680,7 @@ void MainWindow::but8()
     else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
-    mainSetup();
+    reColorScene();
 }
 void MainWindow::but9()
 {
@@ -715,7 +694,7 @@ void MainWindow::but9()
     else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
-    mainSetup();
+    reColorScene();
 }
 
 void MainWindow::endTurn()

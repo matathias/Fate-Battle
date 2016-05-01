@@ -128,11 +128,14 @@ bool PlayField::doesSpaceHaveServant(Coordinate c)
     return field[c.x][c.y] != NULL;
 }
 
-vector<Coordinate> PlayField::pruneRange(vector<Coordinate> range)
+vector<Coordinate> PlayField::pruneRange(vector<Coordinate> range, Servant* source)
 {
     for (int i = 0; i < range.size(); i++)
     {
-        if(!doesSpaceHaveServant(range[i]))
+        Coordinate sc;
+        sc.x = range[i].x + source->getCurrLoc().x;
+        sc.y = range[i].y + source->getCurrLoc().y;
+        if(!doesSpaceHaveServant(sc))
         {
             range.erase(range.begin()+i);
             i--;
