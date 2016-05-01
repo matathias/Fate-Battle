@@ -113,20 +113,6 @@ View::View(const QString &name, QWidget *parent)
     dragModeButton->setText(tr("Drag"));
     dragModeButton->setCheckable(true);
     dragModeButton->setChecked(false);
-    antialiasButton = new QToolButton;
-    antialiasButton->setText(tr("Antialiasing"));
-    antialiasButton->setCheckable(true);
-    antialiasButton->setChecked(false);
-    openGlButton = new QToolButton;
-    openGlButton->setText(tr("OpenGL"));
-    openGlButton->setCheckable(true);
-#ifndef QT_NO_OPENGL
-    openGlButton->setEnabled(QGLFormat::hasOpenGL());
-#else
-    openGlButton->setEnabled(false);
-#endif
-    printButton = new QToolButton;
-    printButton->setIcon(QIcon(QPixmap(":/fileprint.png")));
 
     QButtonGroup *pointerModeGroup = new QButtonGroup;
     pointerModeGroup->setExclusive(true);
@@ -139,9 +125,6 @@ View::View(const QString &name, QWidget *parent)
     labelLayout->addWidget(selectModeButton);
     labelLayout->addWidget(dragModeButton);
     labelLayout->addStretch();
-    labelLayout->addWidget(antialiasButton);
-    labelLayout->addWidget(openGlButton);
-    labelLayout->addWidget(printButton);
 
     QGridLayout *topLayout = new QGridLayout;
     topLayout->addLayout(labelLayout, 0, 0);
@@ -158,11 +141,6 @@ View::View(const QString &name, QWidget *parent)
             this, SLOT(setResetButtonEnabled()));
     connect(selectModeButton, SIGNAL(toggled(bool)), this, SLOT(togglePointerMode()));
     connect(dragModeButton, SIGNAL(toggled(bool)), this, SLOT(togglePointerMode()));
-    connect(antialiasButton, SIGNAL(toggled(bool)), this, SLOT(toggleAntialiasing()));
-    connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
-    connect(zoomInIcon, SIGNAL(clicked()), this, SLOT(zoomIn()));
-    connect(zoomOutIcon, SIGNAL(clicked()), this, SLOT(zoomOut()));
-    connect(printButton, SIGNAL(clicked()), this, SLOT(print()));
 
     setupMatrix();
 }
@@ -203,30 +181,6 @@ void View::togglePointerMode()
                               ? QGraphicsView::RubberBandDrag
                               : QGraphicsView::ScrollHandDrag);
     graphicsView->setInteractive(selectModeButton->isChecked());
-}
-
-void View::toggleOpenGL()
-{
-#ifndef QT_NO_OPENGL
-    graphicsView->setViewport(openGlButton->isChecked() ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget);
-#endif
-}
-
-void View::toggleAntialiasing()
-{
-    graphicsView->setRenderHint(QPainter::Antialiasing, antialiasButton->isChecked());
-}
-
-void View::print()
-{
-#if !defined(QT_NO_PRINTER) && !defined(QT_NO_PRINTDIALOG)
-    QPrinter printer;
-    QPrintDialog dialog(&printer, this);
-    if (dialog.exec() == QDialog::Accepted) {
-        QPainter painter(&printer);
-        graphicsView->render(&painter);
-    }
-#endif
 }
 
 void View::zoomIn(int level)
