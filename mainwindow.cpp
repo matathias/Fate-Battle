@@ -30,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     startGameState();
     populateScene(gs->getFieldWidth(), gs->getFieldLength());
-    //connect(this, SIGNAL(eventLogUpdated()), this, SLOT(redrawEverything()));
 }
 
 MainWindow::~MainWindow()
@@ -50,8 +49,11 @@ void MainWindow::reDrawMenus()
 
 void MainWindow::mainSetup()
 {
+    cout << "Beginning of MainWindow::mainSetup().\n" << std::flush;
     clearLayout(layout());
+    //cout << "In MainWindow::mainSetup(), after clearLayout() call.\n" << std::flush;
     delete layout();
+    cout << "In MainWindow::mainSetup(), after delete layout() call.\n" << std::flush;
 
     // Setup the play field display
     View *gameField = new View("Game Field");
@@ -67,6 +69,10 @@ void MainWindow::mainSetup()
     name = new QLabel(this);
     name->setText(nI);
     name->setAlignment(Qt::AlignCenter);
+    QString tN = QString::fromStdString("Team: " + gs->getCurrentServantTeam());
+    teamName = new QLabel(this);
+    teamName->setText(tN);
+    teamName->setAlignment(Qt::AlignCenter);
     icon = new QLabel(this);
     icon->setFrameStyle(QFrame::Panel);
     nI.prepend("../FateBattle/ServantIcons/");
@@ -79,9 +85,10 @@ void MainWindow::mainSetup()
     icon->setAlignment(Qt::AlignCenter);
     nameIcon->addWidget(icon);
     nameIcon->addWidget(name);
+    nameIcon->addWidget(teamName);
 
     /* Servant stats Widget */
-    QStandardItemModel *hpmpTable = new QStandardItemModel(1,2,this);
+    /*QStandardItemModel *hpmpTable = new QStandardItemModel(1,2,this);
     hpmpTable->setHorizontalHeaderItem(0, new QStandardItem(QString("HP")));
     hpmpTable->setHorizontalHeaderItem(1, new QStandardItem(QString("MP")));
     QString hp = QString::fromStdString(
@@ -152,9 +159,74 @@ void MainWindow::mainSetup()
     QHBoxLayout *l1 = new QHBoxLayout;
     l1->addWidget(statsTable2);
     l1->addWidget(statsTable3);
-    QVBoxLayout *l2 = new QVBoxLayout;
-    l2->addWidget(statsTable1);
-    l2->addLayout(l1);
+    QVBoxLayout *allStats = new QVBoxLayout;
+    allStats->addWidget(statsTable1);
+    allStats->addLayout(l1);*/
+
+    /* Alternative stats layout */
+    QLabel *hplab = new QLabel(this);
+    QLabel *mplab = new QLabel(this);
+    QLabel *hpstat = new QLabel(this);
+    QLabel *mpstat = new QLabel(this);
+    QString hp = QString::fromStdString(
+                    to_string(gs->getCurrentServant()->getCurrHP()) + "/" +
+                    to_string(gs->getCurrentServant()->getMaxHP()));
+    QString mp = QString::fromStdString(
+                    to_string(gs->getCurrentServant()->getCurrMP()) + "/" +
+                    to_string(gs->getCurrentServant()->getMaxMP()));
+    hplab->setText("HP");
+    hplab->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    mplab->setText("MP");
+    mplab->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    hpstat->setText(hp);
+    hpstat->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    mpstat->setText(mp);
+    mpstat->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+
+    QLabel *movLab = new QLabel(this);
+    movLab->setText(QString::fromStdString("Movement Range: " +
+                                 to_string(gs->getCurrentServant()->getMov())));
+    movLab->setAlignment(Qt::AlignCenter);
+
+    QLabel *atkStats = new QLabel(this);
+    QLabel *defStats = new QLabel(this);
+    QString atk = QString::fromStdString("STR: " +
+                                to_string(gs->getCurrentServant()->getStr())
+                                + "\nMAG: " +
+                                to_string(gs->getCurrentServant()->getMag())
+                                + "\nSKL: " +
+                                to_string(gs->getCurrentServant()->getSkl()));
+    QString def = QString::fromStdString("SPD: " +
+                                to_string(gs->getCurrentServant()->getSpd())
+                                + "\nLUK: " +
+                                to_string(gs->getCurrentServant()->getLuk())
+                                + "\nDEF: " +
+                                to_string(gs->getCurrentServant()->getDef())
+                                + "\nRES: " +
+                                to_string(gs->getCurrentServant()->getRes()));
+    atkStats->setText(atk);
+    defStats->setText(def);
+    atkStats->setAlignment(Qt::AlignRight | Qt::AlignTop);
+    defStats->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+
+    QVBoxLayout *hpBox = new QVBoxLayout;
+    hpBox->addWidget(hplab);
+    hpBox->addWidget(hpstat);
+    QVBoxLayout *mpBox = new QVBoxLayout;
+    mpBox->addWidget(mplab);
+    mpBox->addWidget(mpstat);
+    QHBoxLayout *hpmpBox = new QHBoxLayout;
+    hpmpBox->addLayout(hpBox);
+    hpmpBox->addLayout(mpBox);
+
+    QHBoxLayout *otherStats = new QHBoxLayout;
+    otherStats->addWidget(atkStats);
+    otherStats->addWidget(defStats);
+
+    QVBoxLayout *allStats = new QVBoxLayout;
+    allStats->addLayout(hpmpBox);
+    allStats->addWidget(movLab);
+    allStats->addLayout(otherStats);
 
     /* Servant Debuff List Widget */
     QLabel *debLabel = new QLabel(this);
@@ -199,10 +271,9 @@ void MainWindow::mainSetup()
     /* Servant Action List Widget */
     QVBoxLayout *actionList = new QVBoxLayout;
     vector<string> actList = gs->getActionList();
-    vector<ActionType> actListType = gs->getActionListType();
     vector<int> actListCost = gs->getActionMPCosts();
 
-    for (int i = 0; i < actList.size(); i++)
+    for (unsigned int i = 0; i < actList.size(); i++)
     {
         QString text = QString::fromStdString(actList[i] + " MP Cost: " +
                                               to_string(actListCost[i]));
@@ -260,7 +331,7 @@ void MainWindow::mainSetup()
     }
 
     QLabel *a = new QLabel(this);
-    a->setText("---- Actions ----");
+    a->setText("\n---- Actions ----");
     a->setAlignment(Qt::AlignCenter);
 
     QVBoxLayout *wholeActionList = new QVBoxLayout;
@@ -287,7 +358,7 @@ void MainWindow::mainSetup()
     /* Event Log Widget */
     vector<string> eL = gs->getEventLog();
     QList<QString> eventLog;
-    for (int i = 0; i < eL.size(); i++)
+    for (unsigned int i = 0; i < eL.size(); i++)
     {
         eventLog.append(QString::fromStdString(eL[i]));
     }
@@ -307,9 +378,14 @@ void MainWindow::mainSetup()
                                         gs->peekNextServant()->getName());
     nextServ->setText(nS);
     nextServ->setAlignment(Qt::AlignCenter);
+    nextServTeam = new QLabel(this);
+    QString nST = QString::fromStdString("Next Player's Team: " +
+                                         gs->peekNextServant()->getTeamName());
+    nextServTeam->setText(nST);
+    nextServTeam->setAlignment(Qt::AlignCenter);
 
     // Setup the layouts
-    nameIcon->addLayout(l2);
+    nameIcon->addLayout(allStats);
     nameIcon->addLayout(debuffLayout);
 
     QVBoxLayout *layout2 = new QVBoxLayout;
@@ -318,6 +394,7 @@ void MainWindow::mainSetup()
 
     QVBoxLayout *rightMost = new QVBoxLayout;
     rightMost->addWidget(nextServ);
+    rightMost->addWidget(nextServTeam);
     rightMost->addLayout(wholeActionList);
     rightMost->addWidget(evLogWid);
 
@@ -331,8 +408,8 @@ void MainWindow::mainSetup()
 
     setLayout(mainLayout);
 
-
     setWindowTitle(tr("Final Fate / Emblem of the Holy Grail"));
+    cout << "End of MainWindow::mainSetup().\n\n" << std::flush;
 }
 
 void MainWindow::populateScene(int w, int l)
@@ -481,12 +558,19 @@ void MainWindow::reColorScene()
     cout << "End of reColorScene().\n\n" << std::flush;
 }
 
+// This function is causing so many problems
+// Commenting out the recursive part allows the program to not crash, but the
+//     ui is not properly cleared.
+// Leaving the recursive part in properly clears the ui, but makes the program
+//     crash after a handful of actions. Maybe it's "accidentally" deleting
+//     scene or something?
 void MainWindow::clearLayout(QLayout *layout)
 {
+    cout << "Beginning of MainWindow::clearLayout().\n" << std::flush;
     QLayoutItem *item;
-    while(layout != NULL && (item = layout->takeAt(0)))
+    /*while(layout != NULL && (item = layout->takeAt(0)))
     {
-        if (item->layout()) {
+        if (item->layout() != NULL) {
             clearLayout(item->layout());
             //delete item->layout();
         }
@@ -494,7 +578,26 @@ void MainWindow::clearLayout(QLayout *layout)
         delete item->widget();
 
         delete item;
+    }*/
+    while (layout != NULL && (item = layout->takeAt(0)))
+    {
+        if (QWidget* widget = item->widget())
+        {
+            cout << "\tdeleting widget\n" << std::flush;
+            widget->deleteLater();
+        }
+        if (QLayout* childLayout = item->layout())
+        {
+            cout << "\t\trecursive call\n" << std::flush;
+            clearLayout(childLayout);
+        }
+        cout << "deleting item\n" << std::flush;
+        delete item;
     }
+
+    //cout << "deleting layout\n" << std::flush;
+    //delete layout;
+    cout << "End of MainWindow::clearLayout().\n" << std::flush;
 }
 
 void MainWindow::open()

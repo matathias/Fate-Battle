@@ -20,6 +20,7 @@ class GameState
         Servant* peekNextServant();
         Servant* getCurrentServant();
         string getCurrentServantType();
+        string getCurrentServantTeam();
 
         vector<Coordinate> getValidMoves(Servant* s, int moveRange);
         vector<Coordinate> getFullMoveRange(Servant* s, int moveRange);

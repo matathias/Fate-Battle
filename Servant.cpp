@@ -91,6 +91,16 @@ string Servant::getName()
     return name;
 }
 
+string Servant::getTeamName()
+{
+    if (team == Alpha)
+        return "Alpha";
+    else if (team == Omega)
+        return "Omega";
+    else
+        return "Boss";
+}
+
 // Stat Retrievers
 int Servant::getMaxHP()
 {

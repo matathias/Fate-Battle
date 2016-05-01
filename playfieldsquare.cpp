@@ -102,6 +102,7 @@ void PlayFieldSquare::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    cout << "Beginning of PlayFieldSquare::mouseReleaseEvent().\n" << std::flush;
     QGraphicsItem::mouseReleaseEvent(event);
 
     gState->setClickedX(x);
@@ -135,5 +136,7 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         window->reColorScene();
     }
 
+    cout << "In PlayFieldSquare::mouseReleaseEvent(), just before update().\n" << std::flush;
     update();
+    cout << "End of PlayFieldSquare::mouseReleaseEvent().\n\n" << std::flush;
 }

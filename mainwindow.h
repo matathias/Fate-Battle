@@ -38,6 +38,9 @@ public:
     void reDrawMenus();
     GameState *getGameState();
 
+public slots:
+    void redrawEverything();
+
 private slots:
     void open();
     void quit();
@@ -54,8 +57,6 @@ private slots:
 
     void endTurn();
     void cancelAction();
-
-    void redrawEverything();
 
 private:
     Ui::MainWindow *ui;
@@ -81,8 +82,10 @@ private:
     QMenu *fileMenu;
 
     QLabel *name;
+    QLabel *teamName;
     QLabel *icon;
     QLabel *nextServ;
+    QLabel *nextServTeam;
 
     QRadioButton *button1;
     QRadioButton *button2;

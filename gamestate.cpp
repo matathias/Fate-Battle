@@ -304,6 +304,11 @@ string GameState::getCurrentServantType()
     return currentServant->getName();
 }
 
+string GameState::getCurrentServantTeam()
+{
+    return currentServant->getTeamName();
+}
+
 // Returns the four adjacent spaces to c.
 // If a space is out of bounds or occupied it is not included.
 vector<Coordinate> GameState::getAdjacentSpaces(Coordinate c)
@@ -406,7 +411,7 @@ vector<Coordinate> GameState::getFullMoveRange(Servant *s, int moveRange)
 
 vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
 {
-    cout << "Beginning of GameState::getValidMoves().\n" << std::flush;
+    //cout << "Beginning of GameState::getValidMoves().\n" << std::flush;
     Coordinate baseLoc = s->getCurrLoc();
     vector<Coordinate> moves = getFullMoveRange(s, mov);
 
@@ -486,7 +491,7 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
         }
     }
 
-    cout << "End of GameState::getValidMoves().\n" << std::flush;
+    //cout << "End of GameState::getValidMoves().\n" << std::flush;
     return moves;
 }
 
@@ -574,7 +579,7 @@ int GameState::getTurnState()
 
 int GameState::nextTurnState()
 {
-    cout << "Beginning of GameState::nextTurnState().\n" << std::flush;
+    //cout << "Beginning of GameState::nextTurnState().\n" << std::flush;
     int result = 999;
     switch(turnState)
     {
@@ -605,13 +610,13 @@ int GameState::nextTurnState()
             break;
     }
 
-    cout << "End of GameState::nextTurnState().\n" << std::flush;
+    //cout << "End of GameState::nextTurnState().\n" << std::flush;
     return result;
 }
 
 int GameState::prevTurnState()
 {
-    cout << "Beginning of GameState::prevTurnState().\n" << std::flush;
+    //cout << "Beginning of GameState::prevTurnState().\n" << std::flush;
 
     int result = 0;
 
@@ -626,7 +631,7 @@ int GameState::prevTurnState()
     }
     turnState--;
 
-    cout << "End of GameState::prevTurnState().\n" << std::flush;
+    //cout << "End of GameState::prevTurnState().\n" << std::flush;
     return result;
 }
 
@@ -638,7 +643,7 @@ int GameState::endTurn()
 
 int GameState::turnStatePreTurn()
 {
-    cout << "Beginning of GameState::turnStatePreTurn().\n" << std::flush;
+    //cout << "Beginning of GameState::turnStatePreTurn().\n" << std::flush;
     if (turnState != 0)
         return 10;
 
@@ -702,13 +707,13 @@ int GameState::turnStatePreTurn()
     actionMPCosts = currentServant->getActionMPCosts();
 
     turnState++;
-    cout << "End of GameState::turnStatePreTurn().\n" << std::flush;
+    //cout << "End of GameState::turnStatePreTurn().\n" << std::flush;
     return 0;
 }
 
 int GameState::turnStateMove()
 {
-    cout << "Beginning of GameState::turnStateMove().\n" << std::flush;
+    //cout << "Beginning of GameState::turnStateMove().\n" << std::flush;
     if (turnState != 1)
         return 20;
 
@@ -735,13 +740,13 @@ int GameState::turnStateMove()
             (abs(servEnd.x - servStart.x) + abs(servEnd.y - servStart.y));
 
     turnState++;
-    cout << "End of GameState::turnStateMove().\n" << std::flush;
+    //cout << "End of GameState::turnStateMove().\n" << std::flush;
     return 0;
 }
 
 int GameState::turnStateChoseAction()
 {
-    cout << "Beginning of GameState::turnStateChoseAction().\n" << std::flush;
+    //cout << "Beginning of GameState::turnStateChoseAction().\n" << std::flush;
     if (turnState != 2)
         return 30;
 
@@ -794,7 +799,7 @@ int GameState::turnStateChoseAction()
     else if (chosenActionType == T)
     {
         turnState = 4;
-        cout << "End of GameState::turnStateChoseAction() (1).\n" << std::flush;
+        //cout << "End of GameState::turnStateChoseAction() (1).\n" << std::flush;
         return turnStateApplyAction();
     }
 
@@ -809,18 +814,18 @@ int GameState::turnStateChoseAction()
     else
     {
         turnState = 4;
-        cout << "End of GameState::turnStateChoseAction() (2).\n" << std::flush;
+        //cout << "End of GameState::turnStateChoseAction() (2).\n" << std::flush;
         return turnStateApplyAction();
     }
 
     turnState++;
-    cout << "End of GameState::turnStateChoseAction() (3).\n" << std::flush;
+    //cout << "End of GameState::turnStateChoseAction() (3).\n" << std::flush;
     return 0;
 }
 
 int GameState::turnStateChoseTargets()
 {
-    cout << "Beginning of GameState::turnStateChoseTargets().\n" << std::flush;
+    //cout << "Beginning of GameState::turnStateChoseTargets().\n" << std::flush;
     if (turnState != 3)
         return 40;
 
@@ -937,13 +942,13 @@ int GameState::turnStateChoseTargets()
     }
 
     turnState++;
-    cout << "End of GameState::turnStateChoseTargets().\n" << std::flush;
+    //cout << "End of GameState::turnStateChoseTargets().\n" << std::flush;
     return turnStateApplyAction();
 }
 
 int GameState::turnStateApplyAction()
 {
-    cout << "Beginning of GameState::turnStateApplyAction().\n" << std::flush;
+    //cout << "Beginning of GameState::turnStateApplyAction().\n" << std::flush;
     if (turnState != 4)
         return 50;
 
@@ -962,7 +967,7 @@ int GameState::turnStateApplyAction()
         // Get the valid moves for the servant
         validMoves = getValidMoves(currentServant, remainingMove);
         turnState++;
-        cout << "End of GameState::turnStateApplyAction() (1).\n" << std::flush;
+        //cout << "End of GameState::turnStateApplyAction() (1).\n" << std::flush;
         return 0;
     }
 
@@ -981,7 +986,7 @@ int GameState::turnStateApplyAction()
             validMoves = getValidMoves(currentServant, currentServant->getMov());
         }
         turnState++;
-        cout << "End of GameState::turnStateApplyAction() (2).\n" << std::flush;
+        //cout << "End of GameState::turnStateApplyAction() (2).\n" << std::flush;
         return 0;
     }
 
@@ -989,14 +994,14 @@ int GameState::turnStateApplyAction()
     else
     {
         turnState += 2;
-        cout << "End of GameState::turnStateApplyAction() (3).\n" << std::flush;
+        //cout << "End of GameState::turnStateApplyAction() (3).\n" << std::flush;
         return turnStatePostTurn();
     }
 }
 
 int GameState::turnStateExtraMove()
 {
-    cout << "Beginning of GameState::turnStateExtraMove().\n" << std::flush;
+    //cout << "Beginning of GameState::turnStateExtraMove().\n" << std::flush;
     if (turnState != 5)
         return 60;
 
@@ -1021,7 +1026,7 @@ int GameState::turnStateExtraMove()
 
     // End the turn by calling the Post-turn turn state.
     turnState++;
-    cout << "End of GameState::turnStateExtraMove().\n" << std::flush;
+    //cout << "End of GameState::turnStateExtraMove().\n" << std::flush;
     return turnStatePostTurn();
 }
 
@@ -1029,7 +1034,7 @@ int GameState::turnStateExtraMove()
 // team Omegaa is dead. If it returns 1002, team Boss is dead.
 int GameState::turnStatePostTurn()
 {
-    cout << "Beginning of GameState::turnStatePostTurn().\n" << std::flush;
+    //cout << "Beginning of GameState::turnStatePostTurn().\n" << std::flush;
     if (turnState != 6)
         return 70;
 
@@ -1072,13 +1077,13 @@ int GameState::turnStatePostTurn()
         returnValue = turnStatePreTurn();
     }
 
-    cout << "End of GameState::turnStatePostTurn().\n" << std::flush;
+    //cout << "End of GameState::turnStatePostTurn().\n" << std::flush;
     return returnValue;
 }
 
 void GameState::resetTurnValues()
 {
-    cout << "Beginning of GameState::resetTurnValues().\n" << std::flush;
+    //cout << "Beginning of GameState::resetTurnValues().\n" << std::flush;
     turnState = 0;
     clickedX = clickedY = 0;
     servStart.x = servStart.y = servEnd.x = servEnd.y = 0;
@@ -1095,7 +1100,7 @@ void GameState::resetTurnValues()
     actionListTypes.clear();
     actionMPCosts.clear();
 
-    cout << "End of GameState::resetTurnValues().\n" << std::flush;
+    //cout << "End of GameState::resetTurnValues().\n" << std::flush;
 }
 
 vector<string> GameState::getEventLog()

@@ -25,6 +25,7 @@ class Servant
         void subMP(int mp);
         
         string getName();
+        string getTeamName();
 
         int getMaxHP();
         int getCurrHP();
