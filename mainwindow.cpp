@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QListView>
+#include <QProgressBar>
 #include <iostream>
 
 using namespace std;
@@ -88,6 +89,7 @@ void MainWindow::mainSetup()
     nameIcon->addWidget(teamName);
 
     /* Servant stats Widget */
+    // HP and MP
     QLabel *hplab = new QLabel(this);
     QLabel *mplab = new QLabel(this);
     QLabel *hpstat = new QLabel(this);
@@ -98,20 +100,40 @@ void MainWindow::mainSetup()
     QString mp = QString::fromStdString(
                     to_string(gs->getCurrentServant()->getCurrMP()) + "/" +
                     to_string(gs->getCurrentServant()->getMaxMP()));
-    hplab->setText("HP");
-    hplab->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    mplab->setText("MP");
-    mplab->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    hplab->setText("HP:");
+    hplab->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    mplab->setText("MP:");
+    mplab->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     hpstat->setText(hp);
-    hpstat->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    hpstat->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     mpstat->setText(mp);
-    mpstat->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    mpstat->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    QProgressBar *hpBar = new QProgressBar(this);
+    hpBar->setRange(0, gs->getCurrentServant()->getMaxHP());
+    hpBar->setValue(gs->getCurrentServant()->getCurrHP());
+    hpBar->setTextVisible(false);
+    QProgressBar *mpBar = new QProgressBar(this);
+    mpBar->setRange(0, gs->getCurrentServant()->getMaxMP());
+    mpBar->setValue(gs->getCurrentServant()->getCurrMP());
+    mpBar->setTextVisible(false);
 
+    // Movement
     QLabel *movLab = new QLabel(this);
     movLab->setText(QString::fromStdString("Movement Range: " +
                                  to_string(gs->getCurrentServant()->getMov())));
     movLab->setAlignment(Qt::AlignCenter);
 
+    // Attack, Hit rate, critical rate, and evasion
+    QLabel *extraStats = new QLabel(this);
+    extraStats->setText(QString::fromStdString("Accuracy: " +
+                                to_string(gs->getCurrentServant()->getHitRate())
+                                               + "\nEvasion: " +
+                                to_string(gs->getCurrentServant()->getEvade()[0])
+                                               + "\nCritical Rate: " +
+                                to_string(gs->getCurrentServant()->getCriticalRate())));
+    extraStats->setAlignment(Qt::AlignCenter);
+
+    // Other Stats
     QLabel *atkStats = new QLabel(this);
     QLabel *defStats = new QLabel(this);
     QString atk = QString::fromStdString("STR: " +
@@ -133,13 +155,15 @@ void MainWindow::mainSetup()
     atkStats->setAlignment(Qt::AlignRight | Qt::AlignTop);
     defStats->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
-    QVBoxLayout *hpBox = new QVBoxLayout;
+    QHBoxLayout *hpBox = new QHBoxLayout;
     hpBox->addWidget(hplab);
+    hpBox->addWidget(hpBar);
     hpBox->addWidget(hpstat);
-    QVBoxLayout *mpBox = new QVBoxLayout;
+    QHBoxLayout *mpBox = new QHBoxLayout;
     mpBox->addWidget(mplab);
+    mpBox->addWidget(mpBar);
     mpBox->addWidget(mpstat);
-    QHBoxLayout *hpmpBox = new QHBoxLayout;
+    QVBoxLayout *hpmpBox = new QVBoxLayout;
     hpmpBox->addLayout(hpBox);
     hpmpBox->addLayout(mpBox);
 
@@ -150,11 +174,12 @@ void MainWindow::mainSetup()
     QVBoxLayout *allStats = new QVBoxLayout;
     allStats->addLayout(hpmpBox);
     allStats->addWidget(movLab);
+    allStats->addWidget(extraStats);
     allStats->addLayout(otherStats);
 
     /* Servant Debuff List Widget */
     QLabel *debLabel = new QLabel(this);
-    debLabel->setText("----- Status Effects -----");
+    debLabel->setText("\n----- Status Effects -----");
     debLabel->setAlignment(Qt::AlignCenter);
     vector<Debuff*> deb = gs->getCurrentServant()->getDebuffs();
     int numDebuffs = deb.size();
@@ -199,7 +224,7 @@ void MainWindow::mainSetup()
 
     for (unsigned int i = 0; i < actList.size(); i++)
     {
-        QString text = QString::fromStdString(actList[i] + " MP Cost: " +
+        QString text = QString::fromStdString(actList[i] + " | \tMP Cost: " +
                                               to_string(actListCost[i]));
         switch(i)
         {
