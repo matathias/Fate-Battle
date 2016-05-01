@@ -97,25 +97,6 @@ View::View(const QString &name, QWidget *parent)
     zoomSliderLayout->addWidget(zoomSlider);
     zoomSliderLayout->addWidget(zoomOutIcon);
 
-    /*QToolButton *rotateLeftIcon = new QToolButton;
-    rotateLeftIcon->setIcon(QPixmap(":/rotateleft.png"));
-    rotateLeftIcon->setIconSize(iconSize);
-    QToolButton *rotateRightIcon = new QToolButton;
-    rotateRightIcon->setIcon(QPixmap(":/rotateright.png"));
-    rotateRightIcon->setIconSize(iconSize);
-    rotateSlider = new QSlider;
-    rotateSlider->setOrientation(Qt::Horizontal);
-    rotateSlider->setMinimum(-360);
-    rotateSlider->setMaximum(360);
-    rotateSlider->setValue(0);
-    rotateSlider->setTickPosition(QSlider::TicksBelow);*/
-
-    // Rotate slider layout
-    //QHBoxLayout *rotateSliderLayout = new QHBoxLayout;
-    //rotateSliderLayout->addWidget(rotateLeftIcon);
-    //rotateSliderLayout->addWidget(rotateSlider);
-    //rotateSliderLayout->addWidget(rotateRightIcon);
-
     resetButton = new QToolButton;
     resetButton->setText(tr("0"));
     resetButton->setEnabled(false);
@@ -166,13 +147,11 @@ View::View(const QString &name, QWidget *parent)
     topLayout->addLayout(labelLayout, 0, 0);
     topLayout->addWidget(graphicsView, 1, 0);
     topLayout->addLayout(zoomSliderLayout, 1, 1);
-    //topLayout->addLayout(rotateSliderLayout, 2, 0);
     topLayout->addWidget(resetButton, 2, 1);
     setLayout(topLayout);
 
     connect(resetButton, SIGNAL(clicked()), this, SLOT(resetView()));
     connect(zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(setupMatrix()));
-    //connect(rotateSlider, SIGNAL(valueChanged(int)), this, SLOT(setupMatrix()));
     connect(graphicsView->verticalScrollBar(), SIGNAL(valueChanged(int)),
             this, SLOT(setResetButtonEnabled()));
     connect(graphicsView->horizontalScrollBar(), SIGNAL(valueChanged(int)),
@@ -181,8 +160,6 @@ View::View(const QString &name, QWidget *parent)
     connect(dragModeButton, SIGNAL(toggled(bool)), this, SLOT(togglePointerMode()));
     connect(antialiasButton, SIGNAL(toggled(bool)), this, SLOT(toggleAntialiasing()));
     connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
-    //connect(rotateLeftIcon, SIGNAL(clicked()), this, SLOT(rotateLeft()));
-    //connect(rotateRightIcon, SIGNAL(clicked()), this, SLOT(rotateRight()));
     connect(zoomInIcon, SIGNAL(clicked()), this, SLOT(zoomIn()));
     connect(zoomOutIcon, SIGNAL(clicked()), this, SLOT(zoomOut()));
     connect(printButton, SIGNAL(clicked()), this, SLOT(print()));
@@ -198,7 +175,6 @@ QGraphicsView *View::view() const
 void View::resetView()
 {
     zoomSlider->setValue(250);
-    //rotateSlider->setValue(0);
     setupMatrix();
     graphicsView->ensureVisible(QRectF(0, 0, 0, 0));
 
@@ -216,7 +192,6 @@ void View::setupMatrix()
 
     QMatrix matrix;
     matrix.scale(scale, scale);
-    //matrix.rotate(rotateSlider->value());
 
     graphicsView->setMatrix(matrix);
     setResetButtonEnabled();
@@ -263,13 +238,3 @@ void View::zoomOut(int level)
 {
     zoomSlider->setValue(zoomSlider->value() - level);
 }
-
-//void View::rotateLeft()
-//{
-//    rotateSlider->setValue(rotateSlider->value() - 10);
-//}
-
-//void View::rotateRight()
-//{
-//    rotateSlider->setValue(rotateSlider->value() + 10);
-//}

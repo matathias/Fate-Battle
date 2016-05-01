@@ -64,20 +64,23 @@ void MainWindow::mainSetup()
     quitButton = new QPushButton(tr("Quit"));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
 
+    QLabel *seperator = new QLabel(this);
+    //seperator->setText(" ");
+    seperator->setFrameStyle(QFrame::HLine);
+
     /* Servant name and icon */
     QVBoxLayout *nameIcon = new QVBoxLayout;
     QString nI = QString::fromStdString(gs->getCurrentServantType());
+    QString tN = QString::fromStdString(gs->getCurrentServantType() +
+                                        "\nTeam: " + gs->getCurrentServantTeam());
     name = new QLabel(this);
-    name->setText(nI);
+    name->setText(tN);
     name->setAlignment(Qt::AlignCenter);
-    QString tN = QString::fromStdString("Team: " + gs->getCurrentServantTeam());
-    teamName = new QLabel(this);
-    teamName->setText(tN);
-    teamName->setAlignment(Qt::AlignCenter);
+    name->setFrameStyle(QFrame::Box | QFrame::Sunken);
+
     icon = new QLabel(this);
     icon->setFrameStyle(QFrame::Panel);
-    nI.prepend("../FateBattle/ServantIcons/");
-    nI.append(".png");
+    nI = QString::fromStdString(gs->getCurrentServant()->getServantIcon());
     QPixmap ic;
     bool result = ic.load(nI);
     icon->setPixmap(ic);
@@ -86,7 +89,7 @@ void MainWindow::mainSetup()
     icon->setAlignment(Qt::AlignCenter);
     nameIcon->addWidget(icon);
     nameIcon->addWidget(name);
-    nameIcon->addWidget(teamName);
+    //nameIcon->addWidget(teamName);
 
     /* Servant stats Widget */
     // HP and MP
@@ -122,6 +125,7 @@ void MainWindow::mainSetup()
     movLab->setText(QString::fromStdString("Movement Range: " +
                                  to_string(gs->getCurrentServant()->getMov())));
     movLab->setAlignment(Qt::AlignCenter);
+    movLab->setFrameStyle(QFrame::Box | QFrame::Sunken);
 
     // Attack, Hit rate, critical rate, and evasion
     QLabel *extraStats = new QLabel(this);
@@ -132,6 +136,7 @@ void MainWindow::mainSetup()
                                                + "\nCritical Rate: " +
                                 to_string(gs->getCurrentServant()->getCriticalRate())));
     extraStats->setAlignment(Qt::AlignCenter);
+    extraStats->setFrameStyle(QFrame::Box | QFrame::Sunken);
 
     // Other Stats
     QLabel *atkStats = new QLabel(this);
@@ -154,6 +159,8 @@ void MainWindow::mainSetup()
     defStats->setText(def);
     atkStats->setAlignment(Qt::AlignRight | Qt::AlignTop);
     defStats->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    atkStats->setFrameStyle(QFrame::Box | QFrame::Sunken);
+    defStats->setFrameStyle(QFrame::Box | QFrame::Sunken);
 
     QHBoxLayout *hpBox = new QHBoxLayout;
     hpBox->addWidget(hplab);
@@ -179,7 +186,7 @@ void MainWindow::mainSetup()
 
     /* Servant Debuff List Widget */
     QLabel *debLabel = new QLabel(this);
-    debLabel->setText("\n----- Status Effects -----");
+    debLabel->setText("----- Status Effects -----");
     debLabel->setAlignment(Qt::AlignCenter);
     vector<Debuff*> deb = gs->getCurrentServant()->getDebuffs();
     int numDebuffs = deb.size();
@@ -280,7 +287,7 @@ void MainWindow::mainSetup()
     }
 
     QLabel *a = new QLabel(this);
-    a->setText("\n---- Actions ----");
+    a->setText("----- Actions -----");
     a->setAlignment(Qt::AlignCenter);
 
     QVBoxLayout *wholeActionList = new QVBoxLayout;
@@ -320,18 +327,19 @@ void MainWindow::mainSetup()
     evLogW->setStringList(evLog);
     QListView *evLogWid = new QListView;
     evLogWid->setModel(evLogW);
+    QLabel *evLogLabel = new QLabel(this);
+    evLogLabel->setText("----- Event Log -----");
+    evLogLabel->setAlignment(Qt::AlignCenter);
 
     /* Next Servant Widget */
     nextServ = new QLabel(this);
     QString nS = QString::fromStdString("Next Player: " +
-                                        gs->peekNextServant()->getName());
+                                        gs->peekNextServant()->getName() +
+                                        "\nNext Player's Team: " +
+                                        gs->peekNextServant()->getTeamName());
     nextServ->setText(nS);
     nextServ->setAlignment(Qt::AlignCenter);
-    nextServTeam = new QLabel(this);
-    QString nST = QString::fromStdString("Next Player's Team: " +
-                                         gs->peekNextServant()->getTeamName());
-    nextServTeam->setText(nST);
-    nextServTeam->setAlignment(Qt::AlignCenter);
+    nextServ->setFrameStyle(QFrame::Box | QFrame::Sunken);
 
     // Setup the layouts
     nameIcon->addLayout(allStats);
@@ -343,8 +351,9 @@ void MainWindow::mainSetup()
 
     QVBoxLayout *rightMost = new QVBoxLayout;
     rightMost->addWidget(nextServ);
-    rightMost->addWidget(nextServTeam);
+    //rightMost->addWidget(nextServTeam);
     rightMost->addLayout(wholeActionList);
+    rightMost->addWidget(evLogLabel);
     rightMost->addWidget(evLogWid);
 
     QHBoxLayout *playerInformation = new QHBoxLayout;
@@ -418,15 +427,16 @@ void MainWindow::populateScene(int w, int l)
                 }
             }
             string imgPath = "";
+            string tPath = "";
             Servant* spaceServ = gs->isSpaceServant(xx,yy);
             if (spaceServ != NULL)
             {
-                imgPath = "../FateBattle/ServantIcons/" + spaceServ->getName()
-                          + ".png";
+                imgPath = spaceServ->getServantIcon();
+                tPath = spaceServ->getTeamIcon();
             }
             QColor color(red, green, blue, 255);
             QGraphicsItem *item = new PlayFieldSquare(gs, color, xx, yy,
-                                                      imgPath, this);
+                                                      imgPath, tPath, this);
 
             item->setPos(QPointF(i, j));
             scene->addItem(item);
@@ -491,15 +501,17 @@ void MainWindow::reColorScene()
             }
         }
         string imgPath = "";
+        string tPath = "";
         Servant* spaceServ = gs->isSpaceServant(x,y);
         if (spaceServ != NULL)
         {
-            imgPath = "../FateBattle/ServantIcons/" + spaceServ->getName()
-                      + ".png";
+            imgPath = spaceServ->getServantIcon();
+            tPath = spaceServ->getTeamIcon();
         }
         QColor color(red, green, blue, 255);
         temp->changeColor(color);
-        temp->setPath(imgPath);
+        temp->setPath1(imgPath);
+        temp->setPath2(tPath);
     }
 
     cout << "In reColorScene(), just before mainSetup() call.\n" << std::flush;

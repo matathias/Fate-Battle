@@ -12,7 +12,7 @@ class PlayFieldSquare : public QGraphicsItem
 {
 public:
     PlayFieldSquare(GameState *gs, const QColor &color, int x, int y,
-                    string path, MainWindow *mw);
+                    string path1, string path2, MainWindow *mw);
 
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     QPainterPath shape() const Q_DECL_OVERRIDE;
@@ -21,7 +21,8 @@ public:
 
     int getX();
     int getY();
-    void setPath(string p);
+    void setPath1(string p);
+    void setPath2(string p);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
@@ -35,6 +36,7 @@ private:
     QVector<QPointF> stuff;
     GameState *gState;
     QPixmap pic;
+    QPixmap teamPic;
     MainWindow *window;
 };
 

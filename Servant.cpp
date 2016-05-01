@@ -101,6 +101,21 @@ string Servant::getTeamName()
         return "Boss";
 }
 
+string Servant::getServantIcon()
+{
+    return "../FateBattle/ServantIcons/" + name + ".png";
+}
+
+string Servant::getTeamIcon()
+{
+    if (team == Alpha)
+        return "../FateBattle/TeamIcons/Alpha.png";
+    else if (team == Omega)
+        return "../FateBattle/TeamIcons/Omega.png";
+    else
+        return "../FateBattle/TeamIcons/Psi.png";
+}
+
 // Stat Retrievers
 int Servant::getMaxHP()
 {

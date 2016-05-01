@@ -27,6 +27,9 @@ class Servant
         string getName();
         string getTeamName();
 
+        string getServantIcon();
+        string getTeamIcon();
+
         int getMaxHP();
         int getCurrHP();
         int getMaxMP();

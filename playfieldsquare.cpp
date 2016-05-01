@@ -4,7 +4,7 @@
 #include <iostream>
 
 PlayFieldSquare::PlayFieldSquare(GameState *gs, const QColor &color, int x,
-                                 int y, string path, MainWindow *mw)
+                                 int y, string path1, string path2, MainWindow *mw)
 {
     this->x = x;
     this->y = y;
@@ -13,10 +13,15 @@ PlayFieldSquare::PlayFieldSquare(GameState *gs, const QColor &color, int x,
     window = mw;
     setZValue((x + y) % 2);
 
-    if (path != "")
+    if (path1 != "")
     {
-        QString p = QString::fromStdString(path);
+        QString p = QString::fromStdString(path1);
         pic.load(p);
+    }
+    if (path2 != "")
+    {
+        QString p2 = QString::fromStdString(path2);
+        teamPic.load(p2);
     }
 
     setFlags(ItemIsSelectable);
@@ -33,10 +38,16 @@ int PlayFieldSquare::getY()
     return y;
 }
 
-void PlayFieldSquare::setPath(string p)
+void PlayFieldSquare::setPath1(string p)
 {
     QString pa = QString::fromStdString(p);
     pic.load(pa);
+}
+
+void PlayFieldSquare::setPath2(string p)
+{
+    QString pa = QString::fromStdString(p);
+    teamPic.load(pa);
 }
 
 QRectF PlayFieldSquare::boundingRect() const
@@ -77,6 +88,10 @@ void PlayFieldSquare::paint(QPainter *painter,
     painter->setBrush(QBrush(fillColor.dark(option->state & QStyle::State_Sunken ? 120 : 100)));
 
     painter->drawRect(QRect(0, 0, 100, 100));
+    if (!teamPic.isNull())
+    {
+        painter->drawPixmap(QRect(5,5,90,90), teamPic);
+    }
     if (!pic.isNull())
     {
         painter->drawPixmap(QRect(0,0,100,100), pic);
