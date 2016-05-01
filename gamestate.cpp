@@ -406,6 +406,7 @@ vector<Coordinate> GameState::getFullMoveRange(Servant *s, int moveRange)
 
 vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
 {
+    cout << "Beginning of GameState::getValidMoves().\n" << std::flush;
     Coordinate baseLoc = s->getCurrLoc();
     vector<Coordinate> moves = getFullMoveRange(s, mov);
 
@@ -476,7 +477,7 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
         Coordinate moveLocation = getAdjacentInRange(closeLoc, moves, true);
 
         int i = 0;
-        while (i < moves.size())
+        while (i < (int) moves.size())
         {
             if (moveLocation.x == moves[i].x && moveLocation.y == moves[i].y)
                 i++;
@@ -485,6 +486,7 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
         }
     }
 
+    cout << "End of GameState::getValidMoves().\n" << std::flush;
     return moves;
 }
 
@@ -531,23 +533,23 @@ vector<Servant*> GameState::getEnemyTeam(Servant *s)
     vector<Servant*> b = getBossTeam();
     if (s->getTeam() == Alpha)
     {
-        for (int i = 0; i < o.size(); i++)
+        for (unsigned int i = 0; i < o.size(); i++)
             enemies.push_back(o[i]);
-        for (int i = 0; i < b.size(); i++)
+        for (unsigned int i = 0; i < b.size(); i++)
             enemies.push_back(b[i]);
     }
     else if (s->getTeam() == Omega)
     {
-        for (int i = 0; i < a.size(); i++)
+        for (unsigned int i = 0; i < a.size(); i++)
             enemies.push_back(a[i]);
-        for (int i = 0; i < b.size(); i++)
+        for (unsigned int i = 0; i < b.size(); i++)
             enemies.push_back(b[i]);
     }
     else
     {
-        for (int i = 0; i < o.size(); i++)
+        for (unsigned int i = 0; i < o.size(); i++)
             enemies.push_back(o[i]);
-        for (int i = 0; i < a.size(); i++)
+        for (unsigned int i = 0; i < a.size(); i++)
             enemies.push_back(a[i]);
     }
 
@@ -572,6 +574,7 @@ int GameState::getTurnState()
 
 int GameState::nextTurnState()
 {
+    cout << "Beginning of GameState::nextTurnState().\n" << std::flush;
     int result = 999;
     switch(turnState)
     {
@@ -598,47 +601,44 @@ int GameState::nextTurnState()
             break;
         default:
             // Shouldn't ever get here...
+            addToEventLog("Error: invalid turn state (nextTurnState())");
             break;
     }
+
+    cout << "End of GameState::nextTurnState().\n" << std::flush;
     return result;
 }
 
 int GameState::prevTurnState()
 {
-    int result = 999;
-    switch(turnState)
-    {
-        case 2:
-            turnState--;
-            field->moveServant(currentServant, servStart);
-            result = turnStateMove();
-            break;
-        case 3:
-            turnState--;
-            result = turnStateChoseAction();
-            break;
-        case 4:
-            turnState--;
-            result = turnStateChoseTargets();
-            break;
-        case 5:
-            turnState--;
-            result = turnStateApplyAction();
-            break;
-        case 6:
-            turnState--;
-            result = turnStateExtraMove();
-            break;
-        default:
-            // Shouldn't ever get here...
-            break;
-    }
+    cout << "Beginning of GameState::prevTurnState().\n" << std::flush;
 
+    int result = 0;
+
+    if (turnState == 2)
+    {
+        field->moveServant(currentServant, servStart);
+    }
+    else if (turnState < 2 || turnState > 6)
+    {
+        addToEventLog("Error: invalid turn state (prevTurnState())");
+        return 999;
+    }
+    turnState--;
+
+    cout << "End of GameState::prevTurnState().\n" << std::flush;
     return result;
+}
+
+int GameState::endTurn()
+{
+    turnState = 6;
+    return turnStatePostTurn();
 }
 
 int GameState::turnStatePreTurn()
 {
+    cout << "Beginning of GameState::turnStatePreTurn().\n" << std::flush;
     if (turnState != 0)
         return 10;
 
@@ -702,13 +702,15 @@ int GameState::turnStatePreTurn()
     actionMPCosts = currentServant->getActionMPCosts();
 
     turnState++;
+    cout << "End of GameState::turnStatePreTurn().\n" << std::flush;
     return 0;
 }
 
 int GameState::turnStateMove()
 {
+    cout << "Beginning of GameState::turnStateMove().\n" << std::flush;
     if (turnState != 1)
-        return 10;
+        return 20;
 
     // Verify that the clicked space is valid
     bool isValid = false;
@@ -720,7 +722,7 @@ int GameState::turnStateMove()
     if (!isValid)
     {
         // The selected space was not valid!
-        return 1;
+        return 11;
     }
 
     servEnd.x = clickedX;
@@ -732,27 +734,30 @@ int GameState::turnStateMove()
     remainingMove = currentServant->getMov() -
             (abs(servEnd.x - servStart.x) + abs(servEnd.y - servStart.y));
 
-    // TODO: Display it somehow?? Have a gui method parse the action list?
-
     turnState++;
+    cout << "End of GameState::turnStateMove().\n" << std::flush;
     return 0;
 }
 
 int GameState::turnStateChoseAction()
 {
+    cout << "Beginning of GameState::turnStateChoseAction().\n" << std::flush;
     if (turnState != 2)
-        return 10;
+        return 30;
 
     // Ensure that an action was actually chosen
     if (chosenAction < 0 || chosenAction >= actionList.size())
-        return 1;
+        return 21;
 
     // Verify that the player has enough MP
     int mpCost = currentServant->getActionMPCost(chosenAction);
+    /***** TODO *****/
+    // leave this the wrong way while testing, but inequality MUST BE FLIPPED
+    // for function to work properly
     if (mpCost < currentServant->getCurrMP())
     {
         chosenAction = -1;
-        return 2;
+        return 22;
     }
 
     chosenActionType = currentServant->getActionType(chosenAction);
@@ -789,8 +794,8 @@ int GameState::turnStateChoseAction()
     else if (chosenActionType == T)
     {
         turnState = 4;
-        turnStateApplyAction();
-        return 0;
+        cout << "End of GameState::turnStateChoseAction() (1).\n" << std::flush;
+        return turnStateApplyAction();
     }
 
     // If the action is targetting a dead servant, give the player a list of
@@ -804,18 +809,20 @@ int GameState::turnStateChoseAction()
     else
     {
         turnState = 4;
-        turnStateApplyAction();
-        return 0;
+        cout << "End of GameState::turnStateChoseAction() (2).\n" << std::flush;
+        return turnStateApplyAction();
     }
 
     turnState++;
+    cout << "End of GameState::turnStateChoseAction() (3).\n" << std::flush;
     return 0;
 }
 
 int GameState::turnStateChoseTargets()
 {
+    cout << "Beginning of GameState::turnStateChoseTargets().\n" << std::flush;
     if (turnState != 3)
-        return 10;
+        return 40;
 
     // TODO:
     // ASK THE PLAYER IF THEY ARE SURE THEY WANT TO TO THIS ACTION (also show
@@ -872,14 +879,14 @@ int GameState::turnStateChoseTargets()
                         break;
                     default:
                         // we should never reach here!
-                        return 2;
+                        return 32;
                         break;
                 }
             }
         }
         if (!found) // not a valid selection!
         {
-            return 1;
+            return 31;
         }
 
         // Calculate the true selectionRange based on the direction
@@ -908,7 +915,7 @@ int GameState::turnStateChoseTargets()
                 break;
             default:
                 // We should never reach here!
-                return 3;
+                return 33;
             }
         }
 
@@ -926,18 +933,19 @@ int GameState::turnStateChoseTargets()
     else
     {
         // Why are we here?? We should never be here.
-        return 666;
+        return 34;
     }
 
     turnState++;
-    turnStateApplyAction();
-    return 0;
+    cout << "End of GameState::turnStateChoseTargets().\n" << std::flush;
+    return turnStateApplyAction();
 }
 
 int GameState::turnStateApplyAction()
 {
+    cout << "Beginning of GameState::turnStateApplyAction().\n" << std::flush;
     if (turnState != 4)
-        return 10;
+        return 50;
 
     // Apply the chosen action to the chosen targets.
     int ret = currentServant->doAction(chosenAction, chosenDefenders);
@@ -954,6 +962,7 @@ int GameState::turnStateApplyAction()
         // Get the valid moves for the servant
         validMoves = getValidMoves(currentServant, remainingMove);
         turnState++;
+        cout << "End of GameState::turnStateApplyAction() (1).\n" << std::flush;
         return 0;
     }
 
@@ -964,7 +973,6 @@ int GameState::turnStateApplyAction()
     // TODO
     else if (currentServant->getClass() == Archer && !archerSecondTurn)
     {
-        //
         int r = currentServant->getRandNum();
         if (r <= currentServant->getLuk())
         {
@@ -973,6 +981,7 @@ int GameState::turnStateApplyAction()
             validMoves = getValidMoves(currentServant, currentServant->getMov());
         }
         turnState++;
+        cout << "End of GameState::turnStateApplyAction() (2).\n" << std::flush;
         return 0;
     }
 
@@ -980,15 +989,16 @@ int GameState::turnStateApplyAction()
     else
     {
         turnState += 2;
-        turnStatePostTurn();
-        return 0;
+        cout << "End of GameState::turnStateApplyAction() (3).\n" << std::flush;
+        return turnStatePostTurn();
     }
 }
 
 int GameState::turnStateExtraMove()
 {
+    cout << "Beginning of GameState::turnStateExtraMove().\n" << std::flush;
     if (turnState != 5)
-        return 10;
+        return 60;
 
     // Verify that the clicked space is valid
     bool isValid = false;
@@ -1000,7 +1010,7 @@ int GameState::turnStateExtraMove()
     if (!isValid)
     {
         // The selected space was not valid!
-        return 1;
+        return 51;
     }
 
     servEnd.x = clickedX;
@@ -1009,21 +1019,21 @@ int GameState::turnStateExtraMove()
     // Move the player on the Playing Field
     servStart = field->moveServant(currentServant, servEnd);
 
-    // TODO: Display it somehow?? Have a gui method parse the action list?
-
     // End the turn by calling the Post-turn turn state.
     turnState++;
-    turnStatePostTurn();
-    return 0;
+    cout << "End of GameState::turnStateExtraMove().\n" << std::flush;
+    return turnStatePostTurn();
 }
 
 // If this function returns 1000, then team Alpha is dead. If it returns 1001,
 // team Omegaa is dead. If it returns 1002, team Boss is dead.
 int GameState::turnStatePostTurn()
 {
+    cout << "Beginning of GameState::turnStatePostTurn().\n" << std::flush;
     if (turnState != 6)
-        return 10;
+        return 70;
 
+    addToEventLog("Turn ended.");
     int returnValue = 0;
 
     // Check if anyone has died and modify the death list accordingly.
@@ -1054,11 +1064,21 @@ int GameState::turnStatePostTurn()
 
     currentServant = getNextServant();
 
+    // Automatically execute turnStatePreTurn() if returnValue is not 70, 1000,
+    // 1001, or 1002
+    if (returnValue != 70 && returnValue != 1000 && returnValue != 1001 &&
+            returnValue != 1002)
+    {
+        returnValue = turnStatePreTurn();
+    }
+
+    cout << "End of GameState::turnStatePostTurn().\n" << std::flush;
     return returnValue;
 }
 
 void GameState::resetTurnValues()
 {
+    cout << "Beginning of GameState::resetTurnValues().\n" << std::flush;
     turnState = 0;
     clickedX = clickedY = 0;
     servStart.x = servStart.y = servEnd.x = servEnd.y = 0;
@@ -1074,6 +1094,8 @@ void GameState::resetTurnValues()
     actionList.clear();
     actionListTypes.clear();
     actionMPCosts.clear();
+
+    cout << "End of GameState::resetTurnValues().\n" << std::flush;
 }
 
 vector<string> GameState::getEventLog()
@@ -1083,5 +1105,6 @@ vector<string> GameState::getEventLog()
 
 void GameState::addToEventLog(string s)
 {
-    eventLog.push_back(s);
+    string num = to_string(eventLog.size() + 1) + ": ";
+    eventLog.push_back(num + s);
 }

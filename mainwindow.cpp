@@ -43,6 +43,11 @@ GameState *MainWindow::getGameState()
     return gs;
 }
 
+void MainWindow::reDrawMenus()
+{
+    mainSetup();
+}
+
 void MainWindow::mainSetup()
 {
     clearLayout(layout());
@@ -192,7 +197,6 @@ void MainWindow::mainSetup()
 
 
     /* Servant Action List Widget */
-    // TODO (use radio buttons?)
     QVBoxLayout *actionList = new QVBoxLayout;
     vector<string> actList = gs->getActionList();
     vector<ActionType> actListType = gs->getActionListType();
@@ -262,6 +266,23 @@ void MainWindow::mainSetup()
     QVBoxLayout *wholeActionList = new QVBoxLayout;
     wholeActionList->addWidget(a);
     wholeActionList->addLayout(actionList);
+
+    if (gs->getTurnState() == 2)
+    {
+        QPushButton *cancelButton = new QPushButton(tr("Undo Move"));
+        connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelAction()));
+        wholeActionList->addWidget(cancelButton);
+    }
+    else if (gs->getTurnState() == 3)
+    {
+        QPushButton *cancelButton = new QPushButton(tr("Choose Different Action"));
+        connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelAction()));
+        wholeActionList->addWidget(cancelButton);
+    }
+
+    QPushButton *endTurnButton = new QPushButton(tr("End Turn"));
+    connect(endTurnButton, SIGNAL(clicked()), this, SLOT(endTurn()));
+    wholeActionList->addWidget(endTurnButton);
 
     /* Event Log Widget */
     vector<string> eL = gs->getEventLog();
@@ -396,6 +417,7 @@ void MainWindow::populateScene(int w, int l)
 void MainWindow::reColorScene()
 {
     // Get the items in the scene
+    cout << "Beginning of reColorScene\n" << std::flush;
     QList<QGraphicsItem*> allItems = scene->items();
     for (int i = 0; i < allItems.size(); i++)
     {
@@ -454,7 +476,9 @@ void MainWindow::reColorScene()
         temp->setPath(imgPath);
     }
 
+    cout << "In reColorScene(), just before mainSetup() call.\n" << std::flush;
     mainSetup();
+    cout << "End of reColorScene().\n\n" << std::flush;
 }
 
 void MainWindow::clearLayout(QLayout *layout)
@@ -508,11 +532,11 @@ void MainWindow::but1()
     gs->setChosenAction(0);
     int result = gs->turnStateChoseAction();
 
-    if (result == 10)
+    if (result == 30)
         gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 1)
+    else if (result == 21)
         gs->addToEventLog("Invalid choice.");
-    else if (result == 2)
+    else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
     mainSetup();
@@ -522,11 +546,11 @@ void MainWindow::but2()
     gs->setChosenAction(1);
     int result = gs->turnStateChoseAction();
 
-    if (result == 10)
+    if (result == 30)
         gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 1)
+    else if (result == 21)
         gs->addToEventLog("Invalid choice.");
-    else if (result == 2)
+    else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
     mainSetup();
@@ -536,11 +560,11 @@ void MainWindow::but3()
     gs->setChosenAction(2);
     int result = gs->turnStateChoseAction();
 
-    if (result == 10)
+    if (result == 30)
         gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 1)
+    else if (result == 21)
         gs->addToEventLog("Invalid choice.");
-    else if (result == 2)
+    else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
     mainSetup();
@@ -550,11 +574,11 @@ void MainWindow::but4()
     gs->setChosenAction(3);
     int result = gs->turnStateChoseAction();
 
-    if (result == 10)
+    if (result == 30)
         gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 1)
+    else if (result == 21)
         gs->addToEventLog("Invalid choice.");
-    else if (result == 2)
+    else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
     mainSetup();
@@ -564,11 +588,11 @@ void MainWindow::but5()
     gs->setChosenAction(4);
     int result = gs->turnStateChoseAction();
 
-    if (result == 10)
+    if (result == 30)
         gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 1)
+    else if (result == 21)
         gs->addToEventLog("Invalid choice.");
-    else if (result == 2)
+    else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
     mainSetup();
@@ -578,11 +602,11 @@ void MainWindow::but6()
     gs->setChosenAction(5);
     int result = gs->turnStateChoseAction();
 
-    if (result == 10)
+    if (result == 30)
         gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 1)
+    else if (result == 21)
         gs->addToEventLog("Invalid choice.");
-    else if (result == 2)
+    else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
     mainSetup();
@@ -592,11 +616,11 @@ void MainWindow::but7()
     gs->setChosenAction(6);
     int result = gs->turnStateChoseAction();
 
-    if (result == 10)
+    if (result == 30)
         gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 1)
+    else if (result == 21)
         gs->addToEventLog("Invalid choice.");
-    else if (result == 2)
+    else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
     mainSetup();
@@ -606,11 +630,11 @@ void MainWindow::but8()
     gs->setChosenAction(7);
     int result = gs->turnStateChoseAction();
 
-    if (result == 10)
+    if (result == 30)
         gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 1)
+    else if (result == 21)
         gs->addToEventLog("Invalid choice.");
-    else if (result == 2)
+    else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
     mainSetup();
@@ -620,11 +644,11 @@ void MainWindow::but9()
     gs->setChosenAction(8);
     int result = gs->turnStateChoseAction();
 
-    if (result == 10)
+    if (result == 30)
         gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 1)
+    else if (result == 21)
         gs->addToEventLog("Invalid choice.");
-    else if (result == 2)
+    else if (result == 22)
         gs->addToEventLog("Not enough MP!"); // Pop up message box?
 
     mainSetup();
@@ -632,12 +656,73 @@ void MainWindow::but9()
 
 void MainWindow::endTurn()
 {
-    //
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(tr("Final Fate"));
+    messageBox.setText(tr("Do you really wish to end your turn?"));
+    messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    messageBox.setDefaultButton(QMessageBox::No);
+    if (messageBox.exec() == QMessageBox::Yes)
+    {
+        int result = gs->endTurn();
+        if (result == 10)
+        {
+            gs->addToEventLog("An error occured (endTurn()->turnStatePreTurn()).");
+        }
+        else if (result == 70)
+        {
+            gs->addToEventLog("An error occured (endTurn()).");
+        }
+        else if (result == 1000)
+        {
+            QMessageBox messageBox;
+            messageBox.setWindowTitle(tr("Final Fate"));
+            messageBox.setText(tr("Team Alpha Loses!"));
+            messageBox.setStandardButtons(QMessageBox::Ok);
+            messageBox.setDefaultButton(QMessageBox::Ok);
+            if (messageBox.exec() == QMessageBox::Ok)
+                qApp->quit();
+        }
+        else if (result == 1001)
+        {
+            QMessageBox messageBox;
+            messageBox.setWindowTitle(tr("Final Fate"));
+            messageBox.setText(tr("Team Omega Loses!"));
+            messageBox.setStandardButtons(QMessageBox::Ok);
+            messageBox.setDefaultButton(QMessageBox::Ok);
+            if (messageBox.exec() == QMessageBox::Ok)
+                qApp->quit();
+        }
+        else if (result == 1002)
+        {
+            QMessageBox messageBox;
+            messageBox.setWindowTitle(tr("Final Fate"));
+            messageBox.setText(tr("Boss Team Loses!"));
+            messageBox.setStandardButtons(QMessageBox::Ok);
+            messageBox.setDefaultButton(QMessageBox::Ok);
+            if (messageBox.exec() == QMessageBox::Ok)
+                qApp->quit();
+        }
+        else
+        {
+            reColorScene();
+        }
+    }
 }
 
 void MainWindow::cancelAction()
 {
-    //
+    if (gs->getTurnState() == 2)
+    {
+        gs->addToEventLog("Undid Move Action.");
+        gs->prevTurnState();
+        reColorScene();
+    }
+    else if (gs->getTurnState() == 3)
+    {
+        gs->addToEventLog("Undid Action Choice.");
+        gs->prevTurnState();
+        reColorScene();
+    }
 }
 
 void MainWindow::redrawEverything()
@@ -661,10 +746,4 @@ void MainWindow::restartGameState(vector<string> team1, vector<string> team2,
                                   Team t1, Team t2, int ascensionLvl)
 {
     //
-}
-
-void MainWindow::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    //
-    cout << "test??\n" << std::flush;
 }

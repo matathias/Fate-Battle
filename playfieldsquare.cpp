@@ -103,9 +103,7 @@ void PlayFieldSquare::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     QGraphicsItem::mouseReleaseEvent(event);
-    // on mouse release, send (x,y) to game class to handle the click
-    // divide x,y by grid size to obtain grid coordinate, then do stuff
-    std::cout << x << " " << y << "\n" << std::flush;
+
     gState->setClickedX(x);
     gState->setClickedY(y);
     int result = 1000;
@@ -116,13 +114,21 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     else if (gState->getTurnState() == 5)
         result = gState->turnStateExtraMove();
 
-    if (result == 1)
+    if (result == 11 || result == 31 || result == 51)
     {
         gState->addToEventLog("Invalid space selection!");
+        // It crashes if an invalid space is selected twice??
+        window->reDrawMenus();
+    }
+    else if (result == 32 || result == 33 || result == 34)
+    {
+        gState->addToEventLog("A Major Error occurred! (turnStateChoseTargets().");
+        window->reDrawMenus();
     }
     else if (result != 0 && result != 1000)
     {
-        gState->addToEventLog("An Error occurred??");
+        gState->addToEventLog("An Unknown Error occurred?!");
+        window->reDrawMenus();
     }
     else if (result == 0)
     {

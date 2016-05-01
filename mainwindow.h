@@ -35,10 +35,8 @@ public:
     ~MainWindow();
     void populateScene(int x, int y);
     void reColorScene();
+    void reDrawMenus();
     GameState *getGameState();
-
-protected:
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private slots:
     void open();
@@ -71,6 +69,7 @@ private:
     void initialSetup();
 
     void clearLayout(QLayout *l);
+
     int eventLogSize;
 
     QGraphicsScene *scene;

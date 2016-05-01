@@ -65,10 +65,15 @@ class GameState
 
         /* Functions to track the turn state and help process everything. */
         int getTurnState();
+
         // These two functions return the turn state after they are done
         // processing.
-        int nextTurnState();
-        int prevTurnState();
+        int nextTurnState(); // Returns 999 if it fails. Otherwise returns the
+                             // result of the relevant turnState function.
+        int prevTurnState(); // Returns 999 if it failes. Otherwise returns the
+                             // result of the relevant turnState function.
+
+        int endTurn();
 
         int getFieldWidth();
         int getFieldLength();
@@ -79,13 +84,34 @@ class GameState
 
         // These functions return 0 if they finished successfully, and another
         // value otherwise.
-        int turnStatePreTurn();
-        int turnStateMove();
-        int turnStateChoseAction();
-        int turnStateChoseTargets();
-        int turnStateApplyAction();
-        int turnStateExtraMove();
-        int turnStatePostTurn(); // Post Turn is also responsible for resetting
+        int turnStatePreTurn();      //Errors in range 1-10
+                                        // 10: invalid turnState
+        int turnStateMove();         //Errors in range 11-20
+                                        // 20: invalid turnState
+                                        // 11: invalid space selection
+        int turnStateChoseAction();  //Errors in range 21-30
+                                        // 30: invalid turnState
+                                        // 21: invalid action choice
+                                        // 22: player not have enough MP
+        int turnStateChoseTargets(); //Errors in range 31-40
+                                        // 40: invalid turnState
+                                        // 31: invalid space selection
+                                        // 32: AOE chosen direction isn't valid
+                                        // 33: AOE chosen direction isn't valid
+                                        // 34: invalid chosen Action type
+                                        // (32 through 34 should never be
+                                        //     reached, like, at all)
+        int turnStateApplyAction();  //Errors in range 41-50
+                                        // 50: invalid turnState
+        int turnStateExtraMove();    //Errors in range 51-60
+                                        // 60: invalid turnState
+                                        // 51: invalid space selection
+        int turnStatePostTurn();     //Errors in range 61+
+                                        // 70: invalid turnState
+                                        // 1000: Alpha team is dead
+                                        // 1001: Omega team is dead
+                                        // 1002: Boss team is dead
+                                 // Post Turn is also responsible for resetting
                                  // the turn state and getting the next Servant
 
         void resetTurnValues();
