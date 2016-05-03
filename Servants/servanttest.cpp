@@ -47,9 +47,9 @@ ServantTest::ServantTest(int as, Team t) : Servant(as, t)
 
     vector<string> actions;
     actions.push_back("1: Attack");
-    actions.push_back("2: NP 1");
-    actions.push_back("3: NP 2");
-    actions.push_back("4: NP 3");
+    actions.push_back("2: NP: Straight Slash");
+    actions.push_back("3: NP: Side Slash");
+    actions.push_back("4: NP: Omni Slash");
     actionList.push_back(actions);
     actionList.push_back(actions);
     actionList.push_back(actions);
@@ -70,6 +70,23 @@ ServantTest::ServantTest(int as, Team t) : Servant(as, t)
     actionMPCosts.push_back(actionCosts);
     actionMPCosts.push_back(actionCosts);
 
+    vector<bool> acDodge;
+    acDodge.push_back(true);
+    acDodge.push_back(true);
+    acDodge.push_back(false);
+    acDodge.push_back(false);
+    actionDodgeable.push_back(acDodge);
+    actionDodgeable.push_back(acDodge);
+    actionDodgeable.push_back(acDodge);
+    vector<bool> acCounter;
+    acCounter.push_back(true);
+    acCounter.push_back(true);
+    acCounter.push_back(true);
+    acCounter.push_back(false);
+    actionCounterable.push_back(acCounter);
+    actionCounterable.push_back(acCounter);
+    actionCounterable.push_back(acCounter);
+
     vector<string> np1;
     np1.push_back("Straight Slash");
     np1.push_back("Attack straight-on for thrice normal damage.");
@@ -84,13 +101,13 @@ ServantTest::ServantTest(int as, Team t) : Servant(as, t)
     noblePhantasms.push_back(np3);
 
     Coordinate c1;
-    c1.x = 1; c1.y = 0;
+    c1.x = 0; c1.y = -1;
     Coordinate c2;
     c2.x = 0; c2.y = 1;
     Coordinate c3;
-    c3.x = -1; c3.y = 0;
+    c3.x = 1; c3.y = 0;
     Coordinate c4;
-    c4.x = 0; c4.y = -1;
+    c4.x = -1; c4.y = 0;
     vector<Coordinate> npc1;
     npc1.push_back(c1);
     npc1.push_back(c2);
@@ -220,7 +237,6 @@ int ServantTest::activateNP1(vector<Servant *> defenders)
 // undodgeable five times normal damage.
 int ServantTest::activateNP2(vector<Servant *> defenders)
 {
-    cout << "Starting...?\n" << std::flush;
     if (actionMPCosts[ascension][2] > currMP)
         return 1; // Not enough MP to attack
     else
@@ -293,7 +309,6 @@ int ServantTest::activateNP2(vector<Servant *> defenders)
             }
         }
     }
-    cout << "Ending...?\n" << std::flush;
     return 0;
 }
 

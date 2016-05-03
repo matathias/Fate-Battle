@@ -75,6 +75,7 @@ class GameState
                              // result of the relevant turnState function.
 
         int endTurn();
+        int endTurnProcess();
 
         int getFieldWidth();
         int getFieldLength();
@@ -94,6 +95,7 @@ class GameState
                                         // 30: invalid turnState
                                         // 21: invalid action choice
                                         // 22: player not have enough MP
+                                        // 25: player decided to not choose action
         int turnStateChoseTargets(); //Errors in range 31-40
                                         // 40: invalid turnState
                                         // 31: invalid space selection
@@ -102,6 +104,7 @@ class GameState
                                         // 34: invalid chosen Action type
                                         // (32 through 34 should never be
                                         //     reached, like, at all)
+                                        // 35: Action canceled
         int turnStateApplyAction();  //Errors in range 41-50
                                         // 50: invalid turnState
         int turnStateExtraMove();    //Errors in range 51-60
@@ -118,7 +121,11 @@ class GameState
         void resetTurnValues();
 
         vector<string> getEventLog();
+        vector<string> getErrorLog();
         void addToEventLog(string s);
+        void addToErrorLog(string s);
+        int getEventNum();
+        int getErrorNum();
     
     protected:
         vector<Servant*> turnOrder; // Contains servant pointers in turn order.
@@ -128,6 +135,9 @@ class GameState
         vector<Servant*> dead; // Contains a list of dead servants. If a servant
                                // is in this list, then getNextServant and
                                // peekNextServant will skip them.
+        vector<Servant*> revived; // Contains a list of Servants that have been
+                                  // revived in the current turn. This list is
+                                  // cleared at the end of every turn.
         
         vector<Servant*> alphaTeam;
         vector<Servant*> omegaTeam;
@@ -136,6 +146,9 @@ class GameState
         vector<Team> activeTeams;
         
         PlayField* field;
+
+        int eventNum;
+        int errorNum;
 
         // Determines what part of a Servant's turn it is.
         // 0: Pre-turn processing (i.e. apply debuffs and such)
@@ -174,4 +187,5 @@ class GameState
 
         // Keep track of events as they happen
         vector<string> eventLog;
+        vector<string> errorLog;
 };

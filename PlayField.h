@@ -6,6 +6,8 @@
 
 using namespace std;
 
+bool isInVector(vector<Coordinate> vec, Coordinate c);
+
 class PlayField
 {
     public:
@@ -18,10 +20,22 @@ class PlayField
         //vector<vector<Debuff*>> getField();
         vector<vector<Debuff*>> getTerritories();
 
+        // Returns true if the Coordinate is in bounds AND there is no servant
+        // on the space.
         bool isValidCoordinate(Coordinate c);
-        Coordinate moveServant(Servant* s, Coordinate c); // returns the
-                                                          // Servant's previous
-                                                          // location
+
+        // Returns true if the Coordinate is in bounds. Does not care if space
+        // is occupied or not.
+        bool isCoordinateInBounds(Coordinate c);
+
+        // Returns the Servant's previous location
+        Coordinate moveServant(Servant* s, Coordinate c);
+
+        // The servant has died. Remove them from the playing field.
+        void servantDead(Servant* s);
+
+        // The servant has been revived. Add them back to the playing field.
+        void servantRevived(Servant* s);
 
         bool isRealityMarbleOn();
         Servant* realityMarbleServant(); // returns null if there is no active
@@ -41,6 +55,8 @@ class PlayField
         int getFieldWidth();
 
         Coordinate getRandomCoord();
+        Coordinate getNearestValidCoord(Coordinate c);
+        vector<Coordinate> getAdjacentSpaces(Coordinate c);
         
     protected:
         int length;

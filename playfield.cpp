@@ -15,6 +15,19 @@
 
 using namespace std;
 
+bool isInVector(vector<Coordinate> vec, Coordinate c)
+{
+    bool found = false;
+    for (int i = 0; i < vec.size() && !found; i++)
+    {
+        if (vec[i].x == c.x && vec[i].y == c.y)
+            found = true;
+    }
+
+    return found;
+}
+
+
 /********** Function Definitions **********/
 // Constructor
 PlayField::PlayField(int l, int w, vector<Servant *> servantList,
@@ -40,7 +53,7 @@ PlayField::PlayField(int l, int w, vector<Servant *> servantList,
         tempEffects.push_back(tTemp);
     }
 
-    for (int i = 0; i < servantLocations.size(); i++)
+    for (unsigned int i = 0; i < servantLocations.size(); i++)
     {
         Coordinate thisCoord = servantLocations[i];
         int x = thisCoord.x;
@@ -68,9 +81,9 @@ void PlayField::startRealityMarble(Servant *owner, Debuff* rm)
     realityMarbleOn = true;
     rmServant = owner;
 
-    for (int i = 0; i < tempEffects.size(); i++)
+    for (unsigned int i = 0; i < tempEffects.size(); i++)
     {
-        for(int j = 0; j < tempEffects[i].size(); j++)
+        for(unsigned int j = 0; j < tempEffects[i].size(); j++)
         {
             tempEffects[i][j] = rm;
         }
@@ -82,9 +95,9 @@ void PlayField::endRealityMarble()
     realityMarbleOn = false;
     rmServant = NULL;
 
-    for (int i = 0; i < tempEffects.size(); i++)
+    for (unsigned int i = 0; i < tempEffects.size(); i++)
     {
-        for(int j = 0; j < tempEffects[i].size(); j++)
+        for(unsigned int j = 0; j < tempEffects[i].size(); j++)
         {
             tempEffects[i][j] = NULL;
         }
@@ -93,9 +106,9 @@ void PlayField::endRealityMarble()
 
 void PlayField::eraseTerritory(string n)
 {
-    for (int i = 0; i < tempEffects.size(); i++)
+    for (unsigned int i = 0; i < tempEffects.size(); i++)
     {
-        for(int j = 0; j < tempEffects[i].size(); j++)
+        for(unsigned int j = 0; j < tempEffects[i].size(); j++)
         {
             if (tempEffects[i][j] != NULL &&
                 tempEffects[i][j]->getDebuffDescrip().compare(n) == 0)
@@ -104,6 +117,25 @@ void PlayField::eraseTerritory(string n)
             }
         }
     }
+}
+
+void PlayField::servantDead(Servant *s)
+{
+    Coordinate c = s->getCurrLoc();
+
+    // Make sure that the space actually points to this Servant. Don't want to
+    // accidentally remove a different Servant.
+    if (field[c.x][c.y] == s)
+        field[c.x][c.y] = NULL;
+}
+
+void PlayField::servantRevived(Servant *s)
+{
+    Coordinate c = s->getCurrLoc();
+    c = getNearestValidCoord(c);
+
+    field[c.x][c.y] = s;
+    s->setLoc(c);
 }
 
 /***** Retrievers *****/
@@ -123,6 +155,11 @@ bool PlayField::isValidCoordinate(Coordinate c)
             field[c.x][c.y] == NULL);
 }
 
+bool PlayField::isCoordinateInBounds(Coordinate c)
+{
+    return (c.x >= 0 && c.x < width && c.y >= 0 && c.y < length);
+}
+
 bool PlayField::doesSpaceHaveServant(Coordinate c)
 {
     return field[c.x][c.y] != NULL;
@@ -130,7 +167,7 @@ bool PlayField::doesSpaceHaveServant(Coordinate c)
 
 vector<Coordinate> PlayField::pruneRange(vector<Coordinate> range, Servant* source)
 {
-    for (int i = 0; i < range.size(); i++)
+    for (unsigned int i = 0; i < range.size(); i++)
     {
         Coordinate sc;
         sc.x = range[i].x + source->getCurrLoc().x;
@@ -149,7 +186,7 @@ vector<Servant*> PlayField::getAllInRange(Servant *s, vector<Coordinate> range)
     Coordinate baseLoc = s->getCurrLoc();
     vector<Servant*> targets;
 
-    for (int i = 0; i < range.size(); i++)
+    for (unsigned int i = 0; i < range.size(); i++)
     {
         int x = baseLoc.x + range[i].x;
         int y = baseLoc.y + range[i].y;
@@ -206,6 +243,74 @@ Coordinate PlayField::getRandomCoord()
     }
 
     return ret;
+}
+
+// This function assumes that a valid coordinate exists on the playing field.
+Coordinate PlayField::getNearestValidCoord(Coordinate c)
+{
+    Coordinate ret;
+    if (isValidCoordinate(c))
+        ret = c;
+    else
+    {
+        bool found = false;
+        vector<Coordinate> nextCoords;
+        vector<Coordinate> procCoords;
+        procCoords.push_back(c);
+
+        int i = 0;
+        while (!found)
+        {
+            nextCoords = getAdjacentSpaces(procCoords[i]);
+            i++;
+
+            while (nextCoords.size() > 0 && !found)
+            {
+                if (isInVector(procCoords, nextCoords[0]))
+                {
+                    nextCoords.erase(nextCoords.begin());
+                }
+                else if (isValidCoordinate(nextCoords[0]))
+                {
+                    ret = nextCoords[0];
+                    found = true;
+                }
+                else
+                {
+                    procCoords.push_back(nextCoords[0]);
+                    nextCoords.erase(nextCoords.begin());
+                }
+            }
+        }
+    }
+
+    return ret;
+}
+
+// Returns the four adjacent spaces to c.
+// If a space is out of bounds it is not included.
+vector<Coordinate> PlayField::getAdjacentSpaces(Coordinate c)
+{
+    vector<Coordinate> spaces;
+    Coordinate north, south, east, west;
+    north.x = south.x = c.x;
+    north.y = c.y + 1;
+    south.y = c.y - 1;
+
+    east.y = west.y = c.y;
+    east.x = c.x - 1;
+    west.x = c.x + 1;
+
+    if (isCoordinateInBounds(north))
+        spaces.push_back(north);
+    if (isCoordinateInBounds(south))
+        spaces.push_back(south);
+    if (isCoordinateInBounds(east))
+        spaces.push_back(east);
+    if (isCoordinateInBounds(west))
+        spaces.push_back(west);
+
+    return spaces;
 }
 
 int PlayField::getFieldLength()

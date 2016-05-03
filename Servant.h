@@ -71,10 +71,11 @@ class Servant
 
         // Functions related to battle formulas and damage calculation
         int getHitRate();
-        vector<int> getEvade(); // This is a vector of ints to account for
-                                // Servants who have skills that offer multiple
-                                // evasion chances. Only the first value is
-                                // checked against hit rate
+        virtual vector<int> getEvade(); // This is a vector of ints to account
+                                        // for Servants who have skills that
+                                        // offer multiple evasion chances. Only
+                                        // the first value is checked against
+                                        // hit rate
         int getCriticalRate();
         int getCriticalEvade();
 
@@ -82,10 +83,24 @@ class Servant
         vector<string> getActionList();
         vector<ActionType> getActionListTypes();
         vector<int> getActionMPCosts();
+        vector<bool> getActionsDodgeable();
+        vector<bool> getActionsCounterable();
 
         ActionType getActionType(int action);
         int getActionMPCost(int action);
-        vector<Coordinate> getActionRange(int action);
+        bool getActionDodgeable(int action);
+        bool getActionCounterable(int action);
+        virtual string getActionName(int action);
+        // If the action is a Noble Phantasm, returns the index of the NPvector
+        // in which the NP is stored. If the action is not an NP, returns -1.
+        virtual int isActionNP(int action);
+
+        // These two functions are specific to Casters and Assassins
+        // respectively.
+        virtual bool isHealAction(int action);
+        virtual bool isPoisonAction(int action);
+
+        virtual vector<Coordinate> getActionRange(int action);
 
         vector<vector<string>> getNoblePhantasms();
         vector<vector<Coordinate>> getNPRanges();
@@ -97,14 +112,14 @@ class Servant
         // special skills attached to their attack should override the attack
         // method.
         // It returns 0 if it succeeds, and another value otherwise.
-        int attack(vector<Servant*> defenders, bool counter);
+        virtual int attack(vector<Servant*> defenders, bool counter);
 
         // Like with attack, this function is defined in the Servant class but
         // will need to be overridden if a Servant has more options available to
         // them than just attacking and their noble phantasms.
         // The function returns 0 if it succeeds, and another value otherwise
         // (i.e. the choice made is not valid).
-        int doAction(int actionNum, vector<Servant*> defenders);
+        virtual int doAction(int actionNum, vector<Servant*> defenders);
 
         // These functions actually need to be defined in the subclasses.
         // They return 0 if they succeed, and another value otherwise.
@@ -117,7 +132,7 @@ class Servant
         int getRandNum();
 
         // Placeholder. Will only really be used for Avengers.
-        Debuff* finalRevenge();
+        virtual Debuff* finalRevenge();
         
     protected:
         string name; // Based on the Servant's class and weapon.
@@ -157,6 +172,8 @@ class Servant
         vector<vector<string>> actionList;
         vector<vector<ActionType>> actionListTypes;
         vector<vector<int>> actionMPCosts;
+        vector<vector<bool>> actionDodgeable;
+        vector<vector<bool>> actionCounterable;
 
         vector<vector<string>> noblePhantasms; // Column 1: name, 2: description
         vector<vector<Coordinate>> npRanges; // Ranges for NPs

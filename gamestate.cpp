@@ -12,6 +12,14 @@
 #include <cmath>
 #include <iostream>
 
+#include <QMessageBox>
+#include <QObject>
+#include <QDialog>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+
 using namespace std;
 
 /********** Function Definitions **********/
@@ -23,7 +31,7 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
         int highestSpeed = 0;
         Servant *fastest = NULL;
         int index = 0;
-        for (int i = 0; i < tO.size(); i++)
+        for (unsigned int i = 0; i < tO.size(); i++)
         {
             if(tO[i]->getSpd() > highestSpeed)
             {
@@ -47,7 +55,7 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
     // seperating them out into teams.
     vector<Coordinate> servantLocations;
     int aCounter = 0, oCounter = 0, bCounter = 0;
-    for (int i = 0; i < turnOrder.size(); i++)
+    for (unsigned int i = 0; i < turnOrder.size(); i++)
     {
         if (turnOrder[i]->getTeam() == Alpha)
         {
@@ -98,6 +106,8 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
     if (bCounter > 0)
         activeTeams.push_back(Boss);
 
+    eventNum = 1;
+
     field = new PlayField(l, w, turnOrder, servantLocations);
     resetTurnValues();
     currentServant = getNextServant();
@@ -128,7 +138,7 @@ void GameState::addDead(Servant *s)
 void GameState::removeDead(Servant *s)
 {
     bool found = false;
-    for (int i = 0; i < dead.size() && !found; i++)
+    for (unsigned int i = 0; i < dead.size() && !found; i++)
     {
         if (dead[i] == s)
         {
@@ -157,7 +167,7 @@ void GameState::setChosenAction(int a)
 bool GameState::isServantDead(Servant *s)
 {
     bool found = false;
-    for (int i = 0; i < dead.size() && !found; i++)
+    for (unsigned int i = 0; i < dead.size() && !found; i++)
     {
         if (dead[i] == s)
             found = true;
@@ -172,7 +182,7 @@ bool GameState::isTeamDead(Team t)
     int oDead = 0;
     int bDead = 0;
 
-    for (int i = 0; i < dead.size(); i++)
+    for (unsigned int i = 0; i < dead.size(); i++)
     {
         if (dead[i]->getTeam() == Alpha)
             aDead++;
@@ -184,15 +194,15 @@ bool GameState::isTeamDead(Team t)
 
     if (t == Alpha)
     {
-        return (aDead == alphaTeam.size());
+        return (aDead == (int) alphaTeam.size());
     }
     else if (t == Omega)
     {
-        return (oDead == omegaTeam.size());
+        return (oDead == (int) omegaTeam.size());
     }
     else
     {
-        return (bDead == bossTeam.size());
+        return (bDead == (int) bossTeam.size());
     }
 }
 
@@ -208,7 +218,7 @@ Servant* GameState::isSpaceServant(int x, int y)
 bool GameState::isSpaceSelection(int x, int y)
 {
     bool isSelection = false;
-    for (int i = 0; i < selectionRange.size() && !isSelection; i++)
+    for (unsigned int i = 0; i < selectionRange.size() && !isSelection; i++)
     {
         if (x == selectionRange[i].x + currentServant->getCurrLoc().x &&
             y == selectionRange[i].y + currentServant->getCurrLoc().y)
@@ -220,7 +230,7 @@ bool GameState::isSpaceSelection(int x, int y)
 bool GameState::isSpaceMove(int x, int y)
 {
     bool isMove = false;
-    for (int i = 0; i < validMoves.size() && !isMove; i++)
+    for (unsigned int i = 0; i < validMoves.size() && !isMove; i++)
     {
         if (x == validMoves[i].x && y == validMoves[i].y)
             isMove = true;
@@ -283,7 +293,7 @@ Servant* GameState::peekNextServant()
 {
     int index = 0;
     bool foundAlive = false;
-    for (int i = 0; i < turnOrder.size() && !foundAlive; i++)
+    for (unsigned int i = 0; i < turnOrder.size() && !foundAlive; i++)
     {
         if (!isServantDead(turnOrder[i]))
         {
@@ -350,7 +360,7 @@ Coordinate GameState::getAdjacentInRange(Coordinate c, vector<Coordinate> range,
     retLoc.x = retLoc.y = -1;
     bool found = false;
 
-    for (int i = 0; i < range.size() && !found; i++)
+    for (unsigned int i = 0; i < range.size() && !found; i++)
     {
         int dist = abs(range[i].x - c.x) + abs(range[i].y - c.y);
 
@@ -389,10 +399,10 @@ vector<Coordinate> GameState::getFullMoveRange(Servant *s, int moveRange)
         while (i >= startIndex && i < endIndex)
         {
             vector<Coordinate> tempMoves = getAdjacentSpaces(moves[i]);
-            for (int j = 0; j < tempMoves.size(); j++)
+            for (unsigned int j = 0; j < tempMoves.size(); j++)
             {
                 bool alreadyIn = false;
-                for (int k = 0; k < moves.size() && !alreadyIn; k++)
+                for (unsigned int k = 0; k < moves.size() && !alreadyIn; k++)
                 {
                     if (tempMoves[j].x == moves[k].x &&
                         tempMoves[j].y == moves[k].y)
@@ -412,14 +422,13 @@ vector<Coordinate> GameState::getFullMoveRange(Servant *s, int moveRange)
 
 vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
 {
-    //cout << "Beginning of GameState::getValidMoves().\n" << std::flush;
     Coordinate baseLoc = s->getCurrLoc();
     vector<Coordinate> moves = getFullMoveRange(s, mov);
 
     // Find if the unit has a "provoked" debuff
     bool isProvoked = false;
     vector<Debuff*> tempDebuffs = s->getDebuffs();
-    for (int i = 0; i < tempDebuffs.size() && !isProvoked; i++)
+    for (unsigned int i = 0; i < tempDebuffs.size() && !isProvoked; i++)
     {
         if (tempDebuffs[i]->getDebuffName().compare("Provoked") == 0)
             isProvoked = true;
@@ -431,7 +440,7 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
         vector<Servant*> enemies = getEnemyTeam(s);
         Coordinate saberLoc;
         bool foundSaber = false;
-        for (int i = 0; i < enemies.size() && !foundSaber; i++)
+        for (unsigned int i = 0; i < enemies.size() && !foundSaber; i++)
         {
             if (enemies[i]->getClass() == Saber)
             {
@@ -446,7 +455,7 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
             Coordinate moveLocation = getAdjacentInRange(saberLoc, moves, true);
 
             int i = 0;
-            while (i < moves.size())
+            while (i < (int) moves.size())
             {
                 if (moveLocation.x == moves[i].x &&
                         moveLocation.y == moves[i].y)
@@ -462,18 +471,16 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
         vector<Servant*> enemies = getEnemyTeam(s);
 
         int minDist = 1000;
-        Servant* closest = NULL;
         Coordinate closeLoc;
 
         // Locate the nearest enemy unit
-        for (int i = 0; i < enemies.size(); i++)
+        for (unsigned int i = 0; i < enemies.size(); i++)
         {
             Coordinate enLoc = enemies[i]->getCurrLoc();
             int dist = abs(enLoc.x - baseLoc.x) + abs(enLoc.y - baseLoc.y);
             if (dist < minDist)
             {
                 minDist = dist;
-                closest = enemies[i];
                 closeLoc = enLoc;
             }
         }
@@ -482,6 +489,8 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
         // to the nearest servant.
         Coordinate moveLocation = getAdjacentInRange(closeLoc, moves, true);
 
+        // Remove all moves that aren't the "closest location" that we just
+        // found
         int i = 0;
         while (i < (int) moves.size())
         {
@@ -492,7 +501,6 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
         }
     }
 
-    //cout << "End of GameState::getValidMoves().\n" << std::flush;
     return moves;
 }
 
@@ -580,7 +588,6 @@ int GameState::getTurnState()
 
 int GameState::nextTurnState()
 {
-    //cout << "Beginning of GameState::nextTurnState().\n" << std::flush;
     int result = 999;
     switch(turnState)
     {
@@ -603,22 +610,19 @@ int GameState::nextTurnState()
             result = turnStateExtraMove();
             break;
         case 6:
-            result = turnStatePostTurn();
+            result = endTurnProcess();
             break;
         default:
             // Shouldn't ever get here...
-            addToEventLog("Error: invalid turn state (nextTurnState())");
+            addToErrorLog("Invalid turn state (GameState::nextTurnState())");
             break;
     }
 
-    //cout << "End of GameState::nextTurnState().\n" << std::flush;
     return result;
 }
 
 int GameState::prevTurnState()
 {
-    //cout << "Beginning of GameState::prevTurnState().\n" << std::flush;
-
     int result = 0;
 
     if (turnState == 2)
@@ -627,24 +631,28 @@ int GameState::prevTurnState()
     }
     else if (turnState < 2 || turnState > 6)
     {
-        addToEventLog("Error: invalid turn state (prevTurnState())");
+        addToErrorLog("Invalid turn state (GameState::prevTurnState())");
         return 999;
     }
     turnState--;
 
-    //cout << "End of GameState::prevTurnState().\n" << std::flush;
     return result;
 }
 
 int GameState::endTurn()
 {
+    // If the player has not chosen an action, then recharge some of their
+    // MP. (5% of max)
+    if (turnState < 4)
+    {
+        currentServant->addMP(currentServant->getMaxMP() / 20);
+    }
     turnState = 6;
     return turnStatePostTurn();
 }
 
 int GameState::turnStatePreTurn()
 {
-    //cout << "Beginning of GameState::turnStatePreTurn().\n" << std::flush;
     if (turnState != 0)
         return 10;
 
@@ -708,19 +716,18 @@ int GameState::turnStatePreTurn()
     actionMPCosts = currentServant->getActionMPCosts();
 
     turnState++;
-    //cout << "End of GameState::turnStatePreTurn().\n" << std::flush;
+    addToEventLog("Turn Start.");
     return 0;
 }
 
 int GameState::turnStateMove()
 {
-    //cout << "Beginning of GameState::turnStateMove().\n" << std::flush;
     if (turnState != 1)
         return 20;
 
     // Verify that the clicked space is valid
     bool isValid = false;
-    for (int i = 0; i < validMoves.size() && !isValid; i++)
+    for (unsigned int i = 0; i < validMoves.size() && !isValid; i++)
     {
         if (validMoves[i].x == clickedX && validMoves[i].y == clickedY)
             isValid = true;
@@ -741,25 +748,23 @@ int GameState::turnStateMove()
             (abs(servEnd.x - servStart.x) + abs(servEnd.y - servStart.y));
 
     turnState++;
-    //cout << "End of GameState::turnStateMove().\n" << std::flush;
+    addToEventLog("Move from space (" + to_string(servStart.x) + "," +
+                  to_string(servStart.y) + ")" + " to space (" +
+                  to_string(servEnd.x) + "," + to_string(servEnd.y) + ").");
     return 0;
 }
 
 int GameState::turnStateChoseAction()
 {
-    //cout << "Beginning of GameState::turnStateChoseAction().\n" << std::flush;
     if (turnState != 2)
         return 30;
 
     // Ensure that an action was actually chosen
-    if (chosenAction < 0 || chosenAction >= actionList.size())
+    if (chosenAction < 0 || chosenAction >= (int) actionList.size())
         return 21;
 
     // Verify that the player has enough MP
     int mpCost = currentServant->getActionMPCost(chosenAction);
-    /***** TODO *****/
-    // leave this the wrong way while testing, but inequality MUST BE FLIPPED
-    // for function to work properly
     if (mpCost > currentServant->getCurrMP())
     {
         chosenAction = -1;
@@ -799,8 +804,8 @@ int GameState::turnStateChoseAction()
     // turn state and apply the action.
     else if (chosenActionType == T)
     {
+        // TODO: pop up a dialog box confirming this action
         turnState = 4;
-        //cout << "End of GameState::turnStateChoseAction() (1).\n" << std::flush;
         return turnStateApplyAction();
     }
 
@@ -814,18 +819,19 @@ int GameState::turnStateChoseAction()
     // If the action does not have any targets then process it accordingly.
     else
     {
+        // TODO: pop up a dialog box confirming this action
         turnState = 4;
-        //cout << "End of GameState::turnStateChoseAction() (2).\n" << std::flush;
         return turnStateApplyAction();
     }
 
     turnState++;
+    addToEventLog("Chose action " + currentServant->getActionName(chosenAction)
+                  + ".");
     return 0;
 }
 
 int GameState::turnStateChoseTargets()
 {
-    cout << "Beginning of GameState::turnStateChoseTargets().\n" << std::flush;
     if (turnState != 3)
         return 40;
 
@@ -842,12 +848,12 @@ int GameState::turnStateChoseTargets()
         int servID = -1;
         Coordinate target;
         Coordinate cLoc = currentServant->getCurrLoc();
-        for (int i = 0; i < selectionRange.size() && servID == -1; i++)
+        Servant *targetServ;
+        for (unsigned int i = 0; i < selectionRange.size() && servID == -1; i++)
         {
             if (selectionRange[i].x + cLoc.x == clickedX &&
                 selectionRange[i].y + cLoc.y == clickedY)
             {
-                cout << "in here?\n" << std::flush;
                 servID = i;
                 target.x = clickedX;
                 target.y = clickedY;
@@ -857,15 +863,219 @@ int GameState::turnStateChoseTargets()
         {
             return 31;
         }
+        else
+        {
+            targetServ = field->getServantOnSpace(target);
+            /* Show Dialog box allowing player to confirm the action */
+            QDialog *atkDialog = new QDialog;
+            QLabel *atkLabel = new QLabel;
+            QLabel *atkServIcon = new QLabel;
+            QLabel *atkServName = new QLabel;
+            QLabel *atkHPLab = new QLabel;
+            QLabel *atkMPLab = new QLabel;
+            QLabel *atkServHP = new QLabel;
+            QLabel *atkServMP = new QLabel;
+            QLabel *atkWords = new QLabel;
+            QLabel *atkStats = new QLabel;
+            QLabel *vs = new QLabel;
+            QLabel *defLabel = new QLabel;
+            QLabel *defServIcon = new QLabel;
+            QLabel *defServName = new QLabel;
+            QLabel *defHPLab = new QLabel;
+            QLabel *defMPLab = new QLabel;
+            QLabel *defServHP = new QLabel;
+            QLabel *defServMP = new QLabel;
+            QLabel *defWords = new QLabel;
+            QLabel *defStats = new QLabel;
 
-        chosenDefenders.push_back(field->getServantOnSpace(target));
+            // Attacking Servant Labels
+            atkLabel->setText("ATTACKER");
+            atkServIcon->setPixmap(QPixmap(QString::fromStdString(currentServant->getServantIcon())));
+            atkServName->setText(QString::fromStdString(currentServant->getTeamName() + " " + currentServant->getName()));
+            atkHPLab->setText("HP:");
+            atkServHP->setText(QString::fromStdString(to_string(currentServant->getCurrHP()) + " / " + to_string(currentServant->getMaxHP())));
+            atkMPLab->setText("MP:");
+            atkServMP->setText(QString::fromStdString(to_string(currentServant->getCurrMP()) + " / " + to_string(currentServant->getMaxMP())));
+            bool healAction = currentServant->isHealAction(chosenAction);
+
+            if (currentServant->getClass() == Caster && healAction)
+                atkWords->setText("Heal\nHit\nCrit\nMP Cost");
+            else
+                atkWords->setText("Atk\nHit\nCrit\nMP Cost");
+
+            int atkAttack = 0, atkHit = 0, atkCrit = 0;
+            atkHit = currentServant->getHitRate() - targetServ->getEvade()[0];
+            atkCrit = currentServant->getCriticalRate() - targetServ->getCriticalEvade();
+            int atkCost = currentServant->getActionMPCost(chosenAction);
+
+            if (currentServant->getClass() == Caster && !healAction)
+                atkAttack = currentServant->getMag() - targetServ->getRes();
+            else if (currentServant->getClass() == Caster && healAction)
+            {
+                atkAttack = currentServant->getMag();
+                atkHit = 100;
+                atkCrit = 0;
+            }
+            else if (currentServant->getClass() == Assassin && currentServant->isPoisonAction(chosenAction))
+                atkAttack = 0;
+            else
+                atkAttack = currentServant->getStr() - targetServ->getDef();
+            if (atkCrit < 0)
+                atkCrit = 0;
+
+            if (!currentServant->getActionDodgeable(chosenAction))
+                atkHit = 100;
+
+            int res = currentServant->isActionNP(chosenAction);
+            if (res != -1)
+            {
+                atkStats->setText(QString::fromStdString("Noble Phantasm: " +
+                                                         currentServant->getNoblePhantasms()[res][0] + "\n"
+                                                         + to_string(atkHit) + "%\n"
+                                                         + to_string(atkCrit) + "\n"
+                                                         + to_string(atkCost)));
+            }
+            else
+            {
+                atkStats->setText(QString::fromStdString(to_string(atkAttack) + "\n"
+                                                         + to_string(atkHit) + "%\n"
+                                                         + to_string(atkCrit) + "\n"
+                                                         + to_string(atkCost)));
+            }
+            atkServName->setFrameStyle(QFrame::Box | QFrame::Sunken);
+            atkWords->setFrameStyle(QFrame::Box | QFrame::Sunken);
+            atkStats->setFrameStyle(QFrame::Box | QFrame::Sunken);
+            atkLabel->setAlignment(Qt::AlignCenter);
+            atkServIcon->setAlignment(Qt::AlignCenter);
+            atkServName->setAlignment(Qt::AlignCenter);
+            atkHPLab->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+            atkMPLab->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+            atkServHP->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+            atkServMP->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+            atkWords->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+            atkStats->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+
+
+            // Defending Servant Labels
+            defLabel->setText("DEFENDER");
+            defServIcon->setPixmap(QPixmap(QString::fromStdString(targetServ->getServantIcon())));
+            defServName->setText(QString::fromStdString(targetServ->getTeamName() + " " + targetServ->getName()));
+            defHPLab->setText(":HP");
+            defServHP->setText(QString::fromStdString(to_string(targetServ->getCurrHP()) + " / " + to_string(targetServ->getMaxHP())));
+            defMPLab->setText(":MP");
+            defServMP->setText(QString::fromStdString(to_string(targetServ->getCurrMP()) + " / " + to_string(targetServ->getMaxMP())));
+            defWords->setText("Atk\nHit\nCrit\nMP Cost");
+            if (targetServ->getCurrMP() >= targetServ->getActionMPCost(0) &&
+                    targetServ->isInRange(currentServant) &&
+                    currentServant->getActionCounterable(chosenAction) &&
+                    !currentServant->isHealAction(chosenAction))
+            {
+                int defAttack = 0;
+                int defCost = targetServ->getActionMPCost(0);
+                if (targetServ->getClass() == Caster)
+                    defAttack = targetServ->getMag() - currentServant->getRes();
+                else
+                    defAttack = targetServ->getStr() - currentServant->getDef();
+                int defHit = targetServ->getHitRate() - currentServant->getEvade()[0];
+                int defCrit = targetServ->getCriticalRate() - currentServant->getCriticalEvade();
+                if (defCrit < 0)
+                    defCrit = 0;
+                defStats->setText(QString::fromStdString(to_string(defAttack) + "\n"
+                                                         + to_string(defHit) + "%\n"
+                                                         + to_string(defCrit) + "\n"
+                                                         + to_string(defCost)));
+            }
+            else
+                defStats->setText("-\n-\n-\n-");
+            defServName->setFrameStyle(QFrame::Box | QFrame::Sunken);
+            defWords->setFrameStyle(QFrame::Box | QFrame::Sunken);
+            defStats->setFrameStyle(QFrame::Box | QFrame::Sunken);
+            defLabel->setAlignment(Qt::AlignCenter);
+            defServIcon->setAlignment(Qt::AlignCenter);
+            defServName->setAlignment(Qt::AlignCenter);
+            defHPLab->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+            defMPLab->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+            defServHP->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+            defServMP->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+            defWords->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+            defStats->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+
+            vs->setText(" VS ");
+            vs->setAlignment(Qt::AlignCenter);
+
+            // Create the Layouts
+            QHBoxLayout *atkAtkStats = new QHBoxLayout;
+            atkAtkStats->addWidget(atkWords);
+            atkAtkStats->addWidget(atkStats);
+            QHBoxLayout *atkHPLay = new QHBoxLayout;
+            atkHPLay->addWidget(atkHPLab);
+            atkHPLay->addWidget(atkServHP);
+            QHBoxLayout *atkMPLay = new QHBoxLayout;
+            atkMPLay->addWidget(atkMPLab);
+            atkMPLay->addWidget(atkServMP);
+            QVBoxLayout *atkHPMPLay = new QVBoxLayout;
+            atkHPMPLay->addLayout(atkHPLay);
+            atkHPMPLay->addLayout(atkMPLay);
+            QVBoxLayout *atkAllLayout = new QVBoxLayout;
+            atkAllLayout->addWidget(atkLabel);
+            atkAllLayout->addWidget(atkServIcon);
+            atkAllLayout->addWidget(atkServName);
+            atkAllLayout->addLayout(atkHPMPLay);
+            atkAllLayout->addLayout(atkAtkStats);
+
+            QHBoxLayout *defAtkStats = new QHBoxLayout;
+            defAtkStats->addWidget(defStats);
+            defAtkStats->addWidget(defWords);
+            QHBoxLayout *defHPLay = new QHBoxLayout;
+            defHPLay->addWidget(defServHP);
+            defHPLay->addWidget(defHPLab);
+            QHBoxLayout *defMPLay = new QHBoxLayout;
+            defMPLay->addWidget(defServMP);
+            defMPLay->addWidget(defMPLab);
+            QVBoxLayout *defHPMPLay = new QVBoxLayout;
+            defHPMPLay->addLayout(defHPLay);
+            defHPMPLay->addLayout(defMPLay);
+            QVBoxLayout *defAllLayout = new QVBoxLayout;
+            defAllLayout->addWidget(defLabel);
+            defAllLayout->addWidget(defServIcon);
+            defAllLayout->addWidget(defServName);
+            defAllLayout->addLayout(defHPMPLay);
+            defAllLayout->addLayout(defAtkStats);
+
+            QHBoxLayout *allLayout = new QHBoxLayout;
+            allLayout->addLayout(atkAllLayout);
+            allLayout->addWidget(vs);
+            allLayout->addLayout(defAllLayout);
+
+            QPushButton *okButton = new QPushButton(QWidget::tr("OK"));
+            QPushButton *cancelButton = new QPushButton(QWidget::tr("Cancel"));
+            QObject::connect(okButton, SIGNAL(clicked()), atkDialog, SLOT(accept()));
+            QObject::connect(cancelButton, SIGNAL(clicked()), atkDialog, SLOT(reject()));
+            QHBoxLayout *buttons = new QHBoxLayout;
+            buttons->addWidget(okButton);
+            buttons->addWidget(cancelButton);
+
+            QVBoxLayout *finalLayout = new QVBoxLayout;
+            finalLayout->addLayout(allLayout);
+            finalLayout->addLayout(buttons);
+
+            atkDialog->setLayout(finalLayout);
+
+            int result = atkDialog->exec();
+
+            if (result == QDialog::Rejected)
+                return 35;
+        }
+
+        chosenDefenders.push_back(targetServ);
     }
     else if (chosenActionType == A)
     {
         // Ensure the target space is within the selectionRange
         bool found = false;
         Coordinate cLoc = currentServant->getCurrLoc();
-        for (int i = 0; i < selectionRange.size() && !found; i++)
+        vector<Coordinate> oldRange = selectionRange;
+        for (unsigned int i = 0; i < selectionRange.size() && !found; i++)
         {
             if (selectionRange[i].x + cLoc.x == clickedX &&
                 selectionRange[i].y + cLoc.y == clickedY)
@@ -899,7 +1109,7 @@ int GameState::turnStateChoseTargets()
 
         // Calculate the true selectionRange based on the direction
         selectionRange = currentServant->getActionRange(chosenAction);
-        for (int i = 0; i < selectionRange.size(); i++)
+        for (unsigned int i = 0; i < selectionRange.size(); i++)
         {
             int tempX = 0;
             switch(chosenDirection)
@@ -930,6 +1140,47 @@ int GameState::turnStateChoseTargets()
         // get all Servants in that range and form a defender vector from that
         // list
         chosenDefenders = field->getAllInRange(currentServant, selectionRange);
+
+        // TODO: check with player if they really want to do this action. Show
+        // a list of all players they would be targetting
+        QDialog *aoeAction = new QDialog;
+        QLabel *targetPlayersLabel = new QLabel;
+        QLabel *targetPlayers = new QLabel;
+        targetPlayersLabel->setText("Targetted Players:");
+        targetPlayersLabel->setAlignment(Qt::AlignCenter);
+        targetPlayersLabel->setFrameStyle(QFrame::Box | QFrame::Sunken);
+        string tPlayers = "\n";
+        for (unsigned int i = 0; i < chosenDefenders.size(); i++)
+        {
+            cout << i << " " << chosenDefenders.size() << "\n" << std::flush;
+            tPlayers = tPlayers + chosenDefenders[i]->getTeamName() + " " +
+                       chosenDefenders[i]->getName() + "\n";
+        }
+        targetPlayers->setText(QString::fromStdString(tPlayers));
+        targetPlayers->setAlignment(Qt::AlignCenter);
+        targetPlayers->setFrameStyle(QFrame::Box | QFrame::Sunken);
+
+        QPushButton *okButton = new QPushButton(QWidget::tr("OK"));
+        QPushButton *cancelButton = new QPushButton(QWidget::tr("Cancel"));
+        QObject::connect(okButton, SIGNAL(clicked()), aoeAction, SLOT(accept()));
+        QObject::connect(cancelButton, SIGNAL(clicked()), aoeAction, SLOT(reject()));
+        QHBoxLayout *buttons = new QHBoxLayout;
+        buttons->addWidget(okButton);
+        buttons->addWidget(cancelButton);
+        QVBoxLayout *allLayout = new QVBoxLayout;
+        allLayout->addWidget(targetPlayersLabel);
+        allLayout->addWidget(targetPlayers);
+        allLayout->addLayout(buttons);
+
+        aoeAction->setLayout(allLayout);
+
+        int result = aoeAction->exec();
+        if (result == QDialog::Rejected)
+        {
+            chosenDefenders.clear();
+            selectionRange = oldRange;
+            return 35;
+        }
     }
     else if (chosenActionType == D)
     {
@@ -945,13 +1196,11 @@ int GameState::turnStateChoseTargets()
     }
 
     turnState++;
-    cout << "End of GameState::turnStateChoseTargets().\n" << std::flush;
     return turnStateApplyAction();
 }
 
 int GameState::turnStateApplyAction()
 {
-    cout << "Beginning of GameState::turnStateApplyAction().\n" << std::flush;
     if (turnState != 4)
         return 50;
 
@@ -960,9 +1209,6 @@ int GameState::turnStateApplyAction()
     if (ret != 0)
     {
         // Something went wrong! Return now.
-        cout << "here??\n" << std::flush;
-        cout << "Action: " << chosenAction << "\n" << std::flush;
-        cout << "Result: " << ret << "\n" << std::flush;
         return ret;
     }
 
@@ -973,7 +1219,6 @@ int GameState::turnStateApplyAction()
         // Get the valid moves for the servant
         validMoves = getValidMoves(currentServant, remainingMove);
         turnState++;
-        cout << "End of GameState::turnStateApplyAction() (1).\n" << std::flush;
         return 0;
     }
 
@@ -992,7 +1237,6 @@ int GameState::turnStateApplyAction()
             validMoves = getValidMoves(currentServant, currentServant->getMov());
         }
         turnState++;
-        cout << "End of GameState::turnStateApplyAction() (2).\n" << std::flush;
         return 0;
     }
 
@@ -1000,8 +1244,7 @@ int GameState::turnStateApplyAction()
     else
     {
         turnState += 2;
-        cout << "End of GameState::turnStateApplyAction() (3).\n" << std::flush;
-        return turnStatePostTurn();
+        return endTurnProcess();
     }
 }
 
@@ -1013,7 +1256,7 @@ int GameState::turnStateExtraMove()
 
     // Verify that the clicked space is valid
     bool isValid = false;
-    for (int i = 0; i < validMoves.size() && !isValid; i++)
+    for (unsigned int i = 0; i < validMoves.size() && !isValid; i++)
     {
         if (validMoves[i].x == clickedX && validMoves[i].y == clickedY)
             isValid = true;
@@ -1032,15 +1275,16 @@ int GameState::turnStateExtraMove()
 
     // End the turn by calling the Post-turn turn state.
     turnState++;
-    //cout << "End of GameState::turnStateExtraMove().\n" << std::flush;
-    return turnStatePostTurn();
+    addToEventLog("Move from space (" + to_string(servStart.x) + "," +
+                  to_string(servStart.y) + ")" + " to space (" +
+                  to_string(servEnd.x) + "," + to_string(servEnd.y) + ").");
+    return endTurnProcess();
 }
 
 // If this function returns 1000, then team Alpha is dead. If it returns 1001,
 // team Omegaa is dead. If it returns 1002, team Boss is dead.
 int GameState::turnStatePostTurn()
 {
-    cout << "Beginning of GameState::turnStatePostTurn().\n" << std::flush;
     if (turnState != 6)
         return 70;
 
@@ -1048,7 +1292,7 @@ int GameState::turnStatePostTurn()
     int returnValue = 0;
 
     // Check if anyone has died and modify the death list accordingly.
-    for (int i = 0; i < turnOrder.size(); i++)
+    for (unsigned int i = 0; i < turnOrder.size(); i++)
     {
         if (turnOrder[i]->getCurrHP() <= 0)
         {
@@ -1056,8 +1300,21 @@ int GameState::turnStatePostTurn()
         }
     }
 
+    // Make sure that everyone in the dead list is off of the playing field.
+    for (unsigned int i = 0; i < dead.size(); i++)
+    {
+        field->servantDead(dead[i]);
+    }
+
+    // If a Servant has been revived, put them back on the playing field.
+    for (unsigned int i = 0; i < revived.size(); i++)
+    {
+        field->servantRevived(revived[i]);
+    }
+    revived.clear(); // Don't want to revive the servants a second time
+
     // Check if any of the teams have died.
-    for (int i = 0; i < activeTeams.size(); i++)
+    for (unsigned int i = 0; i < activeTeams.size(); i++)
     {
         if (isTeamDead(activeTeams[i]))
         {
@@ -1083,13 +1340,56 @@ int GameState::turnStatePostTurn()
         returnValue = turnStatePreTurn();
     }
 
-    cout << "End of GameState::turnStatePostTurn().\n" << std::flush;
     return returnValue;
+}
+
+int GameState::endTurnProcess()
+{
+    int result = endTurn();
+    if (result == 10)
+    {
+        addToErrorLog("An error occured (endTurn()->turnStatePreTurn()).");
+    }
+    else if (result == 70)
+    {
+        addToErrorLog("An error occured (endTurn()).");
+    }
+    else if (result == 1000)
+    {
+        QMessageBox messageBox;
+        messageBox.setWindowTitle(QObject::tr("Final Fate"));
+        messageBox.setText(QObject::tr("Team Alpha Loses!"));
+        messageBox.setStandardButtons(QMessageBox::Ok);
+        messageBox.setDefaultButton(QMessageBox::Ok);
+        if (messageBox.exec() == QMessageBox::Ok)
+            result = 666;
+    }
+    else if (result == 1001)
+    {
+        QMessageBox messageBox;
+        messageBox.setWindowTitle(QObject::tr("Final Fate"));
+        messageBox.setText(QObject::tr("Team Omega Loses!"));
+        messageBox.setStandardButtons(QMessageBox::Ok);
+        messageBox.setDefaultButton(QMessageBox::Ok);
+        if (messageBox.exec() == QMessageBox::Ok)
+            result = 666;
+    }
+    else if (result == 1002)
+    {
+        QMessageBox messageBox;
+        messageBox.setWindowTitle(QObject::tr("Final Fate"));
+        messageBox.setText(QObject::tr("Boss Team Loses!"));
+        messageBox.setStandardButtons(QMessageBox::Ok);
+        messageBox.setDefaultButton(QMessageBox::Ok);
+        if (messageBox.exec() == QMessageBox::Ok)
+            result = 666;
+    }
+
+    return result;
 }
 
 void GameState::resetTurnValues()
 {
-    //cout << "Beginning of GameState::resetTurnValues().\n" << std::flush;
     turnState = 0;
     clickedX = clickedY = 0;
     servStart.x = servStart.y = servEnd.x = servEnd.y = 0;
@@ -1105,8 +1405,6 @@ void GameState::resetTurnValues()
     actionList.clear();
     actionListTypes.clear();
     actionMPCosts.clear();
-
-    //cout << "End of GameState::resetTurnValues().\n" << std::flush;
 }
 
 vector<string> GameState::getEventLog()
@@ -1114,8 +1412,32 @@ vector<string> GameState::getEventLog()
     return eventLog;
 }
 
+vector<string> GameState::getErrorLog()
+{
+    return errorLog;
+}
+
 void GameState::addToEventLog(string s)
 {
-    string num = to_string(eventLog.size() + 1) + ": ";
+    string num = "Event " + to_string(eventNum) + ": " +
+                 currentServant->getName() + " " + currentServant->getTeamName()
+                 + " - ";
     eventLog.push_back(num + s);
+    eventNum++;
+}
+
+void GameState::addToErrorLog(string s)
+{
+    string num = "Error on Event " + to_string(eventNum) + ": ";
+    errorLog.push_back(num + s);
+    errorNum = eventNum;
+}
+
+int GameState::getErrorNum()
+{
+    return errorNum;
+}
+int GameState::getEventNum()
+{
+    return eventNum;
 }

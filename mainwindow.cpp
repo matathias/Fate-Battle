@@ -26,9 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // gameState to populateScene so that the playFieldSquares can have a
     // pointer to it
 
-    // Add a way to load alternate initial gameStates (i.e. specifying ascension
-    // level and team makeup)
-
     startGameState();
     populateScene(gs->getFieldWidth(), gs->getFieldLength());
 }
@@ -64,6 +61,18 @@ void MainWindow::mainSetup()
     QLabel *seperator = new QLabel(this);
     //seperator->setText(" ");
     seperator->setFrameStyle(QFrame::HLine);
+
+    // Setup the Error warning
+    errorLabel = new QLabel(this);
+    vector<string> errLog = gs->getErrorLog();
+    string lab = "";
+    if (errLog.size()==0 || gs->getErrorNum() != gs->getEventNum())
+        lab = "\nNo Errors.\n";
+    else
+        lab = "\n" + errLog.back() + "\n";
+    errorLabel->setText(QString::fromStdString(lab));
+    errorLabel->setAlignment(Qt::AlignCenter);
+    errorLabel->setFrameStyle(QFrame::Box | QFrame::Sunken);
 
     /* Servant name and icon */
     QVBoxLayout *nameIcon = new QVBoxLayout;
@@ -345,10 +354,11 @@ void MainWindow::mainSetup()
     QVBoxLayout *layout2 = new QVBoxLayout;
     layout2->addWidget(quitButton);
     layout2->addWidget(gameField);
+    layout2->addWidget(errorLabel);
+    //layout2->addWidget(errorLabel);
 
     QVBoxLayout *rightMost = new QVBoxLayout;
     rightMost->addWidget(nextServ);
-    //rightMost->addWidget(nextServTeam);
     rightMost->addLayout(wholeActionList);
     rightMost->addWidget(evLogLabel);
     rightMost->addWidget(evLogWid);
@@ -425,7 +435,7 @@ void MainWindow::populateScene(int w, int l)
             string imgPath = "";
             string tPath = "";
             Servant* spaceServ = gs->isSpaceServant(xx,yy);
-            if (spaceServ != NULL)
+            if (spaceServ != NULL && !gs->isServantDead(spaceServ))
             {
                 imgPath = spaceServ->getServantIcon();
                 tPath = spaceServ->getTeamIcon();
@@ -500,7 +510,7 @@ void MainWindow::reColorScene()
         string imgPath = "";
         string tPath = "";
         Servant* spaceServ = gs->isSpaceServant(x,y);
-        if (spaceServ != NULL)
+        if (spaceServ != NULL && !gs->isServantDead(spaceServ))
         {
             imgPath = spaceServ->getServantIcon();
             tPath = spaceServ->getTeamIcon();
@@ -570,131 +580,64 @@ void MainWindow::quit()
         qApp->quit();
 }
 
-void MainWindow::but1()
+void MainWindow::buttonProcess()
 {
-    gs->setChosenAction(0);
     int result = gs->turnStateChoseAction();
 
     if (result == 30)
-        gs->addToEventLog("Cannot choose action at this moment.");
+        gs->addToErrorLog("Cannot choose action at this moment.");
     else if (result == 21)
-        gs->addToEventLog("Invalid choice.");
+        gs->addToErrorLog("Invalid choice.");
     else if (result == 22)
-        gs->addToEventLog("Not enough MP!"); // Pop up message box?
+        gs->addToErrorLog("Not enough MP!"); // Pop up message box?
 
     reColorScene();
+}
+
+void MainWindow::but1()
+{
+    gs->setChosenAction(0);
+    buttonProcess();
 }
 void MainWindow::but2()
 {
     gs->setChosenAction(1);
-    int result = gs->turnStateChoseAction();
-
-    if (result == 30)
-        gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 21)
-        gs->addToEventLog("Invalid choice.");
-    else if (result == 22)
-        gs->addToEventLog("Not enough MP!"); // Pop up message box?
-
-    reColorScene();
+    buttonProcess();
 }
 void MainWindow::but3()
 {
     gs->setChosenAction(2);
-    int result = gs->turnStateChoseAction();
-
-    if (result == 30)
-        gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 21)
-        gs->addToEventLog("Invalid choice.");
-    else if (result == 22)
-        gs->addToEventLog("Not enough MP!"); // Pop up message box?
-
-    reColorScene();
+    buttonProcess();
 }
 void MainWindow::but4()
 {
     gs->setChosenAction(3);
-    int result = gs->turnStateChoseAction();
-
-    if (result == 30)
-        gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 21)
-        gs->addToEventLog("Invalid choice.");
-    else if (result == 22)
-        gs->addToEventLog("Not enough MP!"); // Pop up message box?
-
-    reColorScene();
+    buttonProcess();
 }
 void MainWindow::but5()
 {
     gs->setChosenAction(4);
-    int result = gs->turnStateChoseAction();
-
-    if (result == 30)
-        gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 21)
-        gs->addToEventLog("Invalid choice.");
-    else if (result == 22)
-        gs->addToEventLog("Not enough MP!"); // Pop up message box?
-
-    reColorScene();
+    buttonProcess();
 }
 void MainWindow::but6()
 {
     gs->setChosenAction(5);
-    int result = gs->turnStateChoseAction();
-
-    if (result == 30)
-        gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 21)
-        gs->addToEventLog("Invalid choice.");
-    else if (result == 22)
-        gs->addToEventLog("Not enough MP!"); // Pop up message box?
-
-    reColorScene();
+    buttonProcess();
 }
 void MainWindow::but7()
 {
     gs->setChosenAction(6);
-    int result = gs->turnStateChoseAction();
-
-    if (result == 30)
-        gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 21)
-        gs->addToEventLog("Invalid choice.");
-    else if (result == 22)
-        gs->addToEventLog("Not enough MP!"); // Pop up message box?
-
-    reColorScene();
+    buttonProcess();
 }
 void MainWindow::but8()
 {
     gs->setChosenAction(7);
-    int result = gs->turnStateChoseAction();
-
-    if (result == 30)
-        gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 21)
-        gs->addToEventLog("Invalid choice.");
-    else if (result == 22)
-        gs->addToEventLog("Not enough MP!"); // Pop up message box?
-
-    reColorScene();
+    buttonProcess();
 }
 void MainWindow::but9()
 {
     gs->setChosenAction(8);
-    int result = gs->turnStateChoseAction();
-
-    if (result == 30)
-        gs->addToEventLog("Cannot choose action at this moment.");
-    else if (result == 21)
-        gs->addToEventLog("Invalid choice.");
-    else if (result == 22)
-        gs->addToEventLog("Not enough MP!"); // Pop up message box?
-
-    reColorScene();
+    buttonProcess();
 }
 
 void MainWindow::endTurn()
@@ -706,49 +649,11 @@ void MainWindow::endTurn()
     messageBox.setDefaultButton(QMessageBox::No);
     if (messageBox.exec() == QMessageBox::Yes)
     {
-        int result = gs->endTurn();
-        if (result == 10)
-        {
-            gs->addToEventLog("An error occured (endTurn()->turnStatePreTurn()).");
-        }
-        else if (result == 70)
-        {
-            gs->addToEventLog("An error occured (endTurn()).");
-        }
-        else if (result == 1000)
-        {
-            QMessageBox messageBox;
-            messageBox.setWindowTitle(tr("Final Fate"));
-            messageBox.setText(tr("Team Alpha Loses!"));
-            messageBox.setStandardButtons(QMessageBox::Ok);
-            messageBox.setDefaultButton(QMessageBox::Ok);
-            if (messageBox.exec() == QMessageBox::Ok)
-                qApp->quit();
-        }
-        else if (result == 1001)
-        {
-            QMessageBox messageBox;
-            messageBox.setWindowTitle(tr("Final Fate"));
-            messageBox.setText(tr("Team Omega Loses!"));
-            messageBox.setStandardButtons(QMessageBox::Ok);
-            messageBox.setDefaultButton(QMessageBox::Ok);
-            if (messageBox.exec() == QMessageBox::Ok)
-                qApp->quit();
-        }
-        else if (result == 1002)
-        {
-            QMessageBox messageBox;
-            messageBox.setWindowTitle(tr("Final Fate"));
-            messageBox.setText(tr("Boss Team Loses!"));
-            messageBox.setStandardButtons(QMessageBox::Ok);
-            messageBox.setDefaultButton(QMessageBox::Ok);
-            if (messageBox.exec() == QMessageBox::Ok)
-                qApp->quit();
-        }
+        int result = gs->endTurnProcess();
+        if (result == 666)
+            qApp->quit();
         else
-        {
             reColorScene();
-        }
     }
 }
 

@@ -119,9 +119,9 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     QGraphicsItem::mouseReleaseEvent(event);
 
-    cout << "Turn State Before: " << gState->getTurnState() << "\n" << std::flush;
     gState->setClickedX(x);
     gState->setClickedY(y);
+    //cout << "Coord is (" << x << "," << y << ")\n" << std::flush;
     int result = 1000;
     if (gState->getTurnState() == 1)
         result = gState->turnStateMove();
@@ -132,24 +132,30 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     if (result == 11 || result == 31 || result == 51)
     {
-        gState->addToEventLog("Invalid space selection!");
-        cout << "Result value: " << result << "\n" << std::flush;
-        cout << "Turn State After: " << gState->getTurnState() << "\n" << std::flush;
+        gState->addToErrorLog("Invalid space selection!");
         window->reDrawMenus();
     }
     else if (result == 32 || result == 33 || result == 34)
     {
-        gState->addToEventLog("A Major Error occurred! (turnStateChoseTargets().");
+        gState->addToErrorLog("A Major Error occurred! (GameState::turnStateChoseTargets().");
+        window->reDrawMenus();
+    }
+    else if (result == 35) // Action was canceled
+    {
         window->reDrawMenus();
     }
     else if (result == 20 || result == 40 || result == 60)
     {
-        gState->addToEventLog("Invalid turnState error.");
+        gState->addToErrorLog("Invalid turnState error.");
         window->reDrawMenus();
+    }
+    else if (result == 666)
+    {
+        qApp->quit();
     }
     else if (result != 0 && result != 1000)
     {
-        gState->addToEventLog("An Unknown Error occurred?! " + to_string(result));
+        gState->addToErrorLog("An Unknown Error occurred?! Result: " + to_string(result));
         window->reDrawMenus();
     }
     else if (result == 0)

@@ -71,6 +71,8 @@ private:
 
     void clearLayout(QLayout *l);
 
+    void buttonProcess();
+
     int eventLogSize;
 
     QGraphicsScene *scene;
@@ -81,6 +83,7 @@ private:
 
     QMenu *fileMenu;
 
+    QLabel *errorLabel;
     QLabel *name;
     QLabel *teamName;
     QLabel *icon;

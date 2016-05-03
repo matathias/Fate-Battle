@@ -416,25 +416,96 @@ int Servant::getActionMPCost(int action)
     return actionMPCosts[ascension][action];
 }
 
+bool Servant::getActionCounterable(int action)
+{
+    return actionCounterable[ascension][action];
+}
+
+bool Servant::getActionDodgeable(int action)
+{
+    return actionDodgeable[ascension][action];
+}
+
+string Servant::getActionName(int action)
+{
+    string ret = "";
+    switch (action)
+    {
+    case 0:
+        ret = "Attack";
+        break;
+    case 1:
+        ret = noblePhantasms[0][0];
+        break;
+    case 2:
+        ret = noblePhantasms[1][0];
+        break;
+    case 3:
+        ret = noblePhantasms[2][0];
+        break;
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+int Servant::isActionNP(int action)
+{
+    int ret = -1;
+    switch(action)
+    {
+        case 1:
+            ret = 0;
+            break;
+        case 2:
+            ret = 1;
+            break;
+        case 3:
+            ret = 2;
+            break;
+        default:
+            break;
+    }
+
+    return ret;
+}
+
+bool Servant::isHealAction(int action)
+{
+    return false;
+}
+
+bool Servant::isPoisonAction(int action)
+{
+    return false;
+}
+
 vector<Coordinate> Servant::getActionRange(int action)
 {
     // Figure out what action this is and return the appropriate range
-    // TODO
     vector<Coordinate> range;
 
     if (action == 0)
     {
-        //
+        for (int i = -1*getHighRange(); i <= getHighRange(); i++)
+        {
+            for (int j = -1*getHighRange(); j <= getHighRange(); j++)
+            {
+                if (abs(i) + abs(j) >= getLowRange() && abs(i) + abs(j) <= getHighRange())
+                {
+                    Coordinate inRange;
+                    inRange.x = i;
+                    inRange.y = j;
+                    range.push_back(inRange);
+                }
+            }
+        }
     }
     else
     {
-        //
+        range = getNPRange(action-1);
     }
-
-    Coordinate placeholder;
-    placeholder.x = 1;
-    placeholder.y = 0;
-    range.push_back(placeholder);
 
     return range;
 }
@@ -452,6 +523,16 @@ vector<ActionType> Servant::getActionListTypes()
 vector<int> Servant::getActionMPCosts()
 {
     return actionMPCosts[ascension];
+}
+
+vector<bool> Servant::getActionsDodgeable()
+{
+    return actionDodgeable[ascension];
+}
+
+vector<bool> Servant::getActionsCounterable()
+{
+    return actionCounterable[ascension];
 }
 
 vector<vector<string>> Servant::getNoblePhantasms()
