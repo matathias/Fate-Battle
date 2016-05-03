@@ -320,7 +320,7 @@ void MainWindow::mainSetup()
     /* Event Log Widget */
     vector<string> eL = gs->getEventLog();
     QList<QString> eventLog;
-    for (unsigned int i = 0; i < eL.size(); i++)
+    for (int i = ((int) eL.size())-1; i >= 0; i--)
     {
         eventLog.append(QString::fromStdString(eL[i]));
     }

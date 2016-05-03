@@ -18,7 +18,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     Servant.cpp \
     Skill.cpp \
-    Weapon.cpp \
     Debuff.cpp \
     GameState.cpp \
     NoblePhantasm.cpp \
@@ -45,7 +44,6 @@ SOURCES += main.cpp\
     Servants/servantassassinshuriken.cpp \
     Servants/servantavengersai.cpp \
     Servants/servantavengerscythe.cpp \
-    Game.cpp \
     playfieldsquare.cpp \
     view.cpp \
     Servants/servanttest.cpp
@@ -57,8 +55,6 @@ HEADERS  += mainwindow.h \
     PlayField.h \
     Servant.h \
     Skill.h \
-    Weapon.h \
-    Game.h \
     Servants/servantsaberclaymore.h \
     Servants/servantsaberkatana.h \
     Servants/servantlancerlance.h \
@@ -96,4 +92,26 @@ DISTFILES += \
     qt4logo.png \
     zoomin.png \
     zoomout.png \
-    ServantIcons/SaberTest.png
+    ServantIcons/SaberTest.png \
+    ServantIcons/Axe Berserker.png \
+    ServantIcons/Bow Archer.png \
+    ServantIcons/Chariot Rider.png \
+    ServantIcons/Claymore Saber.png \
+    ServantIcons/Club Berserker.png \
+    ServantIcons/Dagger Assassin.png \
+    ServantIcons/Elemental Caster.png \
+    ServantIcons/Flail Berserker.png \
+    ServantIcons/Halberd Lancer.png \
+    ServantIcons/Katana Saber.png \
+    ServantIcons/Lance Lancer.png \
+    ServantIcons/Naginata Lancer.png \
+    ServantIcons/Necromancer Caster.png \
+    ServantIcons/Pegasus Rider.png \
+    ServantIcons/Pistol Archer.png \
+    ServantIcons/Projectile Archer.png \
+    ServantIcons/Saber Test.png \
+    ServantIcons/Sai Avenger.png \
+    ServantIcons/Scythe Avenger.png \
+    ServantIcons/Shuriken Assassin.png \
+    ServantIcons/Summoner Caster.png \
+    ServantIcons/Wyvern Rider.png

@@ -17,11 +17,13 @@ PlayFieldSquare::PlayFieldSquare(GameState *gs, const QColor &color, int x,
     {
         QString p = QString::fromStdString(path1);
         pic.load(p);
+        pic = pic.scaledToHeight(100, Qt::SmoothTransformation);
     }
     if (path2 != "")
     {
         QString p2 = QString::fromStdString(path2);
         teamPic.load(p2);
+        teamPic = teamPic.scaledToHeight(90, Qt::SmoothTransformation);
     }
 
     setFlags(ItemIsSelectable);
