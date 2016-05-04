@@ -3,6 +3,7 @@
 
 #include "Servant.h"
 #include "PlayField.h"
+#include "logger.h"
 
 using namespace std;
 
@@ -12,7 +13,7 @@ class GameState
     public:
         // Initialize the playing field within this constructor. Can also sort
         // the servants into teams from the turnOrder list.
-        GameState(vector<Servant*> tO, int l, int w);
+        GameState(vector<Servant*> tO, int l, int w, Logger *lo);
         
         vector<Servant*> getTurnOrder();
         
@@ -119,13 +120,6 @@ class GameState
                                  // the turn state and getting the next Servant
 
         void resetTurnValues();
-
-        vector<string> getEventLog();
-        vector<string> getErrorLog();
-        void addToEventLog(string s);
-        void addToErrorLog(string s);
-        int getEventNum();
-        int getErrorNum();
     
     protected:
         vector<Servant*> turnOrder; // Contains servant pointers in turn order.
@@ -146,9 +140,6 @@ class GameState
         vector<Team> activeTeams;
         
         PlayField* field;
-
-        int eventNum;
-        int errorNum;
 
         // Determines what part of a Servant's turn it is.
         // 0: Pre-turn processing (i.e. apply debuffs and such)
@@ -185,7 +176,6 @@ class GameState
 
         bool archerSecondTurn;
 
-        // Keep track of events as they happen
-        vector<string> eventLog;
-        vector<string> errorLog;
+        // Event logger
+        Logger *log;
 };

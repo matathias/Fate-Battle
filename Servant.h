@@ -8,6 +8,7 @@
 
 #include "Debuff.h"
 #include "Skill.h"
+#include "logger.h"
 //#include "datatypes.h"
 
 using namespace std;
@@ -15,7 +16,7 @@ using namespace std;
 class Servant
 {
     public:
-        Servant(int as, Team t);
+        Servant(int as, Team t, Logger *l);
                 
         void setHP(int hp);
         void setMP(int mp);
@@ -177,4 +178,6 @@ class Servant
 
         vector<vector<string>> noblePhantasms; // Column 1: name, 2: description
         vector<vector<Coordinate>> npRanges; // Ranges for NPs
+
+        Logger *log;
 };

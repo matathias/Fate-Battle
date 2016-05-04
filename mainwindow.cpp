@@ -64,9 +64,9 @@ void MainWindow::mainSetup()
 
     // Setup the Error warning
     errorLabel = new QLabel(this);
-    vector<string> errLog = gs->getErrorLog();
+    vector<string> errLog = log->getErrorLog();
     string lab = "";
-    if (errLog.size()==0 || gs->getErrorNum() != gs->getEventNum())
+    if (errLog.size()==0 || log->getErrorNum() != log->getEventNum())
         lab = "\nNo Errors.\n";
     else
         lab = "\n" + errLog.back() + "\n";
@@ -318,7 +318,7 @@ void MainWindow::mainSetup()
     wholeActionList->addWidget(endTurnButton);
 
     /* Event Log Widget */
-    vector<string> eL = gs->getEventLog();
+    vector<string> eL = log->getEventLog();
     QList<QString> eventLog;
     for (int i = ((int) eL.size())-1; i >= 0; i--)
     {
@@ -442,7 +442,7 @@ void MainWindow::populateScene(int w, int l)
             }
             QColor color(red, green, blue, 255);
             QGraphicsItem *item = new PlayFieldSquare(gs, color, xx, yy,
-                                                      imgPath, tPath, this);
+                                                      imgPath, tPath, this, log);
 
             item->setPos(QPointF(i, j));
             scene->addItem(item);
@@ -585,11 +585,11 @@ void MainWindow::buttonProcess()
     int result = gs->turnStateChoseAction();
 
     if (result == 30)
-        gs->addToErrorLog("Cannot choose action at this moment.");
+        log->addToErrorLog("Cannot choose action at this moment.");
     else if (result == 21)
-        gs->addToErrorLog("Invalid choice.");
+        log->addToErrorLog("Invalid choice.");
     else if (result == 22)
-        gs->addToErrorLog("Not enough MP!"); // Pop up message box?
+        log->addToErrorLog("Not enough MP!"); // Pop up message box?
 
     reColorScene();
 }
@@ -661,13 +661,13 @@ void MainWindow::cancelAction()
 {
     if (gs->getTurnState() == 2)
     {
-        gs->addToEventLog("Undid Move Action.");
+        log->addToEventLog("Undid Move Action.");
         gs->prevTurnState();
         reColorScene();
     }
     else if (gs->getTurnState() == 3)
     {
-        gs->addToEventLog("Undid Action Choice.");
+        log->addToEventLog("Undid Action Choice.");
         gs->prevTurnState();
         reColorScene();
     }
@@ -680,14 +680,16 @@ void MainWindow::redrawEverything()
 
 void MainWindow::startGameState()
 {
-    Servant *first = new ServantTest(1, Alpha);
-    Servant *second = new ServantTest(1, Omega);
+    Servant *first = new ServantTest(1, Alpha, log);
+    Servant *second = new ServantTest(1, Omega, log);
 
     vector<Servant*> all;
     all.push_back(first);
     all.push_back(second);
 
-    gs = new GameState(all, 10, 10);
+    log = new Logger;
+
+    gs = new GameState(all, 10, 10, log);
 }
 
 void MainWindow::restartGameState(vector<string> team1, vector<string> team2,

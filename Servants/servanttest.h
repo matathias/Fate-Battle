@@ -7,7 +7,7 @@
 class ServantTest : public Servant
 {
     public:
-        ServantTest(int as, Team t);
+        ServantTest(int as, Team t, Logger *l);
 
         // Straight Slash
         virtual int activateNP1(vector<Servant *> defenders);

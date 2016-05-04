@@ -12,7 +12,7 @@ class PlayFieldSquare : public QGraphicsItem
 {
 public:
     PlayFieldSquare(GameState *gs, const QColor &color, int x, int y,
-                    string path1, string path2, MainWindow *mw);
+                    string path1, string path2, MainWindow *mw, Logger *l);
 
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     QPainterPath shape() const Q_DECL_OVERRIDE;
@@ -32,6 +32,9 @@ protected:
 private:
     int x;
     int y;
+
+    Logger *log;
+
     QColor color;
     QVector<QPointF> stuff;
     GameState *gState;

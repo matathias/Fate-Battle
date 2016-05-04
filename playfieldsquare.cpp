@@ -4,13 +4,15 @@
 #include <iostream>
 
 PlayFieldSquare::PlayFieldSquare(GameState *gs, const QColor &color, int x,
-                                 int y, string path1, string path2, MainWindow *mw)
+                                 int y, string path1, string path2,
+                                 MainWindow *mw, Logger *l)
 {
     this->x = x;
     this->y = y;
     this->color = color;
-    this->gState = gs;
+    gState = gs;
     window = mw;
+    log = l;
     setZValue((x + y) % 2);
 
     if (path1 != "")
@@ -134,12 +136,12 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     if (result == 11 || result == 31 || result == 51)
     {
-        gState->addToErrorLog("Invalid space selection!");
+        log->addToErrorLog("Invalid space selection!");
         window->reDrawMenus();
     }
     else if (result == 32 || result == 33 || result == 34)
     {
-        gState->addToErrorLog("A Major Error occurred! (GameState::turnStateChoseTargets().");
+        log->addToErrorLog("A Major Error occurred! (GameState::turnStateChoseTargets().");
         window->reDrawMenus();
     }
     else if (result == 35) // Action was canceled
@@ -148,7 +150,7 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
     else if (result == 20 || result == 40 || result == 60)
     {
-        gState->addToErrorLog("Invalid turnState error.");
+        log->addToErrorLog("Invalid turnState error.");
         window->reDrawMenus();
     }
     else if (result == 666)
@@ -157,7 +159,7 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
     else if (result != 0 && result != 1000)
     {
-        gState->addToErrorLog("An Unknown Error occurred?! Result: " + to_string(result));
+        log->addToErrorLog("An Unknown Error occurred?! Result: " + to_string(result));
         window->reDrawMenus();
     }
     else if (result == 0)

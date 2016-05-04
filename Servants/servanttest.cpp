@@ -3,7 +3,7 @@
 #include "servanttest.h"
 #include <iostream>
 
-ServantTest::ServantTest(int as, Team t) : Servant(as, t)
+ServantTest::ServantTest(int as, Team t, Logger *l) : Servant(as, t, l)
 {
     maxHP.push_back(100);
     maxHP.push_back(150);
@@ -138,7 +138,7 @@ int ServantTest::activateNP1(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][1]);
-        for (int i = 0; i < defenders.size(); i++)
+        for (unsigned int i = 0; i < defenders.size(); i++)
         {
             int dam = 0;
             // Check if you hit the targets
@@ -152,7 +152,7 @@ int ServantTest::activateNP1(vector<Servant *> defenders)
                 hit = true;
             else if (opEvade.size() > 1)
             {
-                for (int j = 1; j < opEvade.size() && !hit; j++)
+                for (unsigned int j = 1; j < opEvade.size() && !hit; j++)
                 {
                     r = getRandNum();
                     if (opEvade[j] >= r)
@@ -242,7 +242,7 @@ int ServantTest::activateNP2(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][2]);
-        for (int i = 0; i < defenders.size(); i++)
+        for (unsigned int i = 0; i < defenders.size(); i++)
         {
             // Check to see if you get a critical
             int attackMult = 5;
@@ -322,7 +322,7 @@ int ServantTest::activateNP3(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][3]);
-        for (int i = 0; i < defenders.size(); i++)
+        for (unsigned int i = 0; i < defenders.size(); i++)
         {
             // Check to see if you get a critical
             int attackMult = 5;

@@ -23,7 +23,7 @@
 using namespace std;
 
 /********** Function Definitions **********/
-GameState::GameState(vector<Servant *> tO, int l, int w)
+GameState::GameState(vector<Servant *> tO, int l, int w, Logger *lo)
 {
     // Get the turn order (based on speed) from
     while (tO.size() > 0)
@@ -106,7 +106,7 @@ GameState::GameState(vector<Servant *> tO, int l, int w)
     if (bCounter > 0)
         activeTeams.push_back(Boss);
 
-    eventNum = 1;
+    log = lo;
 
     field = new PlayField(l, w, turnOrder, servantLocations);
     resetTurnValues();
@@ -614,7 +614,7 @@ int GameState::nextTurnState()
             break;
         default:
             // Shouldn't ever get here...
-            addToErrorLog("Invalid turn state (GameState::nextTurnState())");
+            log->addToErrorLog("Invalid turn state (GameState::nextTurnState())");
             break;
     }
 
@@ -631,7 +631,7 @@ int GameState::prevTurnState()
     }
     else if (turnState < 2 || turnState > 6)
     {
-        addToErrorLog("Invalid turn state (GameState::prevTurnState())");
+        log->addToErrorLog("Invalid turn state (GameState::prevTurnState())");
         return 999;
     }
     turnState--;
@@ -716,7 +716,8 @@ int GameState::turnStatePreTurn()
     actionMPCosts = currentServant->getActionMPCosts();
 
     turnState++;
-    addToEventLog("Turn Start.");
+    log->addEventStartTurn(currentServant->getTeamName(),
+                           currentServant->getName());
     return 0;
 }
 
@@ -748,7 +749,7 @@ int GameState::turnStateMove()
             (abs(servEnd.x - servStart.x) + abs(servEnd.y - servStart.y));
 
     turnState++;
-    addToEventLog("Move from space (" + to_string(servStart.x) + "," +
+    log->addToEventLog("Move from space (" + to_string(servStart.x) + "," +
                   to_string(servStart.y) + ")" + " to space (" +
                   to_string(servEnd.x) + "," + to_string(servEnd.y) + ").");
     return 0;
@@ -825,7 +826,7 @@ int GameState::turnStateChoseAction()
     }
 
     turnState++;
-    addToEventLog("Chose action " + currentServant->getActionName(chosenAction)
+    log->addToEventLog("Chose action " + currentServant->getActionName(chosenAction)
                   + ".");
     return 0;
 }
@@ -1275,7 +1276,7 @@ int GameState::turnStateExtraMove()
 
     // End the turn by calling the Post-turn turn state.
     turnState++;
-    addToEventLog("Move from space (" + to_string(servStart.x) + "," +
+    log->addToEventLog("Move from space (" + to_string(servStart.x) + "," +
                   to_string(servStart.y) + ")" + " to space (" +
                   to_string(servEnd.x) + "," + to_string(servEnd.y) + ").");
     return endTurnProcess();
@@ -1288,7 +1289,8 @@ int GameState::turnStatePostTurn()
     if (turnState != 6)
         return 70;
 
-    addToEventLog("Turn ended.");
+    log->addEventEndTurn(currentServant->getTeamName(),
+                         currentServant->getName());
     int returnValue = 0;
 
     // Check if anyone has died and modify the death list accordingly.
@@ -1348,11 +1350,11 @@ int GameState::endTurnProcess()
     int result = endTurn();
     if (result == 10)
     {
-        addToErrorLog("An error occured (endTurn()->turnStatePreTurn()).");
+        log->addToErrorLog("An error occured (endTurn()->turnStatePreTurn()).");
     }
     else if (result == 70)
     {
-        addToErrorLog("An error occured (endTurn()).");
+        log->addToErrorLog("An error occured (endTurn()).");
     }
     else if (result == 1000)
     {
@@ -1405,39 +1407,4 @@ void GameState::resetTurnValues()
     actionList.clear();
     actionListTypes.clear();
     actionMPCosts.clear();
-}
-
-vector<string> GameState::getEventLog()
-{
-    return eventLog;
-}
-
-vector<string> GameState::getErrorLog()
-{
-    return errorLog;
-}
-
-void GameState::addToEventLog(string s)
-{
-    string num = "Event " + to_string(eventNum) + ": " +
-                 currentServant->getName() + " " + currentServant->getTeamName()
-                 + " - ";
-    eventLog.push_back(num + s);
-    eventNum++;
-}
-
-void GameState::addToErrorLog(string s)
-{
-    string num = "Error on Event " + to_string(eventNum) + ": ";
-    errorLog.push_back(num + s);
-    errorNum = eventNum;
-}
-
-int GameState::getErrorNum()
-{
-    return errorNum;
-}
-int GameState::getEventNum()
-{
-    return eventNum;
 }

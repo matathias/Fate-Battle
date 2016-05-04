@@ -4,6 +4,7 @@
 #pragma once
 
 #include "GameState.h"
+#include "logger.h"
 
 #include <QWidget>
 #include <QMainWindow>
@@ -108,6 +109,7 @@ private:
     QHBoxLayout *mainLayout;
 
     GameState *gs;
+    Logger *log;
 };
 
 #endif // MAINWINDOW_H

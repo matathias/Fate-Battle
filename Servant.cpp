@@ -11,10 +11,11 @@
 
 /********** Function definitions **********/
 // Constructor
-Servant::Servant(int as, Team t)
+Servant::Servant(int as, Team t, Logger *l)
 {
     ascension = as;
     team = t;
+    log = l;
 
     territoryActive = false;
 }
