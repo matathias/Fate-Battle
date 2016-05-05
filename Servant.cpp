@@ -551,6 +551,20 @@ vector<Coordinate> Servant::getNPRange(int np)
     return npRanges[np];
 }
 
+bool Servant::isPermaDead()
+{
+    bool ret = false;
+    for (unsigned int i = 0; i < debuffs.size() && !ret; i++)
+    {
+        if (debuffs[i]->getDebuffName().compare("Permadeath") == 0)
+        {
+            ret = true;
+        }
+    }
+
+    return ret;
+}
+
 // This only needs to be overriden if the Servant has an attack that isn't
 // simply single-target.
 int Servant::attack(vector<Servant *> defenders, bool counter)

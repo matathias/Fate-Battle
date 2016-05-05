@@ -5,6 +5,9 @@
 #include "PlayField.h"
 #include "logger.h"
 
+#include <QWidget>
+#include <QComboBox>
+
 using namespace std;
 
 
@@ -55,6 +58,9 @@ class GameState
         vector<int> getActionMPCosts();
 
         vector<Servant*> getDead();
+        vector<Servant*> getTeamDead(Team t);
+        vector<Servant*> getOpposingTeamDead(Team t);
+        vector<Servant*> filterPermaDead(vector<Servant*> d);
         void addDead(Servant* s);
         void removeDead(Servant* s);
         bool isServantDead(Servant* s); //Returns true if dead, false otherwise.
@@ -120,6 +126,9 @@ class GameState
                                  // the turn state and getting the next Servant
 
         void resetTurnValues();
+
+    private slots:
+        void processDeathComboBox(QComboBox *qcb);
     
     protected:
         vector<Servant*> turnOrder; // Contains servant pointers in turn order.
@@ -156,6 +165,8 @@ class GameState
 
         int clickedX;
         int clickedY;
+
+        int deathComboBoxIndex;
 
         // The Servant who's turn it is right now and related data.
         Servant* currentServant;

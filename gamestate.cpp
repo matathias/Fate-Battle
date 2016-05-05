@@ -19,6 +19,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QComboBox>
 
 using namespace std;
 
@@ -112,6 +113,12 @@ GameState::GameState(vector<Servant *> tO, int l, int w, Logger *lo)
     resetTurnValues();
     currentServant = getNextServant();
     turnStatePreTurn();
+}
+
+/***** Slots *****/
+void GameState::processDeathComboBox(QComboBox *qcb)
+{
+    deathComboBoxIndex = qcb->currentIndex();
 }
 
 /***** Manipulators *****/
@@ -524,6 +531,48 @@ vector<Servant*> GameState::getDead()
     return dead;
 }
 
+vector<Servant*> GameState::getTeamDead(Team t)
+{
+    vector<Servant*> res;
+    for (unsigned int i = 0; i < dead.size(); i++)
+    {
+        if(dead[i]->getTeam() == t)
+        {
+            res.push_back(dead[i]);
+        }
+    }
+
+    return res;
+}
+
+vector<Servant*> GameState::getOpposingTeamDead(Team t)
+{
+    vector<Servant*> res;
+    for (unsigned int i = 0; i < dead.size(); i++)
+    {
+        if(dead[i]->getTeam() != t)
+        {
+            res.push_back(dead[i]);
+        }
+    }
+
+    return res;
+}
+
+vector<Servant*> GameState::filterPermaDead(vector<Servant *> d)
+{
+    vector<Servant*> res;
+    for (unsigned int i = 0; i < d.size(); i++)
+    {
+        if (!d[i]->isPermaDead())
+        {
+            res.push_back(d[i]);
+        }
+    }
+
+    return res;
+}
+
 vector<Servant*> GameState::getAlphaTeam()
 {
     return alphaTeam;
@@ -807,6 +856,9 @@ int GameState::turnStateChoseAction()
     {
         // TODO: pop up a dialog box confirming this action
         turnState = 4;
+        log->addToEventLog("Chose action " +
+                           currentServant->getActionName(chosenAction)
+                           + ".");
         return turnStateApplyAction();
     }
 
@@ -814,20 +866,134 @@ int GameState::turnStateChoseAction()
     // dead servants to select from.
     else if (chosenActionType == D)
     {
-        // TODO
+        // Process immediately. No need for the extra turnstate.
+        // THIS PART REMAINS UNTESTED
+        deathComboBoxIndex = 0;
+        vector<Servant*> targetList;
+        if (currentServant->getClass() == Caster /*&& if action is the necromancer's item*/)
+            targetList = getOpposingTeamDead(currentServant->getTeam());
+        else
+            targetList = getTeamDead(currentServant->getTeam());
+
+        // Count the number of permadead and regular-dead servants
+        int numDead = 0;
+        int numPermaDead = 0;
+        string permDeadServ = "\nList of Permadead Players:\n\n";
+        vector<Servant*> deadServ;
+        for (unsigned int i = 0; i < targetList.size(); i++)
+        {
+            if (targetList[i]->isPermaDead())
+            {
+                numPermaDead++;
+                permDeadServ += targetList[i]->getTeamName() + " " +
+                                targetList[i]->getName() + "\n";
+            }
+            else
+            {
+                numDead++;
+                deadServ.push_back(targetList[i]);
+            }
+        }
+
+        // If there are no regular-dead servants then back out of the action
+        // automatically
+        if (numDead == 0 && numPermaDead == 0)
+        {
+            log->addToErrorLog("No dead Servants to use action on!");
+            return 25;
+        }
+        else if (numDead == 0)
+        {
+            log->addToErrorLog("No non-permadead Servants to use action on!");
+            return 25;
+        }
+        else if (numPermaDead == 0)
+        {
+            permDeadServ += "(None)\n";
+        }
+
+        // Create the dialog
+        QDialog *deathDialog = new QDialog;
+        QLabel *permaDeadServants = new QLabel;
+        QLabel *instructionLabel = new QLabel;
+        QComboBox *chooseServant = new QComboBox;
+
+        string instrucText = "Choose a dead player to use " +
+                             currentServant->getActionName(chosenAction) +
+                             " on:";
+        permaDeadServants->setText(QString::fromStdString(permDeadServ));
+        permaDeadServants->setFrameStyle(QFrame::Box | QFrame::Sunken);
+        permaDeadServants->setAlignment(Qt::AlignCenter);
+        instructionLabel->setText(QString::fromStdString(instrucText));
+        instructionLabel->setFrameStyle(QFrame::Box | QFrame::Sunken);
+        instructionLabel->setAlignment(Qt::AlignCenter);
+
+        for (unsigned int i = 0; i < deadServ.size(); i++)
+        {
+            chooseServant->addItem(QString::fromStdString(
+                                       deadServ[i]->getTeamName() + " " +
+                                       deadServ[i]->getName()));
+        }
+
+        QObject::connect(chooseServant, SIGNAL(activated()), deathDialog,
+                         SLOT(processDeathComboBox(deathDialog)));
+
+        QPushButton *okButton = new QPushButton(QWidget::tr("OK"));
+        QPushButton *cancelButton = new QPushButton(QWidget::tr("Cancel"));
+        QObject::connect(okButton, SIGNAL(clicked()), deathDialog, SLOT(accept()));
+        QObject::connect(cancelButton, SIGNAL(clicked()), deathDialog, SLOT(reject()));
+        QHBoxLayout *buttons = new QHBoxLayout;
+        buttons->addWidget(okButton);
+        buttons->addWidget(cancelButton);
+
+        QVBoxLayout *finalLayout = new QVBoxLayout;
+        finalLayout->addWidget(permaDeadServants);
+        finalLayout->addWidget(instructionLabel);
+        finalLayout->addWidget(chooseServant);
+        finalLayout->addLayout(buttons);
+
+        // Display the dialog and get the result
+        int result = deathDialog->exec();
+
+        if (result == QDialog::Rejected)
+            return 25;
+        else
+            chosenDefenders.push_back(deadServ[deathComboBoxIndex]);
+
+        turnState = 4;
+        log->addToEventLog("Chose action " +
+                           currentServant->getActionName(chosenAction)
+                           + ".");
+        return turnStateApplyAction();
     }
 
     // If the action does not have any targets then process it accordingly.
     else
     {
-        // TODO: pop up a dialog box confirming this action
+        // Pop up a dialog box confirming this action.
+        // THIS HAS NOT YET BEEN TESTED.
+        string check = "\nYou wish to use the action:\n\n" +
+                       currentServant->getActionName(chosenAction) +
+                       "\n\nAre you sure?\n";
+        QMessageBox checkMessage;
+        checkMessage.setWindowTitle(QObject::tr("Final Fate"));
+        checkMessage.setText(QString::fromStdString(check));
+        checkMessage.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        checkMessage.setDefaultButton(QMessageBox::No);
+        if (checkMessage.exec() == QMessageBox::No)
+            return 25;
+
         turnState = 4;
+        log->addToEventLog("Chose action " +
+                           currentServant->getActionName(chosenAction)
+                           + ".");
         return turnStateApplyAction();
     }
 
     turnState++;
-    log->addToEventLog("Chose action " + currentServant->getActionName(chosenAction)
-                  + ".");
+    log->addToEventLog("Chose action " +
+                       currentServant->getActionName(chosenAction)
+                       + ".");
     return 0;
 }
 
@@ -1183,13 +1349,13 @@ int GameState::turnStateChoseTargets()
             return 35;
         }
     }
-    else if (chosenActionType == D)
-    {
+    //else if (chosenActionType == D)
+    //{
         // TODO
         // Verify the selection
 
         // form a defender vector from the selection
-    }
+    //}
     else
     {
         // Why are we here?? We should never be here.

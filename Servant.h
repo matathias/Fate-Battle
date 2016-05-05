@@ -109,6 +109,8 @@ class Servant
 
         void setLoc(Coordinate newLoc);
 
+        bool isPermaDead();
+
         // This function is defined in the Servant class, but servants with
         // special skills attached to their attack should override the attack
         // method.
