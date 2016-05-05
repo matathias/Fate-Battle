@@ -742,18 +742,73 @@ int GameState::turnStatePreTurn()
     // Determine if there are any ongoing combat effects that belong to this
     // Servant (e.g. Reality Marbles or Caster Territories) and if the player
     // wants to continue them.
-    // TODO
     if (field->isRealityMarbleOn() &&
         field->realityMarbleServant() == currentServant)
     {
-        // Do some gui stuff
-        // Make a new turnState that can handle this dialogue?
+        // Check that the player has enough MP to continue the reality marble.
+        // If they don't, discontinue it automatically.
+        if (currentServant->getCurrMP() < currentServant->getRealityMarbleMP())
+        {
+            log->addToEventLog("You lack the MP to continue your Reality Marble. It has now dissipated.");
+            field->endRealityMarble();
+        }
+        else
+        {
+            // Pop up a dialog box confirming this action.
+            // THIS HAS NOT YET BEEN TESTED.
+            string check = "\nDo you wish to continue your Reality Marble for " +
+                           to_string(currentServant->getRealityMarbleMP()) +
+                           " MP?\n";
+            QMessageBox checkMessage;
+            checkMessage.setWindowTitle(QObject::tr("Final Fate"));
+            checkMessage.setText(QString::fromStdString(check));
+            checkMessage.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            checkMessage.setDefaultButton(QMessageBox::No);
+            if (checkMessage.exec() == QMessageBox::No)
+            {
+                log->addToEventLog("You chose to discontinue your Reality Marble. It has now dissipated.");
+                field->endRealityMarble();
+            }
+            else
+            {
+                log->addToEventLog("You chose to continue your Reality Marble.");
+                currentServant->subMP(currentServant->getRealityMarbleMP());
+            }
+        }
     }
     else if (currentServant->getClass() == Caster &&
              currentServant->isTerritoryActive())
     {
-        // Do some gui stuff
-        // Make a new turnState that can handle this dialogue?
+        // Check that the player has enough MP to continue the territory.
+        // If they don't, discontinue it automatically.
+        if (currentServant->getCurrMP() < currentServant->getTerritoryMP())
+        {
+            log->addToEventLog("You lack the MP to continue your Territory. It has now dissolved.");
+            field->eraseTerritory(currentServant->getTerritoryName());
+        }
+        else
+        {
+            // Pop up a dialog box confirming this action.
+            // THIS HAS NOT YET BEEN TESTED.
+            string check = "\nDo you wish to continue your Territory for " +
+                           to_string(currentServant->getTerritoryMP()) +
+                           " MP?\n";
+            QMessageBox checkMessage;
+            checkMessage.setWindowTitle(QObject::tr("Final Fate"));
+            checkMessage.setText(QString::fromStdString(check));
+            checkMessage.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            checkMessage.setDefaultButton(QMessageBox::No);
+            if (checkMessage.exec() == QMessageBox::No)
+            {
+                log->addToEventLog("You chose to discontinue your Territory. It has now dissolved.");
+                field->eraseTerritory(currentServant->getTerritoryName());
+            }
+            else
+            {
+                log->addToEventLog("You chose to continue your Territory.");
+                currentServant->subMP(currentServant->getTerritoryMP());
+            }
+        }
     }
 
     // Get the valid moves for the servant
@@ -854,7 +909,25 @@ int GameState::turnStateChoseAction()
     // turn state and apply the action.
     else if (chosenActionType == T)
     {
-        // TODO: pop up a dialog box confirming this action
+        if (field->isRealityMarbleOn())
+        {
+            log->addToErrorLog("You cannot do that while a Reality Marble is active!");
+            return 25;
+        }
+
+        // Pop up a dialog box confirming this action.
+        // THIS HAS NOT YET BEEN TESTED.
+        string check = "\nYou wish to use the action:\n\n" +
+                       currentServant->getActionName(chosenAction) +
+                       "\n\nAre you sure?\n";
+        QMessageBox checkMessage;
+        checkMessage.setWindowTitle(QObject::tr("Final Fate"));
+        checkMessage.setText(QString::fromStdString(check));
+        checkMessage.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        checkMessage.setDefaultButton(QMessageBox::No);
+        if (checkMessage.exec() == QMessageBox::No)
+            return 25;
+
         turnState = 4;
         log->addToEventLog("Chose action " +
                            currentServant->getActionName(chosenAction)
@@ -870,7 +943,8 @@ int GameState::turnStateChoseAction()
         // THIS PART REMAINS UNTESTED
         deathComboBoxIndex = 0;
         vector<Servant*> targetList;
-        if (currentServant->getClass() == Caster /*&& if action is the necromancer's item*/)
+        if (currentServant->getClass() == Caster &&
+                currentServant->isKillDeadAction(chosenAction))
             targetList = getOpposingTeamDead(currentServant->getTeam());
         else
             targetList = getTeamDead(currentServant->getTeam());
@@ -1349,13 +1423,6 @@ int GameState::turnStateChoseTargets()
             return 35;
         }
     }
-    //else if (chosenActionType == D)
-    //{
-        // TODO
-        // Verify the selection
-
-        // form a defender vector from the selection
-    //}
     else
     {
         // Why are we here?? We should never be here.
@@ -1380,7 +1447,6 @@ int GameState::turnStateApplyAction()
     }
 
     // If the Servant is a Rider, allow them to move again.
-    // TODO
     if (currentServant->getClass() == Rider)
     {
         // Get the valid moves for the servant
@@ -1393,7 +1459,6 @@ int GameState::turnStateApplyAction()
     // second turn. If they do, set archerSecondTurn to true and go back to
     // the beginning move turn state. If archerSecondTurn is already true then
     // end the Servant's turn.
-    // TODO
     else if (currentServant->getClass() == Archer && !archerSecondTurn)
     {
         int r = currentServant->getRandNum();
@@ -1417,7 +1482,6 @@ int GameState::turnStateApplyAction()
 
 int GameState::turnStateExtraMove()
 {
-    //cout << "Beginning of GameState::turnStateExtraMove().\n" << std::flush;
     if (turnState != 5)
         return 60;
 

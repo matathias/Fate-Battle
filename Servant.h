@@ -95,11 +95,18 @@ class Servant
         // If the action is a Noble Phantasm, returns the index of the NPvector
         // in which the NP is stored. If the action is not an NP, returns -1.
         virtual int isActionNP(int action);
+        virtual bool isActionRealityMarble(int action);
+
+        // Get the MP cost for continuing a reality marble or territory.
+        virtual int getRealityMarbleMP();
+        virtual int getTerritoryMP();
+        virtual string getTerritoryName();
 
         // These two functions are specific to Casters and Assassins
         // respectively.
         virtual bool isHealAction(int action);
         virtual bool isPoisonAction(int action);
+        virtual bool isKillDeadAction(int action);
 
         virtual vector<Coordinate> getActionRange(int action);
 

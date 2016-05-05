@@ -472,12 +472,37 @@ int Servant::isActionNP(int action)
     return ret;
 }
 
+bool Servant::isActionRealityMarble(int action)
+{
+    return false;
+}
+
+int Servant::getRealityMarbleMP()
+{
+    return 10;
+}
+
+int Servant::getTerritoryMP()
+{
+    return 5;
+}
+
+string Servant::getTerritoryName()
+{
+    return "N/A";
+}
+
 bool Servant::isHealAction(int action)
 {
     return false;
 }
 
 bool Servant::isPoisonAction(int action)
+{
+    return false;
+}
+
+bool Servant::isKillDeadAction(int action)
 {
     return false;
 }

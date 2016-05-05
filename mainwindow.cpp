@@ -482,8 +482,9 @@ void MainWindow::reColorScene()
         }
         else if (gs->isSpaceRealityMarble(x,y))
         {
-            green = 0;
-            blue = 0;
+            green = 50;
+            blue = 50;
+            red = 50;
         }
         else if (gs->isSpaceDebuff(x,y))
         {
