@@ -20,7 +20,6 @@ SOURCES += main.cpp\
     Skill.cpp \
     Debuff.cpp \
     GameState.cpp \
-    NoblePhantasm.cpp \
     PlayField.cpp \
     Servants/servantsaberclaymore.cpp \
     Servants/servantsaberkatana.cpp \
@@ -52,7 +51,6 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     Debuff.h \
     GameState.h \
-    NoblePhantasm.h \
     PlayField.h \
     Servant.h \
     Skill.h \

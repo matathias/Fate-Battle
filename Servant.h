@@ -22,7 +22,7 @@ class Servant
         void setMP(int mp);
         void addHP(int hp);
         void addMP(int mp);
-        void subHP(int hp, DamageType dt);
+        virtual void subHP(int hp, DamageType dt);
         void subMP(int mp);
         
         string getName();

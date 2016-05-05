@@ -254,7 +254,7 @@ void Servant::addDebuff(Debuff *d)
 
 void Servant::decDebuffs()
 {
-    for (int i = 0; i < debuffs.size(); i++)
+    for (unsigned int i = 0; i < (int) debuffs.size(); i++)
     {
         debuffs[i]->decrementTurnsRemaining();
         if (debuffs[i]->getTurnsRemaining() == 0)
@@ -277,7 +277,7 @@ void Servant::addCastedDebuff(Debuff *d)
 
 void Servant::decCastedDebuffs()
 {
-    for (int i = 0; i < debuffs.size(); i++)
+    for (int i = 0; i < (int) debuffs.size(); i++)
     {
         castedDebuffs[i]->decrementTurnsRemaining();
         if (castedDebuffs[i]->getTurnsRemaining() == 0)
@@ -291,7 +291,7 @@ void Servant::decCastedDebuffs()
 void Servant::remCastedDebuffs()
 {
     int i = 0;
-    while (i < castedDebuffs.size())
+    while (i < (int) castedDebuffs.size())
     {
         castedDebuffs[i]->setTurnsRemaining(1);
         castedDebuffs.erase(castedDebuffs.begin()+i);
@@ -301,11 +301,11 @@ void Servant::remCastedDebuffs()
 int Servant::getDebuffAmount(Stat s)
 {
     int d = 0;
-    for (int i = 0; i < debuffs.size(); i++)
+    for (unsigned int i = 0; i < debuffs.size(); i++)
     {
         vector<Stat> dStats = debuffs[i]->getDebuffStats();
         vector<int> dAmount = debuffs[i]->getDebuffAmounts();
-        for (int j = 0; j < dStats.size(); j++)
+        for (unsigned int j = 0; j < dStats.size(); j++)
         {
             if (dStats[j] == s)
                 d += dAmount[j];
@@ -329,7 +329,7 @@ bool Servant::isTerritoryActive()
 string Servant::removeTerritory()
 {
     string territoryName = "";
-    for (int i = 0; i < castedDebuffs.size(); i++)
+    for (int i = 0; i < (int) castedDebuffs.size(); i++)
     {
         string n = castedDebuffs[i]->getDebuffName();
         if (n.compare("Territory") == 0)
@@ -599,7 +599,7 @@ int Servant::attack(vector<Servant *> defenders, bool counter)
     else
     {
         subMP(actionMPCosts[ascension][0]);
-        for (int i = 0; i < defenders.size(); i++)
+        for (unsigned int i = 0; i < defenders.size(); i++)
         {
             int dam = 0;
             // Check if you hit the targets
@@ -613,7 +613,7 @@ int Servant::attack(vector<Servant *> defenders, bool counter)
                 hit = true;
             else if (opEvade.size() > 1)
             {
-                for (int j = 1; j < opEvade.size() && !hit; j++)
+                for (unsigned int j = 1; j < opEvade.size() && !hit; j++)
                 {
                     r = getRandNum();
                     if (opEvade[j] >= r)

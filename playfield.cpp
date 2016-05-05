@@ -18,7 +18,7 @@ using namespace std;
 bool isInVector(vector<Coordinate> vec, Coordinate c)
 {
     bool found = false;
-    for (int i = 0; i < vec.size() && !found; i++)
+    for (unsigned int i = 0; i < vec.size() && !found; i++)
     {
         if (vec[i].x == c.x && vec[i].y == c.y)
             found = true;
