@@ -51,6 +51,7 @@ class Servant
         vector<Debuff*> getDebuffs();
         void addDebuff(Debuff* d);
         void decDebuffs();
+        void remAllDebuffs(bool purgePermadeath);
         vector<Debuff*> getCastedDebuffs();
         void addCastedDebuff(Debuff* d);
         void decCastedDebuffs();
@@ -108,6 +109,9 @@ class Servant
         virtual bool isPoisonAction(int action);
         virtual bool isKillDeadAction(int action);
 
+        // Only need to define this for the berserkers
+        virtual bool isGodmindActive();
+
         virtual vector<Coordinate> getActionRange(int action);
 
         vector<vector<string>> getNoblePhantasms();
@@ -121,6 +125,8 @@ class Servant
         // This function is defined in the Servant class, but servants with
         // special skills attached to their attack should override the attack
         // method.
+        // If counter is true, then the defending servants can counterattack.
+        // Otherwise they cannot.
         // It returns 0 if it succeeds, and another value otherwise.
         virtual int attack(vector<Servant*> defenders, bool counter);
 

@@ -68,7 +68,10 @@ void Servant::subHP(int hp, DamageType dt)
     if (currHP > mhp)
         currHP = mhp;
     else if (currHP < 0)
+    {
         currHP = 0;
+        remAllDebuffs(false);
+    }
 }
 
 void Servant::subMP(int mp)
@@ -254,10 +257,34 @@ void Servant::addDebuff(Debuff *d)
 
 void Servant::decDebuffs()
 {
-    for (unsigned int i = 0; i < (int) debuffs.size(); i++)
+    for (int i = 0; i < (int) debuffs.size(); i++)
     {
         debuffs[i]->decrementTurnsRemaining();
         if (debuffs[i]->getTurnsRemaining() == 0)
+        {
+            debuffs.erase(debuffs.begin()+i);
+            i--;
+        }
+    }
+}
+
+void Servant::remAllDebuffs(bool purgePermadead)
+{
+    for (int i = 0; i < (int) debuffs.size(); i++)
+    {
+        if(!purgePermadead)
+        {
+            if(!debuffs[i]->getDebuffName().compare("Permadeath") == 0)
+            {
+                debuffs.erase(debuffs.begin()+i);
+                i--;
+            }
+            else
+            {
+                debuffs[i]->setTurnsRemaining(-1);
+            }
+        }
+        else
         {
             debuffs.erase(debuffs.begin()+i);
             i--;
@@ -503,6 +530,11 @@ bool Servant::isPoisonAction(int action)
 }
 
 bool Servant::isKillDeadAction(int action)
+{
+    return false;
+}
+
+bool Servant::isGodmindActive()
 {
     return false;
 }

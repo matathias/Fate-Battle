@@ -108,6 +108,8 @@ GameState::GameState(vector<Servant *> tO, int l, int w, Logger *lo)
         activeTeams.push_back(Boss);
 
     log = lo;
+    archerSecondTurn = false;
+    ionioiSecondTurn = false;
 
     field = new PlayField(l, w, turnOrder, servantLocations);
     resetTurnValues();
@@ -472,7 +474,7 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
             }
         }
     }
-    else if (s->getClass() == Berserker)
+    else if (s->getClass() == Berserker && !s->isGodmindActive())
     {
         // Find closest enemy unit, then locate closest tile to said unit
         vector<Servant*> enemies = getEnemyTeam(s);
@@ -708,19 +710,106 @@ int GameState::turnStatePreTurn()
     // Decrement the turns remaining on any Debuffs on this Servant. Remove any
     // Debuffs as necessary.
     currentServant->decDebuffs();
+    log->addEventStartTurn(currentServant->getTeamName(),
+                           currentServant->getName());
 
     // Apply any relevant Debuffs, either that are on the Servant or the field.
-    // TODO: check if the debuff is a Dimensional Gate territory and do things
-    //       accordingly. Also check for the various Reality Marble effects.
     Debuff *tDebuff = field->getDebuffOnSpace(currentServant->getCurrLoc());
-    if (tDebuff != NULL && tDebuff->getTargetTeam() == currentServant->getTeam())
+    if (tDebuff != NULL && (tDebuff->getTargetTeam() == currentServant->getTeam()
+                            || tDebuff->getTargetTeam() == All))
     {
         // Check if the Debuff is a special Territory or a Reality Marble and
         // act on the current servant accordingly. Otherwise, just add the
         // debuff to the servant's debuff list with a turns remaining value of
         // 1.
-        // TODO
 
+        // This is for when the Servant is an enemy of the Dimensional Gate
+        //  caster.
+        if(tDebuff->getDebuffDescrip().compare("Dimensional Gate") == 0)
+        {
+            // Servant is teleported to random location on the field
+            Coordinate teleCoord;
+            teleCoord.x = -1;
+            teleCoord.y = -1;
+            while (!field->isValidCoordinate(teleCoord))
+            {
+                teleCoord.x = rand() % field->getFieldWidth();
+                teleCoord.y = rand() % field->getFieldLength();
+            }
+            field->moveServant(currentServant, teleCoord);
+            log->addToEventLog("The Dimensional Gate teleported you to (" +
+                               to_string(teleCoord.x) + "," +
+                               to_string(teleCoord.y) + ")!");
+        }
+        else if (tDebuff->getDebuffDescrip().compare("Castle Doctrine") == 0)
+        {
+            // Servant takes "normal" damage at the beginning of their turn.
+            //  (attack is subject to accuracy and critical check)
+            vector<Servant*> tDef;
+            tDef.push_back(currentServant);
+            field->realityMarbleServant()->attack(tDef, false);
+        }
+        else if (tDebuff->getDebuffDescrip().compare("Commander of Life and Death") == 0)
+        {
+            int hpLoss = currentServant->getMaxHP() / 10;
+            if (hpLoss >= currentServant->getCurrHP())
+                hpLoss = currentServant->getCurrHP() - 1;
+
+            currentServant->subHP(hpLoss, NP_MAG);
+
+            // Add a permadeath debuff to the servant
+            vector<Stat> tDebStat;
+            tDebStat.push_back(MOV);
+            vector<int> tDebAm;
+            tDebAm.push_back(0);
+            Debuff *newDebuff = new Debuff("Permadeath",
+                                           "If you die while this debuff is active, you cannot be ressurected.",
+                                           currentServant->getTeam(),
+                                           tDebStat, tDebAm, 1);
+            currentServant->addDebuff(newDebuff);
+        }
+
+    }
+    // This is for when the Servant is an ally of the Dimensional Gate caster.
+    else if (tDebuff != NULL &&
+             tDebuff->getDebuffDescrip().compare("Dimensional Gate") == 0)
+    {
+        // Servant gets a 50% bonus to MOV.
+        // (Just apply the debuff, which in this case is actually a buff).
+        vector<Stat> tDebStat;
+        tDebStat.push_back(MOV);
+        vector<int> tDebAm;
+        tDebAm.push_back(currentServant->getMov() / 2);
+        Debuff *newDebuff = new Debuff(tDebuff->getDebuffName(),
+                                       tDebuff->getDebuffDescrip(),
+                                       tDebuff->getTargetTeam(),
+                                       tDebStat, tDebAm, 1);
+        currentServant->addDebuff(newDebuff);
+    }
+    // This if for when the Servant is an ally of the Commander of Life and
+    // Death caster.
+    else if (tDebuff != NULL &&
+             tDebuff->getDebuffDescrip().compare("Commander of Life and Death") == 0)
+    {
+        int hpLoss = currentServant->getMaxHP() / 20;
+        if (hpLoss >= currentServant->getCurrHP())
+            hpLoss = currentServant->getCurrHP() - 1;
+
+        currentServant->subHP(hpLoss, NP_MAG);
+
+        // Add a permadeath debuff to the servant
+        vector<Stat> tDebStat;
+        tDebStat.push_back(MOV);
+        vector<int> tDebAm;
+        tDebAm.push_back(0);
+        Debuff *newDebuff = new Debuff("Permadeath",
+                                       "If you die while this debuff is active, you cannot be ressurected.",
+                                       currentServant->getTeam(),
+                                       tDebStat, tDebAm, 1);
+        currentServant->addDebuff(newDebuff);
+    }
+    else if (tDebuff != NULL)
+    {
         Debuff *newDebuff = new Debuff(tDebuff->getDebuffName(),
                                        tDebuff->getDebuffDescrip(),
                                        tDebuff->getTargetTeam(),
@@ -728,6 +817,7 @@ int GameState::turnStatePreTurn()
                                        tDebuff->getDebuffAmounts(), 1);
         currentServant->addDebuff(newDebuff);
     }
+
     int hpSub = currentServant->getDebuffAmount(HP);
     int mpSub = currentServant->getDebuffAmount(MP);
     int currHP = currentServant->getCurrHP();
@@ -773,6 +863,137 @@ int GameState::turnStatePreTurn()
             {
                 log->addToEventLog("You chose to continue your Reality Marble.");
                 currentServant->subMP(currentServant->getRealityMarbleMP());
+                // Check here for reality marble-specific effects
+                if(field->getDebuffOnSpace(currentServant->getCurrLoc())->getDebuffDescrip().compare("Unlimited Blade Works") == 0)
+                {
+                    // UBW
+                    log->addToEventLog("The blades of Unlimited Blade Works come to life and attack your foes!");
+                    vector<Servant*> aliveServants = getEnemyTeam(currentServant);
+                    int rawDamage = currentServant->getStr() + currentServant->getMag();
+                    for (unsigned int i = 0; i < aliveServants.size(); i++)
+                    {
+                        Servant *tempTarget = aliveServants[i];
+                        string tN = tempTarget->getTeamName() + " " + tempTarget->getName();
+                        int defStat = 0;
+                        if (tempTarget->getDef() > tempTarget->getRes())
+                            defStat = tempTarget->getDef();
+                        else
+                            defStat = tempTarget->getRes();
+                        int totalDamage = abs(rawDamage - defStat);
+
+                        if(totalDamage >= tempTarget->getCurrHP())
+                        {
+                            tempTarget->subHP(totalDamage, NP_MAG);
+                            log->addToEventLog(tN + " took " +
+                                               to_string(totalDamage) +
+                                               " damage and died!");
+                            addDead(tempTarget);
+                            field->servantDead(tempTarget);
+                        }
+                        else
+                        {
+                            tempTarget->subHP(totalDamage, NP_MAG);
+                            log->addToEventLog(tN + " took " +
+                                               to_string(totalDamage) +
+                                               " damage!");
+                        }
+                    }
+                }
+                else if (field->getDebuffOnSpace(currentServant->getCurrLoc())->getDebuffDescrip().compare("Commander of Life and Death") == 0)
+                {
+                    // Commander of Life and Death (CLD)
+                    // THIS DIALOG HAS NOT YET BEEN TESTED
+                    QDialog *deathDialog = new QDialog;
+                    QLabel *instructionLabel = new QLabel;
+                    QComboBox *chooseServant = new QComboBox;
+
+                    string instrucText = "Choose a player to cast Death on.\n(Note: if they pass a Luck check, then they will live.";
+                    instructionLabel->setText(QString::fromStdString(instrucText));
+                    instructionLabel->setFrameStyle(QFrame::Box | QFrame::Sunken);
+                    instructionLabel->setAlignment(Qt::AlignCenter);
+
+                    vector<Servant*> aliveServants = getEnemyTeam(currentServant);
+                    for (unsigned int i = 0; i < dead.size(); i++)
+                    {
+                        bool f = false;
+                        for (unsigned int j = 0; j < aliveServants.size() && !f; j++)
+                        {
+                            if(aliveServants[j] == dead[i])
+                            {
+                                f = true;
+                                aliveServants.erase(aliveServants.begin()+j);
+                            }
+                        }
+                    }
+
+                    for (unsigned int i = 0; i < aliveServants.size(); i++)
+                    {
+                        chooseServant->addItem(QString::fromStdString(
+                                                   aliveServants[i]->getTeamName() + " " +
+                                                   aliveServants[i]->getName()));
+                    }
+
+                    QObject::connect(chooseServant, SIGNAL(activated()), deathDialog,
+                                     SLOT(processDeathComboBox(deathDialog)));
+
+                    QPushButton *okButton = new QPushButton(QWidget::tr("OK"));
+                    //QPushButton *cancelButton = new QPushButton(QWidget::tr("Cancel"));
+                    QObject::connect(okButton, SIGNAL(clicked()), deathDialog, SLOT(accept()));
+                    //QObject::connect(cancelButton, SIGNAL(clicked()), deathDialog, SLOT(reject()));
+                    QHBoxLayout *buttons = new QHBoxLayout;
+                    buttons->addWidget(okButton);
+                    //buttons->addWidget(cancelButton);
+
+                    QVBoxLayout *finalLayout = new QVBoxLayout;
+                    finalLayout->addWidget(instructionLabel);
+                    finalLayout->addWidget(chooseServant);
+                    finalLayout->addLayout(buttons);
+
+                    // Display the dialog and get the result
+                    int result = deathDialog->exec();
+                    deathComboBoxIndex = 0;
+
+                    if (result == QDialog::Rejected)
+                    {
+                        // We shouldn't ever be here
+                        deathComboBoxIndex = 0;
+                    }
+                    else
+                    {
+                        Servant *tServ = aliveServants[deathComboBoxIndex];
+                        log->addToEventLog("You cast Death on " +
+                                           tServ->getTeamName() + " " +
+                                           tServ->getName());
+
+                        int randNum = tServ->getRandNum();
+                        int tCurrHP = tServ->getCurrHP();
+                        if (randNum > tServ->getLuk() * 2)
+                        {
+                            if (tCurrHP > 1)
+                            {
+                                log->addToEventLog(tServ->getTeamName() + " " +
+                                                   tServ->getName() +
+                                                   " was reduced to 1 HP!");
+                                tServ->subHP(tCurrHP - 1, OMNI);
+                            }
+                            else
+                            {
+                                log->addToEventLog(tServ->getTeamName() + " " +
+                                                   tServ->getName() +
+                                                   " was killed!");
+                                tServ->subHP(tCurrHP, OMNI);
+                                addDead(tServ);
+                                field->servantDead(tServ);
+                            }
+                        }
+                        else
+                        {
+                            log->addToEventLog(tServ->getTeamName() + " " +
+                                               tServ->getName() +
+                                               " lucked out of taking damage!");
+                        }
+                    }
+                }
             }
         }
     }
@@ -820,8 +1041,6 @@ int GameState::turnStatePreTurn()
     actionMPCosts = currentServant->getActionMPCosts();
 
     turnState++;
-    log->addEventStartTurn(currentServant->getTeamName(),
-                           currentServant->getName());
     return 0;
 }
 
@@ -932,6 +1151,12 @@ int GameState::turnStateChoseAction()
         log->addToEventLog("Chose action " +
                            currentServant->getActionName(chosenAction)
                            + ".");
+        if (currentServant->isActionRealityMarble(chosenAction))
+            chosenDefenders = getEnemyTeam(currentServant);
+        else
+            chosenDefenders = field->getAllInRange(currentServant,
+                                   currentServant->getActionRange(chosenAction));
+
         return turnStateApplyAction();
     }
 
@@ -1030,9 +1255,15 @@ int GameState::turnStateChoseAction()
         int result = deathDialog->exec();
 
         if (result == QDialog::Rejected)
+        {
+            deathComboBoxIndex = 0;
             return 25;
+        }
         else
+        {
             chosenDefenders.push_back(deadServ[deathComboBoxIndex]);
+            deathComboBoxIndex = 0;
+        }
 
         turnState = 4;
         log->addToEventLog("Chose action " +
@@ -1076,7 +1307,6 @@ int GameState::turnStateChoseTargets()
     if (turnState != 3)
         return 40;
 
-    // TODO:
     // ASK THE PLAYER IF THEY ARE SURE THEY WANT TO TO THIS ACTION (also show
     //    relevant stats like chance of hitting, how much damage would be done
     //    or received, etc.)
@@ -1464,13 +1694,35 @@ int GameState::turnStateApplyAction()
         int r = currentServant->getRandNum();
         if (r <= currentServant->getLuk())
         {
+            log->addToEventLog("Your 'Independent Action' allows you to take another turn!");
             archerSecondTurn = true;
-            turnState = 0;
+            turnState = 1;
             validMoves = getValidMoves(currentServant, currentServant->getMov());
         }
         turnState++;
         return 0;
     }
+
+    // If the "Essence of Ionioi Hetairoi" reality marble is active and this
+    // Servant is on the same team as the caster, check against their LUK to
+    // see if they get a second turn.
+    else if (!ionioiSecondTurn &&
+             field->isRealityMarbleOn() &&
+             field->getDebuffOnSpace(currentServant->getCurrLoc())->getDebuffDescrip().compare("Essence of Ionioi Hetairoi")
+             && field->getDebuffOnSpace(currentServant->getCurrLoc())->getTargetTeam() == currentServant->getTeam())
+    {
+        int r = currentServant->getRandNum();
+        if (r <= currentServant->getLuk())
+        {
+            log->addToEventLog("Your ally's 'Essence of Ionioi Hetairoi' allows you to take another turn!");
+            ionioiSecondTurn = true;
+            turnState = 1;
+            validMoves = getValidMoves(currentServant, currentServant->getMov());
+        }
+        turnState++;
+        return 0;
+    }
+
 
     // End the non-Rider turn by calling the Post-turn turn state.
     else
@@ -1522,6 +1774,20 @@ int GameState::turnStatePostTurn()
     log->addEventEndTurn(currentServant->getTeamName(),
                          currentServant->getName());
     int returnValue = 0;
+
+    // Check the Servant's ending location to see if any end-of-turn affects
+    // should be applied.
+    Debuff *tDebuff = field->getDebuffOnSpace(currentServant->getCurrLoc());
+    if (tDebuff != NULL && tDebuff->getTargetTeam() == currentServant->getTeam())
+    {
+        if (tDebuff->getDebuffDescrip().compare("Castle Doctrine") == 0 &&
+                !(servStart.x == servEnd.x && servStart.y == servEnd.y))
+        {
+            vector<Servant*> tDef;
+            tDef.push_back(currentServant);
+            field->realityMarbleServant()->attack(tDef, false);
+        }
+    }
 
     // Check if anyone has died and modify the death list accordingly.
     for (unsigned int i = 0; i < turnOrder.size(); i++)

@@ -26,6 +26,8 @@ class Debuff
         // "Territory". Likewise, if a Debuff represents a Reality Marble then
         // its name will simply be "Reality Marble".
         string debuffName;
+        // If a debuff is a territory or reality marble, then the description
+        // will be the debuff's actual name.
         string debuffDescrip;
         Team targetTeam;
         vector<Stat> debuffStat;

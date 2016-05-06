@@ -60,6 +60,7 @@ class GameState
         vector<Servant*> getDead();
         vector<Servant*> getTeamDead(Team t);
         vector<Servant*> getOpposingTeamDead(Team t);
+        // Returns a list of Servants who are Permadead.
         vector<Servant*> filterPermaDead(vector<Servant*> d);
         void addDead(Servant* s);
         void removeDead(Servant* s);
@@ -186,6 +187,7 @@ class GameState
         vector<int> actionMPCosts;
 
         bool archerSecondTurn;
+        bool ionioiSecondTurn;
 
         // Event logger
         Logger *log;
