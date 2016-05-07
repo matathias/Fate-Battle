@@ -359,6 +359,11 @@ vector<Coordinate> GameState::getAdjacentSpaces(Coordinate c)
 Coordinate GameState::getAdjacentInRange(Coordinate c, vector<Coordinate> range,
                                          bool getClosest)
 {
+    return getSpaceInRange(c, range, getClosest, 1);
+}
+
+Coordinate GameState::getSpaceInRange(Coordinate c, vector<Coordinate> range, bool getClosest, int r)
+{
     int minDist = 1000;
     Coordinate retLoc;
     retLoc.x = retLoc.y = -1;
@@ -368,7 +373,7 @@ Coordinate GameState::getAdjacentInRange(Coordinate c, vector<Coordinate> range,
     {
         int dist = abs(range[i].x - c.x) + abs(range[i].y - c.y);
 
-        if (dist == 1)
+        if (dist == r)
         {
             retLoc.x = range[i].x;
             retLoc.y = range[i].y;
@@ -456,7 +461,8 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
         if (foundSaber) //If the saber is not found then we just return the full
                         // moverange
         {
-            Coordinate moveLocation = getAdjacentInRange(saberLoc, moves, true);
+            Coordinate moveLocation = getSpaceInRange(saberLoc, moves, true,
+                                                      currentServant->getLowRange());
 
             moves.clear();
             moves.push_back(moveLocation);

@@ -38,6 +38,10 @@ class GameState
         // Otherwise, returns a coordinate in range adjacent to c.
         Coordinate getAdjacentInRange(Coordinate c, vector<Coordinate> range,
                                       bool getClosest);
+        // Same as getAdjacentInRange, except this function picks a space that
+        //  is r away from c.
+        Coordinate getSpaceInRange(Coordinate c, vector<Coordinate> range,
+                                   bool getClosest, int r);
 
         // Ensures that a registered click on the gameboard is meaningful and
         // valid. nextTurnState should be called from here.
