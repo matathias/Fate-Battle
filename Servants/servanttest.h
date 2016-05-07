@@ -2,9 +2,9 @@
 #define SERVANTTEST_H
 
 #pragma once
-#include "Servant.h"
+#include "servantsaber.h"
 
-class ServantTest : public Servant
+class ServantTest : public ServantSaber
 {
     public:
         ServantTest(int as, Team t, Logger *l);

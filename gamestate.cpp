@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GameState.h"
+#include "Servants/servantsaber.h"
 #include <cmath>
 #include <iostream>
 
@@ -26,7 +27,7 @@ using namespace std;
 /********** Function Definitions **********/
 GameState::GameState(vector<Servant *> tO, int l, int w, Logger *lo)
 {
-    // Get the turn order (based on speed) from
+    // Get the turn order (based on speed)
     while (tO.size() > 0)
     {
         int highestSpeed = 0;
@@ -146,12 +147,12 @@ void GameState::addDead(Servant *s)
 
 void GameState::removeDead(Servant *s)
 {
-    bool found = false;
-    for (unsigned int i = 0; i < dead.size() && !found; i++)
+    bool servFound = false;
+    for (unsigned int i = 0; i < dead.size() && !servFound; i++)
     {
         if (dead[i] == s)
         {
-            found = true;
+            servFound = true;
             dead.erase(dead.begin()+i);
         }
     }
@@ -175,14 +176,14 @@ void GameState::setChosenAction(int a)
 
 bool GameState::isServantDead(Servant *s)
 {
-    bool found = false;
-    for (unsigned int i = 0; i < dead.size() && !found; i++)
+    bool servFound = false;
+    for (unsigned int i = 0; i < dead.size() && !servFound; i++)
     {
         if (dead[i] == s)
-            found = true;
+            servFound = true;
     }
 
-    return found;
+    return servFound;
 }
 
 bool GameState::isTeamDead(Team t)
@@ -202,17 +203,11 @@ bool GameState::isTeamDead(Team t)
     }
 
     if (t == Alpha)
-    {
         return (aDead == (int) alphaTeam.size());
-    }
     else if (t == Omega)
-    {
         return (oDead == (int) omegaTeam.size());
-    }
     else
-    {
         return (bDead == (int) bossTeam.size());
-    }
 }
 
 /***** Retrievers *****/
@@ -267,7 +262,7 @@ Team GameState::spaceDebuffTeam(int x, int y)
     temp.y = y;
     Debuff *t = field->getDebuffOnSpace(temp);
     if (t == NULL)
-        return Boss;
+        return All;
     else
         return t->getTargetTeam();
 }
@@ -463,15 +458,8 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
         {
             Coordinate moveLocation = getAdjacentInRange(saberLoc, moves, true);
 
-            int i = 0;
-            while (i < (int) moves.size())
-            {
-                if (moveLocation.x == moves[i].x &&
-                        moveLocation.y == moves[i].y)
-                    i++;
-                else
-                    moves.erase(moves.begin()+i);
-            }
+            moves.clear();
+            moves.push_back(moveLocation);
         }
     }
     else if (s->getClass() == Berserker && !s->isGodmindActive())
@@ -500,14 +488,8 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
 
         // Remove all moves that aren't the "closest location" that we just
         // found
-        int i = 0;
-        while (i < (int) moves.size())
-        {
-            if (moveLocation.x == moves[i].x && moveLocation.y == moves[i].y)
-                i++;
-            else
-                moves.erase(moves.begin()+i);
-        }
+        moves.clear();
+        moves.push_back(moveLocation);
     }
 
     return moves;
@@ -547,6 +529,39 @@ vector<Servant*> GameState::getTeamDead(Team t)
     return res;
 }
 
+vector<Servant*> GameState::getTeamAlive(Team t)
+{
+    vector<Servant*> res = getAlliedTeam(t);
+    for (int j = 0; j < (int) res.size(); j++)
+    {
+        for (unsigned int i = 0; i < dead.size(); i++)
+        {
+            if(dead[i] == res[j])
+            {
+                res.erase(res.begin()+j);
+                j--;
+            }
+        }
+    }
+
+    return res;
+}
+
+Servant* GameState::getTeamAliveServant(Team t, Class c)
+{
+    vector<Servant*> res = getTeamAlive(t);
+    Servant *ret = NULL;
+    for (unsigned int i = 0; i < res.size(); i++)
+    {
+        if (res[i]->getClass() == c)
+        {
+            ret = res[i];
+        }
+    }
+
+    return ret;
+}
+
 vector<Servant*> GameState::getOpposingTeamDead(Team t)
 {
     vector<Servant*> res;
@@ -561,6 +576,7 @@ vector<Servant*> GameState::getOpposingTeamDead(Team t)
     return res;
 }
 
+// Returns a list of servants who are not permadead.
 vector<Servant*> GameState::filterPermaDead(vector<Servant *> d)
 {
     vector<Servant*> res;
@@ -588,6 +604,16 @@ vector<Servant*> GameState::getOmegaTeam()
 vector<Servant*> GameState::getBossTeam()
 {
     return bossTeam;
+}
+
+vector<Servant*> GameState::getAlliedTeam(Team t)
+{
+    if (t == Alpha)
+        return getAlphaTeam();
+    else if (t == Omega)
+        return getOmegaTeam();
+    else
+        return getBossTeam();
 }
 
 vector<Servant*> GameState::getEnemyTeam(Servant *s)
@@ -818,6 +844,20 @@ int GameState::turnStatePreTurn()
         currentServant->addDebuff(newDebuff);
     }
 
+    // If the player is standing within Charisma range of their team's Servant,
+    // give them the Charisma buff (for 1 turn).
+    Servant *alliedSaber = getTeamAliveServant(currentServant->getTeam(), Saber);
+    if (alliedSaber != NULL && alliedSaber != currentServant)
+    {
+        ServantSaber *alliedSaberC = dynamic_cast<ServantSaber*>(alliedSaber);
+        if (abs(currentServant->getCurrLoc().x - alliedSaberC->getCurrLoc().x)
+            + abs(currentServant->getCurrLoc().y - alliedSaberC->getCurrLoc().y)
+            <= alliedSaberC->getCharismaRange())
+        {
+            currentServant->addDebuff(alliedSaberC->getCharisma());
+        }
+    }
+
     int hpSub = currentServant->getDebuffAmount(HP);
     int mpSub = currentServant->getDebuffAmount(MP);
     int currHP = currentServant->getCurrHP();
@@ -963,7 +1003,7 @@ int GameState::turnStatePreTurn()
                         Servant *tServ = aliveServants[deathComboBoxIndex];
                         log->addToEventLog("You cast Death on " +
                                            tServ->getTeamName() + " " +
-                                           tServ->getName());
+                                           tServ->getName() + ".");
 
                         int randNum = tServ->getRandNum();
                         int tCurrHP = tServ->getCurrHP();
@@ -1096,6 +1136,7 @@ int GameState::turnStateChoseAction()
     }
 
     chosenActionType = currentServant->getActionType(chosenAction);
+    selectionRange.clear();
 
     // If the chosen action is single-target, get the range and have the player
     // select a target from within that range.
@@ -1612,8 +1653,8 @@ int GameState::turnStateChoseTargets()
         // list
         chosenDefenders = field->getAllInRange(currentServant, selectionRange);
 
-        // TODO: check with player if they really want to do this action. Show
-        // a list of all players they would be targetting
+        // Check with player if they really want to do this action. Show a list
+        // of all players they would be targetting
         QDialog *aoeAction = new QDialog;
         QLabel *targetPlayersLabel = new QLabel;
         QLabel *targetPlayers = new QLabel;
@@ -1805,9 +1846,14 @@ int GameState::turnStatePostTurn()
     }
 
     // If a Servant has been revived, put them back on the playing field.
-    for (unsigned int i = 0; i < revived.size(); i++)
+    for (int i = 0; i < (int) dead.size(); i++)
     {
-        field->servantRevived(revived[i]);
+        if (dead[i]->getCurrHP() > 0)
+        {
+            field->servantRevived(dead[i]);
+            removeDead(dead[i]);
+            i--;
+        }
     }
     revived.clear(); // Don't want to revive the servants a second time
 

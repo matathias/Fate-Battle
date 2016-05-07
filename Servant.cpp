@@ -8,6 +8,7 @@
 
 #include "Servant.h"
 #include <cmath>
+#include <iostream>
 
 /********** Function definitions **********/
 // Constructor
@@ -124,7 +125,7 @@ string Servant::getTeamIcon()
 int Servant::getMaxHP()
 {
     int d = getDebuffAmount(MAXHP);
-    int ret = maxHP[ascension] - d;
+    int ret = maxHP[ascension] + d;
     if (ret <= 0)
         ret = 1;
     return ret;
@@ -141,7 +142,7 @@ int Servant::getCurrHP()
 int Servant::getMaxMP()
 {
     int d = getDebuffAmount(MAXMP);
-    int ret = maxMP[ascension] - d;
+    int ret = maxMP[ascension] + d;
     if (ret < 0)
         ret = 0;
     return ret;
@@ -159,7 +160,7 @@ int Servant::getCurrMP()
 int Servant::getMov()
 {
     int d = getDebuffAmount(MOV);
-    int ret = mov[ascension] - d;
+    int ret = mov[ascension] + d;
     if (ret < 0)
         ret = 0;
     return ret;
@@ -168,7 +169,7 @@ int Servant::getMov()
 int Servant::getStr()
 {
     int d = getDebuffAmount(STR);
-    int ret = str[ascension] - d;
+    int ret = str[ascension] + d;
     if (ret < 0)
         ret = 0;
     return ret;
@@ -177,7 +178,7 @@ int Servant::getStr()
 int Servant::getMag()
 {
     int d = getDebuffAmount(MAG);
-    int ret = mag[ascension] - d;
+    int ret = mag[ascension] + d;
     if (ret < 0)
         ret = 0;
     return ret;
@@ -186,7 +187,7 @@ int Servant::getMag()
 int Servant::getDef()
 {
     int d = getDebuffAmount(DEF);
-    int ret = def[ascension] - d;
+    int ret = def[ascension] + d;
     if (ret < 0)
         ret = 0;
     return ret;
@@ -195,7 +196,7 @@ int Servant::getDef()
 int Servant::getRes()
 {
     int d = getDebuffAmount(RES);
-    int ret = res[ascension] - d;
+    int ret = res[ascension] + d;
     if (ret < 0)
         ret = 0;
     return ret;
@@ -204,7 +205,7 @@ int Servant::getRes()
 int Servant::getSpd()
 {
     int d = getDebuffAmount(SPD);
-    int ret = spd[ascension] - d;
+    int ret = spd[ascension] + d;
     if (ret < 0)
         ret = 0;
     return ret;
@@ -213,7 +214,7 @@ int Servant::getSpd()
 int Servant::getSkl()
 {
     int d = getDebuffAmount(SKL);
-    int ret = skl[ascension] - d;
+    int ret = skl[ascension] + d;
     if (ret < 0)
         ret = 0;
     return ret;
@@ -222,7 +223,7 @@ int Servant::getSkl()
 int Servant::getLuk()
 {
     int d = getDebuffAmount(LUK);
-    int ret = luk[ascension] - d;
+    int ret = luk[ascension] + d;
     if (ret < 0)
         ret = 0;
     return ret;

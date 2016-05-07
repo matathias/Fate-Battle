@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     playfieldsquare.cpp \
     view.cpp \
     Servants/servanttest.cpp \
-    logger.cpp
+    logger.cpp \
+    Servants/servantsaber.cpp
 
 HEADERS  += mainwindow.h \
     Debuff.h \
@@ -81,7 +82,8 @@ HEADERS  += mainwindow.h \
     datatypes.h \
     Servants/servanttest.h \
     allservants.h \
-    logger.h
+    logger.h \
+    Servants/servantsaber.h
 
 FORMS    += mainwindow.ui
 

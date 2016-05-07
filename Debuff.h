@@ -31,6 +31,8 @@ class Debuff
         string debuffDescrip;
         Team targetTeam;
         vector<Stat> debuffStat;
+        // If the amount is positive then it's a buff; if it's negative then
+        //  it's a debuff.
         vector<int> debuffAmount;
         int turnsRemaining;
 };

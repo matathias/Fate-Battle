@@ -3,7 +3,7 @@
 #include "servanttest.h"
 #include <iostream>
 
-ServantTest::ServantTest(int as, Team t, Logger *l) : Servant(as, t, l)
+ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
 {
     maxHP.push_back(100);
     maxHP.push_back(150);
