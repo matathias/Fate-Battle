@@ -70,6 +70,9 @@ private:
     void mainSetup();
     void initialSetup();
 
+    // If num is less than 0, returns 0. Otherwise, returns num.
+    int capZero(int num);
+
     void clearLayout(QLayout *l);
 
     void buttonProcess();

@@ -5,6 +5,7 @@
 
 ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
 {
+    /*
     maxHP.push_back(100);
     maxHP.push_back(150);
     maxHP.push_back(200);
@@ -42,9 +43,10 @@ ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     lowRange = 1;
     hiRange = 1;
 
-    clss = Saber;
+    clss = Saber;*/
     name = "Saber Test";
 
+    /*
     vector<string> actions;
     actions.push_back("1: Attack");
     actions.push_back("2: NP: Straight Slash");
@@ -53,6 +55,14 @@ ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     actionList.push_back(actions);
     actionList.push_back(actions);
     actionList.push_back(actions);
+    */
+    actionList[0].push_back("4: NP: Straight Slash");
+    actionList[1].push_back("4: NP: Straight Slash");
+    actionList[1].push_back("5: NP: Side Slash");
+    actionList[2].push_back("4: NP: Straight Slash");
+    actionList[2].push_back("5: NP: Side Slash");
+    actionList[2].push_back("6: NP: Omni Slash");
+    /*
     vector<ActionType> actionTypes;
     actionTypes.push_back(S);
     actionTypes.push_back(S);
@@ -61,6 +71,14 @@ ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     actionListTypes.push_back(actionTypes);
     actionListTypes.push_back(actionTypes);
     actionListTypes.push_back(actionTypes);
+    */
+    actionListTypes[0].push_back(S);
+    actionListTypes[1].push_back(S);
+    actionListTypes[1].push_back(S);
+    actionListTypes[2].push_back(S);
+    actionListTypes[2].push_back(S);
+    actionListTypes[2].push_back(A);
+    /*
     vector<int> actionCosts;
     actionCosts.push_back(2);
     actionCosts.push_back(25);
@@ -69,7 +87,15 @@ ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     actionMPCosts.push_back(actionCosts);
     actionMPCosts.push_back(actionCosts);
     actionMPCosts.push_back(actionCosts);
+    */
+    actionMPCosts[0].push_back(25);
+    actionMPCosts[1].push_back(25);
+    actionMPCosts[1].push_back(50);
+    actionMPCosts[2].push_back(25);
+    actionMPCosts[2].push_back(50);
+    actionMPCosts[2].push_back(100);
 
+    /*
     vector<bool> acDodge;
     acDodge.push_back(true);
     acDodge.push_back(true);
@@ -78,6 +104,14 @@ ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     actionDodgeable.push_back(acDodge);
     actionDodgeable.push_back(acDodge);
     actionDodgeable.push_back(acDodge);
+    */
+    actionDodgeable[0].push_back(true);
+    actionDodgeable[1].push_back(true);
+    actionDodgeable[1].push_back(false);
+    actionDodgeable[2].push_back(true);
+    actionDodgeable[2].push_back(false);
+    actionDodgeable[2].push_back(false);
+    /*
     vector<bool> acCounter;
     acCounter.push_back(true);
     acCounter.push_back(true);
@@ -86,6 +120,13 @@ ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     actionCounterable.push_back(acCounter);
     actionCounterable.push_back(acCounter);
     actionCounterable.push_back(acCounter);
+    */
+    actionCounterable[0].push_back(true);
+    actionCounterable[1].push_back(true);
+    actionCounterable[1].push_back(true);
+    actionCounterable[2].push_back(true);
+    actionCounterable[2].push_back(true);
+    actionCounterable[2].push_back(false);
 
     vector<string> np1;
     np1.push_back("Straight Slash");
@@ -145,7 +186,7 @@ int ServantTest::activateNP1(vector<Servant *> defenders)
             vector<int> opEvade = defenders[i]->getEvade();
             bool hit = false;
             // Calculate accuracy
-            int accuracy = getHitRate() - opEvade[0];
+            int accuracy = capZero(getHitRate() - opEvade[0]);
 
             int r = getRandNum();
             if (accuracy >= r)
@@ -164,14 +205,14 @@ int ServantTest::activateNP1(vector<Servant *> defenders)
             if (hit)
             {
                 int attackMult = 3;
-                int critChance = getCriticalRate() -
-                                 defenders[i]->getCriticalEvade();
+                int critChance = capZero(getCriticalRate() -
+                                 defenders[i]->getCriticalEvade());
                 r = getRandNum();
                 if (critChance >= r)
                     attackMult *= 3;
 
                 // Deal the damage
-                dam = (getStr() - defenders[i]->getDef()) * attackMult;
+                dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
                 if (dam < 0)
                     dam = 0;
                 defenders[i]->subHP(dam, NP_STR);
@@ -246,14 +287,14 @@ int ServantTest::activateNP2(vector<Servant *> defenders)
         {
             // Check to see if you get a critical
             int attackMult = 5;
-            int critChance = getCriticalRate() -
-                             defenders[i]->getCriticalEvade();
+            int critChance = capZero(getCriticalRate() -
+                             defenders[i]->getCriticalEvade());
             int r = getRandNum();
             if (critChance >= r)
                 attackMult *= 3;
 
             // Deal the damage
-            int dam = (getStr() - defenders[i]->getDef()) * attackMult;
+            int dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
             if (dam < 0)
                 dam = 0;
             defenders[i]->subHP(dam, NP_STR);
@@ -326,18 +367,48 @@ int ServantTest::activateNP3(vector<Servant *> defenders)
         {
             // Check to see if you get a critical
             int attackMult = 5;
-            int critChance = getCriticalRate() -
-                             defenders[i]->getCriticalEvade();
+            int critChance = capZero(getCriticalRate() -
+                             defenders[i]->getCriticalEvade());
             int r = getRandNum();
             if (critChance >= r)
                 attackMult *= 3;
 
             // Deal the damage
-            int dam = (getStr() - defenders[i]->getDef()) * attackMult;
+            int dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
             if (dam < 0)
                 dam = 0;
             defenders[i]->subHP(dam, NP_STR);
         }
     }
     return 0;
+}
+
+int ServantTest::doAction(int actionNum, vector<Servant *> defenders)
+{
+    int ret = 0;
+    switch (actionNum)
+    {
+        case 0:
+            ret = attack(defenders, true);
+            break;
+        case 1:
+            ret = guardianKnight(defenders);
+            break;
+        case 2:
+            ret = manaBurst(defenders);
+            break;
+        case 3:
+            ret = activateNP1(defenders);
+            break;
+        case 4:
+            ret = activateNP2(defenders);
+            break;
+        case 5:
+            ret = activateNP3(defenders);
+            break;
+        default:
+            return 2; // Not a valid choice
+            break;
+    }
+    return ret;
 }

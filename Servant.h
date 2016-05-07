@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <cstdlib>
+#include <QMessageBox>
 
 #include "Debuff.h"
 #include "Skill.h"
@@ -146,6 +147,9 @@ class Servant
         // Generates a random number between 0 and 100 (inclusive) using fire
         // emblem's "true hit" technique
         int getRandNum();
+
+        // If num is less than 0, returns 0. Otherwise, returns num.
+        int capZero(int num);
 
         // Placeholder. Will only really be used for Avengers.
         virtual Debuff* finalRevenge();

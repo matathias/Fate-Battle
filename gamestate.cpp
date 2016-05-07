@@ -1416,8 +1416,8 @@ int GameState::turnStateChoseTargets()
                 atkWords->setText("Atk\nHit\nCrit\nMP Cost");
 
             int atkAttack = 0, atkHit = 0, atkCrit = 0;
-            atkHit = currentServant->getHitRate() - targetServ->getEvade()[0];
-            atkCrit = currentServant->getCriticalRate() - targetServ->getCriticalEvade();
+            atkHit = capZero(currentServant->getHitRate() - targetServ->getEvade()[0]);
+            atkCrit = capZero(currentServant->getCriticalRate() - targetServ->getCriticalEvade());
             int atkCost = currentServant->getActionMPCost(chosenAction);
 
             if (currentServant->getClass() == Caster && !healAction)
@@ -1438,6 +1438,7 @@ int GameState::turnStateChoseTargets()
             if (!currentServant->getActionDodgeable(chosenAction))
                 atkHit = 100;
 
+            atkAttack = capZero(atkAttack);
             int res = currentServant->isActionNP(chosenAction);
             if (res != -1)
             {
@@ -1492,6 +1493,9 @@ int GameState::turnStateChoseTargets()
                 int defCrit = targetServ->getCriticalRate() - currentServant->getCriticalEvade();
                 if (defCrit < 0)
                     defCrit = 0;
+                defAttack = capZero(defAttack);
+                defHit = capZero(defHit);
+                defCrit = capZero(defCrit);
                 defStats->setText(QString::fromStdString(to_string(defAttack) + "\n"
                                                          + to_string(defHit) + "%\n"
                                                          + to_string(defCrit) + "\n"
@@ -1714,6 +1718,15 @@ int GameState::turnStateApplyAction()
     if (ret != 0)
     {
         // Something went wrong! Return now.
+        if (ret == 41)
+        {
+            // The something that went wrong is that the action is invalid.
+            // Reset the turnstate to the choose Action state.
+            turnState = 2;
+            chosenAction = -1;
+            selectionRange.clear();
+            chosenDefenders.clear();
+        }
         return ret;
     }
 
@@ -1949,4 +1962,12 @@ void GameState::resetTurnValues()
     actionList.clear();
     actionListTypes.clear();
     actionMPCosts.clear();
+}
+
+int GameState::capZero(int num)
+{
+    if (num < 0)
+        return 0;
+    else
+        return num;
 }

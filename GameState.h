@@ -118,6 +118,8 @@ class GameState
                                         //     reached, like, at all)
                                         // 35: Action canceled
         int turnStateApplyAction();  //Errors in range 41-50
+                                        // 41: Invalid action (go back to
+                                        //     chooseAction turn state)
                                         // 50: invalid turnState
         int turnStateExtraMove();    //Errors in range 51-60
                                         // 60: invalid turnState
@@ -131,6 +133,9 @@ class GameState
                                  // the turn state and getting the next Servant
 
         void resetTurnValues();
+
+        // If num is less than 0, returns 0. Otherwise, returns num.
+        int capZero(int num);
 
     private slots:
         void processDeathComboBox(QComboBox *qcb);

@@ -16,6 +16,14 @@ public:
     // DEF.
     Debuff* getCharisma();
     int getCharismaRange();
+
+    virtual vector<int> getEvade();
+    virtual int isActionNP(int action);
+    virtual vector<Coordinate> getActionRange(int action);
+
+private:
+    bool guardianKnightActive();
+    bool manaBurstActive();
 };
 
 #endif // SERVANTSABER_H

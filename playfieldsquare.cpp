@@ -144,6 +144,10 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         log->addToErrorLog("A Major Error occurred! (GameState::turnStateChoseTargets().");
         window->reDrawMenus();
     }
+    else if (result == 41)
+    {
+        window->reColorScene();
+    }
     else if (result == 35) // Action was canceled
     {
         window->reDrawMenus();

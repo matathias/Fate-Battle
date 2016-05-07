@@ -9,6 +9,8 @@ class ServantTest : public ServantSaber
     public:
         ServantTest(int as, Team t, Logger *l);
 
+        virtual int doAction(int actionNum, vector<Servant *> defenders);
+
         // Straight Slash
         virtual int activateNP1(vector<Servant *> defenders);
         // Side Slash

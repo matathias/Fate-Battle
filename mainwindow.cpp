@@ -216,8 +216,8 @@ void MainWindow::mainSetup()
             QString debDes = QString::fromStdString(deb[i]->getDebuffDescrip());
             QStandardItem *dN = new QStandardItem(debName);
             QStandardItem *dD = new QStandardItem(debDes);
-            debuffTab->setItem(numDebuffs,0,dN);
-            debuffTab->setItem(numDebuffs,1,dD);
+            debuffTab->setItem(i,0,dN);
+            debuffTab->setItem(i,1,dD);
         }
     }
 
@@ -677,6 +677,14 @@ void MainWindow::cancelAction()
 void MainWindow::redrawEverything()
 {
     populateScene(gs->getFieldWidth(), gs->getFieldLength());
+}
+
+int MainWindow::capZero(int num)
+{
+    if (num < 0)
+        return 0;
+    else
+        return num;
 }
 
 void MainWindow::startGameState()

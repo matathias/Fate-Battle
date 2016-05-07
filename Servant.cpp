@@ -457,26 +457,10 @@ bool Servant::getActionDodgeable(int action)
 
 string Servant::getActionName(int action)
 {
-    string ret = "";
-    switch (action)
-    {
-    case 0:
-        ret = "Attack";
-        break;
-    case 1:
-        ret = noblePhantasms[0][0];
-        break;
-    case 2:
-        ret = noblePhantasms[1][0];
-        break;
-    case 3:
-        ret = noblePhantasms[2][0];
-        break;
-    default:
-        break;
-    }
-
-    return ret;
+    if (action < actionList[ascension].size())
+        return actionList[ascension][action];
+    else
+        return "";
 }
 
 int Servant::isActionNP(int action)
@@ -639,7 +623,7 @@ int Servant::attack(vector<Servant *> defenders, bool counter)
             vector<int> opEvade = defenders[i]->getEvade();
             bool hit = false;
             // Calculate accuracy
-            int accuracy = getHitRate() - opEvade[0];
+            int accuracy = capZero(getHitRate() - opEvade[0]);
 
             int r = getRandNum();
             if (accuracy >= r)
@@ -658,14 +642,14 @@ int Servant::attack(vector<Servant *> defenders, bool counter)
             if (hit)
             {
                 int attackMult = 1;
-                int critChance = getCriticalRate() -
-                                 defenders[i]->getCriticalEvade();
+                int critChance = capZero(getCriticalRate() -
+                                 defenders[i]->getCriticalEvade());
                 r = getRandNum();
                 if (critChance >= r)
                     attackMult *= 3;
 
                 // Deal the damage
-                dam = (getStr() - defenders[i]->getDef()) * attackMult;
+                dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
                 if (dam < 0)
                     dam = 0;
                 defenders[i]->subHP(dam, D_STR);
@@ -756,6 +740,14 @@ int Servant::getRandNum()
     int rand1 = rand() % 101;
     int rand2 = rand() % 101;
     return (rand1 + rand2) / 2;
+}
+
+int Servant::capZero(int num)
+{
+    if (num < 0)
+        return 0;
+    else
+        return num;
 }
 
 /* Placeholder definitions. Override in subclasses. */
