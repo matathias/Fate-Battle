@@ -67,6 +67,7 @@ class GameState
         // Returns NULL if there is no alive Servant of class c on team t.
         Servant* getTeamAliveServant(Team t, Class c);
         vector<Servant*> getOpposingTeamDead(Team t);
+        vector<Servant*> getOpposingTeamAlive(Team t);
         // Returns a list of Servants who are Permadead.
         vector<Servant*> filterPermaDead(vector<Servant*> d);
         void addDead(Servant* s);
@@ -78,6 +79,7 @@ class GameState
         vector<Servant*> getOmegaTeam();
         vector<Servant*> getBossTeam();
         vector<Servant*> getEnemyTeam(Servant* s);
+        vector<Servant*> getEnemyTeam(Team t);
         vector<Servant*> getAlliedTeam(Team t);
 
         /* Functions to track the turn state and help process everything. */

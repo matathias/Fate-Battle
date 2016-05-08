@@ -71,3 +71,16 @@ int Debuff::getTurnsRemaining()
 {
     return turnsRemaining;
 }
+
+// Returns 0 if s is not in debuffStat
+int Debuff::getDebuffAmount(Stat s)
+{
+    int amount = 0;
+    for (unsigned int i = 0; i < debuffStat.size(); i++)
+    {
+        if (debuffStat[i] == s)
+            amount = debuffAmount[i];
+    }
+
+    return amount;
+}

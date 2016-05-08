@@ -9,15 +9,20 @@
 
 #include "Debuff.h"
 #include "Skill.h"
+//#include "PlayField.h"
 #include "logger.h"
 //#include "datatypes.h"
 
 using namespace std;
 
+class PlayField;
+
 class Servant
 {
     public:
         Servant(int as, Team t, Logger *l);
+
+        void setPlayField(PlayField *f);
                 
         void setHP(int hp);
         void setMP(int mp);
@@ -187,6 +192,7 @@ class Servant
         bool territoryActive; // Only relevant to casters
 
         Coordinate currLoc;
+        PlayField *field;
 
         // Fields intended for use by subclasses
         vector<vector<string>> actionList;

@@ -16,9 +16,15 @@ Servant::Servant(int as, Team t, Logger *l)
 {
     ascension = as;
     team = t;
+    field = NULL;
     log = l;
 
     territoryActive = false;
+}
+
+void Servant::setPlayField(PlayField *f)
+{
+    field = f;
 }
 
 //***** Manipulators *****

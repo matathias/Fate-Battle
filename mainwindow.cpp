@@ -200,16 +200,40 @@ void MainWindow::mainSetup()
     if (numDebuffs == 0)
     {
         debuffTab = new QStandardItemModel(1,1,this);
-        QStandardItem *debEntry = new QStandardItem(QString("No Debuffs!"));
+        QStandardItem *debEntry = new QStandardItem(QString("No Status Effects!"));
         debuffTab->setItem(0,0,debEntry);
     }
     else
     {
-        debuffTab = new QStandardItemModel(numDebuffs, 2, this);
+        debuffTab = new QStandardItemModel(numDebuffs, 14, this);
         debuffTab->setHorizontalHeaderItem(0, new QStandardItem(
                                                QString("Name")));
         debuffTab->setHorizontalHeaderItem(1, new QStandardItem(
                                                QString("Description")));
+        debuffTab->setHorizontalHeaderItem(2, new QStandardItem(
+                                               QString("MAX HP")));
+        debuffTab->setHorizontalHeaderItem(3, new QStandardItem(
+                                               QString("HP")));
+        debuffTab->setHorizontalHeaderItem(4, new QStandardItem(
+                                               QString("MAX MP")));
+        debuffTab->setHorizontalHeaderItem(5, new QStandardItem(
+                                               QString("MP")));
+        debuffTab->setHorizontalHeaderItem(6, new QStandardItem(
+                                               QString("MOV")));
+        debuffTab->setHorizontalHeaderItem(7, new QStandardItem(
+                                               QString("STR")));
+        debuffTab->setHorizontalHeaderItem(8, new QStandardItem(
+                                               QString("MAG")));
+        debuffTab->setHorizontalHeaderItem(9, new QStandardItem(
+                                               QString("DEF")));
+        debuffTab->setHorizontalHeaderItem(10, new QStandardItem(
+                                               QString("RES")));
+        debuffTab->setHorizontalHeaderItem(11, new QStandardItem(
+                                               QString("SPD")));
+        debuffTab->setHorizontalHeaderItem(12, new QStandardItem(
+                                               QString("SKL")));
+        debuffTab->setHorizontalHeaderItem(13, new QStandardItem(
+                                               QString("LUK")));
         for (int i = 0; i < numDebuffs; i++)
         {
             QString debName = QString::fromStdString(deb[i]->getDebuffName());
@@ -218,6 +242,18 @@ void MainWindow::mainSetup()
             QStandardItem *dD = new QStandardItem(debDes);
             debuffTab->setItem(i,0,dN);
             debuffTab->setItem(i,1,dD);
+            debuffTab->setItem(i,2,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAXHP)))));
+            debuffTab->setItem(i,3,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(HP)))));
+            debuffTab->setItem(i,4,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAXMP)))));
+            debuffTab->setItem(i,5,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MP)))));
+            debuffTab->setItem(i,6,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MOV)))));
+            debuffTab->setItem(i,7,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(STR)))));
+            debuffTab->setItem(i,8,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAG)))));
+            debuffTab->setItem(i,9,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(DEF)))));
+            debuffTab->setItem(i,10,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(RES)))));
+            debuffTab->setItem(i,11,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(SPD)))));
+            debuffTab->setItem(i,12,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(SKL)))));
+            debuffTab->setItem(i,13,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(LUK)))));
         }
     }
 
@@ -349,7 +385,7 @@ void MainWindow::mainSetup()
 
     // Setup the layouts
     nameIcon->addLayout(allStats);
-    nameIcon->addLayout(debuffLayout);
+    //nameIcon->addLayout(debuffLayout);
 
     QVBoxLayout *layout2 = new QVBoxLayout;
     layout2->addWidget(quitButton);
@@ -367,9 +403,14 @@ void MainWindow::mainSetup()
     playerInformation->addLayout(nameIcon);
     playerInformation->addLayout(rightMost);
 
+    QVBoxLayout *allInformation = new QVBoxLayout;
+    allInformation->addLayout(playerInformation);
+    allInformation->addLayout(debuffLayout);
+
     mainLayout = new QHBoxLayout;
     mainLayout->addLayout(layout2);
-    mainLayout->addLayout(playerInformation);
+    //mainLayout->addLayout(playerInformation);
+    mainLayout->addLayout(allInformation);
 
     setLayout(mainLayout);
 
@@ -378,6 +419,8 @@ void MainWindow::mainSetup()
 
 void MainWindow::populateScene(int w, int l)
 {
+    // This part MAY cause problems...
+    scene->clear();
     scene = new QGraphicsScene;
 
     // Populate scene
@@ -566,7 +609,69 @@ void MainWindow::open()
         }
         QTextStream in(&file);
         // Parse file to find the participating servants and other data
+        // The all servants on the first team MUST be listed AFTER the team name
+        //  but BEFORE the team name of the second team.
+        int ascLvl = -1;
+        int fieldWidth = -1;
+        int fieldLength = -1;
+        Team tOne = All;
+        Team tTwo = All;
+        vector<string> tOneNames;
+        vector<string> tTwoNames;
+        QString line;
+        do
+        {
+            line = in.readLine();
+            string input = line.toStdString();
+            if(input.compare("Ascension 1") == 0)
+                ascLvl = 0;
+            else if (input.compare("Ascension 2") == 0)
+                ascLvl = 1;
+            else if (input.compare("Ascension 3") == 0)
+                ascLvl = 2;
+            else if (input.substr(0,13).compare("Field Width: ") == 0)
+                fieldWidth = stoi(input.substr(13));
+            else if (input.substr(0,14).compare("Field Length: ") == 0)
+                fieldLength = stoi(input.substr(14));
+            else if (input.compare("Alpha") == 0 && tOne == All)
+                tOne = Alpha;
+            else if (input.compare("Omega") == 0 && tOne == All)
+                tOne = Omega;
+            else if (input.compare("Boss") == 0 && tOne == All)
+                tOne = Boss;
+            else if (input.compare("Alpha") == 0)
+                tTwo = Alpha;
+            else if (input.compare("Omega") == 0)
+                tTwo = Omega;
+            else if (input.compare("Boss") == 0)
+                tTwo = Boss;
+            // Parse servant names
+            else if (tOne != All && tTwo == All)
+            {
+                // First team's servants
+                tOneNames.push_back(input);
+            }
+            else
+            {
+                // Second team's servants
+                tTwoNames.push_back(input);
+            }
+        } while (!line.isNull());
+
         file.close();
+
+        // If the file did not give enough data to start a new game
+        if (ascLvl == -1 || tOne == All || tTwo == All || tOneNames.size() == 0
+                || tTwoNames.size() == 0 || fieldWidth == -1 || fieldLength == -1)
+        {
+            QMessageBox::critical(this, tr("Error"), tr("File did not give enough information to start new game"));
+            return;
+        }
+        else
+        {
+            restartGameState(tOneNames, tTwoNames, tOne, tTwo, ascLvl,
+                             fieldWidth, fieldLength);
+        }
     }
 }
 
@@ -689,6 +794,8 @@ int MainWindow::capZero(int num)
 
 void MainWindow::startGameState()
 {
+    log = new Logger;
+
     Servant *first = new ServantTest(1, Alpha, log);
     Servant *second = new ServantTest(1, Omega, log);
 
@@ -696,13 +803,23 @@ void MainWindow::startGameState()
     all.push_back(first);
     all.push_back(second);
 
-    log = new Logger;
-
     gs = new GameState(all, 10, 10, log);
 }
 
+// Finish writing this when all classes are complete...
 void MainWindow::restartGameState(vector<string> team1, vector<string> team2,
-                                  Team t1, Team t2, int ascensionLvl)
+                                  Team t1, Team t2, int ascensionLvl, int fX, int fY)
 {
-    //
+    log = new Logger;
+
+    vector<Servant*> all;
+    /*for (unsigned int i = 0; i < team1.size(); i++)
+    {
+        if(team1[i].compare("Claymore Saber") == 0)
+            all.push_back(new ServantSaberClaymore(ascensionLvl, t1, log));
+    }*/
+
+    gs = new GameState(all, fX, fY, log);
+
+    redrawEverything();
 }

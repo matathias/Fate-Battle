@@ -65,7 +65,7 @@ private:
     void setupMatrix();
     void startGameState();
     void restartGameState(vector<string> team1, vector<string> team2,
-                          Team t1, Team t2, int ascensionLvl);
+                          Team t1, Team t2, int ascensionLvl, int fX, int fY);
 
     void mainSetup();
     void initialSetup();

@@ -17,6 +17,9 @@ class Debuff
         vector<Stat> getDebuffStats();
         vector<int> getDebuffAmounts();
         int getTurnsRemaining();
+
+        // Returns 0 if s is not in debuffStat
+        int getDebuffAmount(Stat s);
         
         int decrementTurnsRemaining(); // Returns the number of turns remaining
         int setTurnsRemaining(int tr);

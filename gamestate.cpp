@@ -113,6 +113,10 @@ GameState::GameState(vector<Servant *> tO, int l, int w, Logger *lo)
     ionioiSecondTurn = false;
 
     field = new PlayField(l, w, turnOrder, servantLocations);
+
+    for (unsigned int i = 0; i < turnOrder.size(); i++)
+        turnOrder[i]->setPlayField(field);
+
     resetTurnValues();
     currentServant = getNextServant();
     turnStatePreTurn();
@@ -582,6 +586,24 @@ vector<Servant*> GameState::getOpposingTeamDead(Team t)
     return res;
 }
 
+vector<Servant*> GameState::getOpposingTeamAlive(Team t)
+{
+    vector<Servant*> res = getEnemyTeam(t);
+    for (int j = 0; j < (int) res.size(); j++)
+    {
+        for (unsigned int i = 0; i < dead.size(); i++)
+        {
+            if(dead[i] == res[j])
+            {
+                res.erase(res.begin()+j);
+                j--;
+            }
+        }
+    }
+
+    return res;
+}
+
 // Returns a list of servants who are not permadead.
 vector<Servant*> GameState::filterPermaDead(vector<Servant *> d)
 {
@@ -636,6 +658,38 @@ vector<Servant*> GameState::getEnemyTeam(Servant *s)
             enemies.push_back(b[i]);
     }
     else if (s->getTeam() == Omega)
+    {
+        for (unsigned int i = 0; i < a.size(); i++)
+            enemies.push_back(a[i]);
+        for (unsigned int i = 0; i < b.size(); i++)
+            enemies.push_back(b[i]);
+    }
+    else
+    {
+        for (unsigned int i = 0; i < o.size(); i++)
+            enemies.push_back(o[i]);
+        for (unsigned int i = 0; i < a.size(); i++)
+            enemies.push_back(a[i]);
+    }
+
+    return enemies;
+}
+
+// Overloaded to work with team
+vector<Servant*> GameState::getEnemyTeam(Team t)
+{
+    vector<Servant*> enemies;
+    vector<Servant*> a = getAlphaTeam();
+    vector<Servant*> o = getOmegaTeam();
+    vector<Servant*> b = getBossTeam();
+    if (t == Alpha)
+    {
+        for (unsigned int i = 0; i < o.size(); i++)
+            enemies.push_back(o[i]);
+        for (unsigned int i = 0; i < b.size(); i++)
+            enemies.push_back(b[i]);
+    }
+    else if (t == Omega)
     {
         for (unsigned int i = 0; i < a.size(); i++)
             enemies.push_back(a[i]);
@@ -861,6 +915,20 @@ int GameState::turnStatePreTurn()
             <= alliedSaberC->getCharismaRange())
         {
             currentServant->addDebuff(alliedSaberC->getCharisma());
+        }
+    }
+
+    // If the player is a Berserker, check for the chance of activating Mad Roar
+    // TODO
+    if (currentServant->getClass() == Berserker)
+    {
+        int berLuk = currentServant->getLuk();
+        int berSkl = currentServant->getSkl();
+        if(currentServant->getRandNum() <= (berLuk / 2) + (berSkl / 2))
+        {
+            log->addToEventLog("You let loose a Mad Roar!");
+            // ServantBerserker *currServ = dynamic_cast<ServantBerserker*>(currentServant);
+            // currServ->madRoar(getOpposingTeamAlive(currServ->getTeam());
         }
     }
 
@@ -1720,7 +1788,30 @@ int GameState::turnStateApplyAction()
         return 50;
 
     // Apply the chosen action to the chosen targets.
-    int ret = currentServant->doAction(chosenAction, chosenDefenders);
+    // If the action is a noble phantasm and one of the targets is the Sai
+    //  Avenger with at least 40 MP, then stop the action and deal the
+    //  currentServant .8 * MAXMP damage.
+    bool activateNP = true;
+    if ((currentServant->getName().compare("Lance Lancer") == 0 &&
+         abs(currentServant->isActionNP(chosenAction)) != 1) ||
+            currentServant->isActionNP(chosenAction) >= 0)
+    {
+        for (unsigned int i = 0; i < chosenDefenders.size(); i++)
+        {
+            if(chosenDefenders[i]->getName().compare("Sai Avenger") == 0 &&
+                    chosenDefenders[i]->getCurrMP() > 40)
+            {
+                activateNP = false;
+                log->addToEventLog("Sai Avenger's Essence of Fragarach activated! Your Noble Phantasm was stopped!");
+                currentServant->subHP((currentServant->getMaxHP() * 8) / 10, OMNI);
+                chosenDefenders[i]->subMP(40);
+            }
+        }
+    }
+    int ret = 0;
+    if (activateNP)
+        ret = currentServant->doAction(chosenAction, chosenDefenders);
+
     if (ret != 0)
     {
         // Something went wrong! Return now.
@@ -1734,6 +1825,13 @@ int GameState::turnStateApplyAction()
             chosenDefenders.clear();
         }
         return ret;
+    }
+
+    // If the servant died for some reason
+    if (currentServant->getCurrHP() <= 0)
+    {
+        turnState += 2;
+        return endTurnProcess();
     }
 
     // If the Servant is a Rider, allow them to move again.
