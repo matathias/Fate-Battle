@@ -7,6 +7,7 @@
 using namespace std;
 
 bool isInVector(vector<Coordinate> vec, Coordinate c);
+Direction getDirectionAtoB(Coordinate a, Coordinate b);
 
 class PlayField
 {

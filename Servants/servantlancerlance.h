@@ -1,11 +1,21 @@
 #ifndef SERVANTLANCERLANCE_H
 #define SERVANTLANCERLANCE_H
 
+#pragma once
 
-class ServantLancerLance
+#include "servantlancer.h"
+
+class ServantLancerLance : public ServantLancer
 {
 public:
-    ServantLancerLance();
+    ServantLancerLance(int as, Team t, Logger *l);
+
+    // Titanreach
+    virtual int activateNP1(vector<Servant *> defenders);
+    // Essence of Gae Bolg
+    virtual int activateNP2(vector<Servant *> defenders);
+    // Essence of Gae Bolg (Anti-Fortress)
+    virtual int activateNP3(vector<Servant *> defenders);
 };
 
 #endif // SERVANTLANCERLANCE_H

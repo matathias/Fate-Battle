@@ -4,6 +4,8 @@
 #include "view.h"
 #include "ui_mainwindow.h"
 #include "Servants/servanttest.h"
+#include "Servants/servantsaberclaymore.h"
+#include "Servants/servantsaberkatana.h"
 #include "playfieldsquare.h"
 
 #include <QHBoxLayout>
@@ -420,7 +422,7 @@ void MainWindow::mainSetup()
 void MainWindow::populateScene(int w, int l)
 {
     // This part MAY cause problems...
-    scene->clear();
+    //scene->clear();
     scene = new QGraphicsScene;
 
     // Populate scene
@@ -796,8 +798,8 @@ void MainWindow::startGameState()
 {
     log = new Logger;
 
-    Servant *first = new ServantTest(1, Alpha, log);
-    Servant *second = new ServantTest(1, Omega, log);
+    Servant *first = new ServantSaberClaymore(1, Alpha, log);
+    Servant *second = new ServantSaberKatana(1, Omega, log);
 
     vector<Servant*> all;
     all.push_back(first);

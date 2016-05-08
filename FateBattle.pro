@@ -47,7 +47,19 @@ SOURCES += main.cpp\
     view.cpp \
     Servants/servanttest.cpp \
     logger.cpp \
-    Servants/servantsaber.cpp
+    Servants/servantsaber.cpp \
+    Servants/servantlancer.cpp \
+    Servants/servantarcher.cpp \
+    Servants/servantcaster.cpp \
+    Servants/servantberserker.cpp \
+    Servants/servantrider.cpp \
+    Servants/servantassassin.cpp \
+    Servants/servantavenger.cpp \
+    Servants/bossgil.cpp \
+    Servants/bossrin.cpp \
+    Servants/bossdallas.cpp \
+    Servants/bossyuu.cpp \
+    Servants/bossmika.cpp
 
 HEADERS  += mainwindow.h \
     Debuff.h \
@@ -83,7 +95,19 @@ HEADERS  += mainwindow.h \
     Servants/servanttest.h \
     allservants.h \
     logger.h \
-    Servants/servantsaber.h
+    Servants/servantsaber.h \
+    Servants/servantlancer.h \
+    Servants/servantarcher.h \
+    Servants/servantcaster.h \
+    Servants/servantberserker.h \
+    Servants/servantrider.h \
+    Servants/servantassassin.h \
+    Servants/servantavenger.h \
+    Servants/bossgil.h \
+    Servants/bossrin.h \
+    Servants/bossdallas.h \
+    Servants/bossyuu.h \
+    Servants/bossmika.h
 
 FORMS    += mainwindow.ui
 

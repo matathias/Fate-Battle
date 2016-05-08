@@ -938,7 +938,7 @@ int GameState::turnStatePreTurn()
 
     if (currHP - hpSub <= 0)
         currentServant->setHP(1);
-    else
+    else if (hpSub > 0)
         currentServant->subHP(hpSub, OMNI);
 
     currentServant->subMP(mpSub);

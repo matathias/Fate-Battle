@@ -5,89 +5,22 @@
 
 ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
 {
-    /*
-    maxHP.push_back(100);
-    maxHP.push_back(150);
-    maxHP.push_back(200);
-    maxMP.push_back(100);
-    maxMP.push_back(150);
-    maxMP.push_back(200);
-    mov.push_back(5);
-    mov.push_back(6);
-    mov.push_back(7);
-    str.push_back(20);
-    str.push_back(30);
-    str.push_back(40);
-    mag.push_back(20);
-    mag.push_back(30);
-    mag.push_back(40);
-    def.push_back(10);
-    def.push_back(20);
-    def.push_back(30);
-    res.push_back(10);
-    res.push_back(20);
-    res.push_back(30);
-    spd.push_back(20);
-    spd.push_back(30);
-    spd.push_back(40);
-    skl.push_back(20);
-    skl.push_back(30);
-    skl.push_back(40);
-    luk.push_back(10);
-    luk.push_back(20);
-    luk.push_back(30);
-
-    currHP = maxHP[as];
-    currMP = maxMP[as];
-
-    lowRange = 1;
-    hiRange = 1;
-
-    clss = Saber;*/
     name = "Saber Test";
 
-    /*
-    vector<string> actions;
-    actions.push_back("1: Attack");
-    actions.push_back("2: NP: Straight Slash");
-    actions.push_back("3: NP: Side Slash");
-    actions.push_back("4: NP: Omni Slash");
-    actionList.push_back(actions);
-    actionList.push_back(actions);
-    actionList.push_back(actions);
-    */
     actionList[0].push_back("4: NP: Straight Slash");
     actionList[1].push_back("4: NP: Straight Slash");
     actionList[1].push_back("5: NP: Side Slash");
     actionList[2].push_back("4: NP: Straight Slash");
     actionList[2].push_back("5: NP: Side Slash");
     actionList[2].push_back("6: NP: Omni Slash");
-    /*
-    vector<ActionType> actionTypes;
-    actionTypes.push_back(S);
-    actionTypes.push_back(S);
-    actionTypes.push_back(S);
-    actionTypes.push_back(A);
-    actionListTypes.push_back(actionTypes);
-    actionListTypes.push_back(actionTypes);
-    actionListTypes.push_back(actionTypes);
-    */
+
     actionListTypes[0].push_back(S);
     actionListTypes[1].push_back(S);
     actionListTypes[1].push_back(S);
     actionListTypes[2].push_back(S);
     actionListTypes[2].push_back(S);
     actionListTypes[2].push_back(A);
-    /*
-    vector<int> actionCosts;
-    actionCosts.push_back(2);
-    actionCosts.push_back(25);
-    actionCosts.push_back(50);
-    actionCosts.push_back(100);
-    actionMPCosts.push_back(actionCosts);
-    actionMPCosts.push_back(actionCosts);
-    actionMPCosts.push_back(actionCosts);
-    */
+
     actionMPCosts[0].push_back(25);
     actionMPCosts[1].push_back(25);
     actionMPCosts[1].push_back(50);
@@ -95,32 +28,13 @@ ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     actionMPCosts[2].push_back(50);
     actionMPCosts[2].push_back(100);
 
-    /*
-    vector<bool> acDodge;
-    acDodge.push_back(true);
-    acDodge.push_back(true);
-    acDodge.push_back(false);
-    acDodge.push_back(false);
-    actionDodgeable.push_back(acDodge);
-    actionDodgeable.push_back(acDodge);
-    actionDodgeable.push_back(acDodge);
-    */
     actionDodgeable[0].push_back(true);
     actionDodgeable[1].push_back(true);
     actionDodgeable[1].push_back(false);
     actionDodgeable[2].push_back(true);
     actionDodgeable[2].push_back(false);
     actionDodgeable[2].push_back(false);
-    /*
-    vector<bool> acCounter;
-    acCounter.push_back(true);
-    acCounter.push_back(true);
-    acCounter.push_back(true);
-    acCounter.push_back(false);
-    actionCounterable.push_back(acCounter);
-    actionCounterable.push_back(acCounter);
-    actionCounterable.push_back(acCounter);
-    */
+
     actionCounterable[0].push_back(true);
     actionCounterable[1].push_back(true);
     actionCounterable[1].push_back(true);
@@ -174,11 +88,11 @@ ServantTest::ServantTest(int as, Team t, Logger *l) : ServantSaber(as, t, l)
 int ServantTest::activateNP1(vector<Servant *> defenders)
 {
     int ret = 0;
-    if (actionMPCosts[ascension][1] > currMP)
+    if (actionMPCosts[ascension][3] > currMP)
         return 1; // Not enough MP to attack
     else
     {
-        subMP(actionMPCosts[ascension][1]);
+        subMP(actionMPCosts[ascension][3]);
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             int dam = 0;
@@ -196,7 +110,7 @@ int ServantTest::activateNP1(vector<Servant *> defenders)
                 for (unsigned int j = 1; j < opEvade.size() && !hit; j++)
                 {
                     r = getRandNum();
-                    if (opEvade[j] >= r)
+                    if (opEvade[j] <= r)
                         hit = true;
                 }
             }
@@ -278,11 +192,11 @@ int ServantTest::activateNP1(vector<Servant *> defenders)
 // undodgeable five times normal damage.
 int ServantTest::activateNP2(vector<Servant *> defenders)
 {
-    if (actionMPCosts[ascension][2] > currMP)
+    if (actionMPCosts[ascension][4] > currMP)
         return 1; // Not enough MP to attack
     else
     {
-        subMP(actionMPCosts[ascension][2]);
+        subMP(actionMPCosts[ascension][4]);
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             // Check to see if you get a critical
@@ -358,11 +272,11 @@ int ServantTest::activateNP2(vector<Servant *> defenders)
 // counterattacks or enemy skill activations.
 int ServantTest::activateNP3(vector<Servant *> defenders)
 {
-    if (actionMPCosts[ascension][3] > currMP)
+    if (actionMPCosts[ascension][5] > currMP)
         return 1; // Not enough MP to attack
     else
     {
-        subMP(actionMPCosts[ascension][3]);
+        subMP(actionMPCosts[ascension][5]);
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             // Check to see if you get a critical

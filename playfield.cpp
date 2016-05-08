@@ -27,6 +27,31 @@ bool isInVector(vector<Coordinate> vec, Coordinate c)
     return found;
 }
 
+Direction getDirectionAtoB(Coordinate a, Coordinate b)
+{
+    int xDist = b.x - a.x;
+    int yDist = b.y - a.y;
+
+    if (xDist > 0) // Eastern
+    {
+        if(xDist > abs(yDist))
+            return EAST;
+        else if (yDist > 0)
+            return NORTH;
+        else
+            return SOUTH;
+    }
+    else // Western
+    {
+        if(abs(xDist) > abs(yDist))
+            return WEST;
+        else if (yDist > 0)
+            return NORTH;
+        else
+            return SOUTH;
+    }
+}
+
 
 /********** Function Definitions **********/
 // Constructor

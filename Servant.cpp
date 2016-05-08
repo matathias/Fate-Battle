@@ -74,7 +74,7 @@ void Servant::subHP(int hp, DamageType dt)
     int mhp = getMaxHP();
     if (currHP > mhp)
         currHP = mhp;
-    else if (currHP < 0)
+    else if (currHP <= 0)
     {
         currHP = 0;
         remAllDebuffs(false);
@@ -639,7 +639,7 @@ int Servant::attack(vector<Servant *> defenders, bool counter)
                 for (unsigned int j = 1; j < opEvade.size() && !hit; j++)
                 {
                     r = getRandNum();
-                    if (opEvade[j] >= r)
+                    if (opEvade[j] <= r)
                         hit = true;
                 }
             }
