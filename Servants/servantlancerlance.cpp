@@ -120,6 +120,9 @@ int ServantLancerLance::activateNP1(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][2]);
+
+        log->addToEventLog(getFullName() + " used Titanreach!");
+
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             // Check to see if you get a critical
@@ -132,6 +135,9 @@ int ServantLancerLance::activateNP1(vector<Servant *> defenders)
 
             // Deal the damage
             int dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
+            log->addToEventLog(getFullName() + " dealt " +
+                               to_string(dam) + " damage to " +
+                               defenders[i]->getFullName() + ".");
             defenders[i]->subHP(dam, NP_STR);
 
             // Check to see if the defender is dead. If they are, and if they
@@ -168,6 +174,9 @@ int ServantLancerLance::activateNP2(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][3]);
+
+        log->addToEventLog(getFullName() + " used Essence of Gae Bolg!");
+
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             int dam = defenders[i]->getMaxHP();
@@ -180,6 +189,9 @@ int ServantLancerLance::activateNP2(vector<Servant *> defenders)
             }
 
             // Deal the damage
+            log->addToEventLog(getFullName() + " dealt " +
+                               to_string(dam) + " damage to " +
+                               defenders[i]->getFullName() + ".");
             defenders[i]->subHP(dam, NP_STR);
 
             // Check to see if the defender is dead. If they are, do not call
@@ -230,12 +242,18 @@ int ServantLancerLance::activateNP3(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][4]);
+
+        log->addToEventLog(getFullName() + " used Essence of Gae Bolg (Anti-Army)!");
+
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             int attackMult = 20;
 
             // Deal the damage
             int dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
+            log->addToEventLog(getFullName() + " dealt " +
+                               to_string(dam) + " damage to " +
+                               defenders[i]->getFullName() + ".");
             defenders[i]->subHP(dam, NP_STR);
         }
     }

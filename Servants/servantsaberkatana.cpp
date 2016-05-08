@@ -141,13 +141,14 @@ int ServantSaberKatana::attack(vector<Servant *> defenders, bool counter)
             int r = getRandNum();
             if (accuracy >= r)
                 hit = true;
-            else if (opEvade.size() > 1)
+
+            if (opEvade.size() > 1 && hit)
             {
-                for (unsigned int j = 1; j < opEvade.size() && !hit; j++)
+                for (unsigned int j = 1; j < opEvade.size() && hit; j++)
                 {
                     r = getRandNum();
-                    if (opEvade[j] <= r)
-                        hit = true;
+                    if (opEvade[j] >= r)
+                        hit = false;
                 }
             }
 
@@ -168,9 +169,15 @@ int ServantSaberKatana::attack(vector<Servant *> defenders, bool counter)
 
                 // Deal the damage
                 dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
-                if (dam < 0)
-                    dam = 0;
+                log->addToEventLog(getFullName() + " dealt " +
+                                   to_string(dam) + " damage to " +
+                                   defenders[i]->getFullName() + ".");
                 defenders[i]->subHP(dam, D_STR);
+            }
+            else
+            {
+                log->addToEventLog(getFullName() + " missed " +
+                                   defenders[i]->getFullName() + "!");
             }
 
             // Check to see if the defender is dead. If they are, do not call
@@ -191,6 +198,10 @@ int ServantSaberKatana::attack(vector<Servant *> defenders, bool counter)
                     {
                         // Mad Counter activated! The attacking servant takes
                         // damage equal to the damage they dealt.
+                        log->addToEventLog(defenders[i]->getFullName() +
+                                           "' Mad Counter activated, dealing " +
+                                           to_string(dam) + " damage back to " +
+                                           getFullName() + ".");
                         subHP(dam, C_STR);
                     }
                 }
@@ -238,6 +249,9 @@ int ServantSaberKatana::activateNP1(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][3]);
+
+        log->addToEventLog(getFullName() + " used Tensutoraiki!");
+
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             for (int z = 0; z < 10; z++)
@@ -252,13 +266,14 @@ int ServantSaberKatana::activateNP1(vector<Servant *> defenders)
                 int r = getRandNum();
                 if (accuracy >= r)
                     hit = true;
-                else if (opEvade.size() > 1)
+
+                if (opEvade.size() > 1 && hit)
                 {
-                    for (unsigned int j = 1; j < opEvade.size() && !hit; j++)
+                    for (unsigned int j = 1; j < opEvade.size() && hit; j++)
                     {
                         r = getRandNum();
-                        if (opEvade[j] <= r)
-                            hit = true;
+                        if (opEvade[j] >= r)
+                            hit = false;
                     }
                 }
 
@@ -275,7 +290,15 @@ int ServantSaberKatana::activateNP1(vector<Servant *> defenders)
                     // Deal the damage
                     dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
                                  attackMult);
+                    log->addToEventLog(getFullName() + " dealt " +
+                                       to_string(dam) + " damage to " +
+                                       defenders[i]->getFullName() + ".");
                     defenders[i]->subHP(dam, NP_STR);
+                }
+                else
+                {
+                    log->addToEventLog(getFullName() + " missed " +
+                                       defenders[i]->getFullName() + "!");
                 }
 
                 // Check to see if the defender is dead. If they are, do not
@@ -296,6 +319,10 @@ int ServantSaberKatana::activateNP1(vector<Servant *> defenders)
                         {
                             // Mad Counter activated! The attacking servant takes
                             // damage equal to the damage they dealt.
+                            log->addToEventLog(defenders[i]->getFullName() +
+                                               "' Mad Counter activated, dealing " +
+                                               to_string(dam) + " damage back to " +
+                                               getFullName() + ".");
                             subHP(dam, C_STR);
                         }
                     }
@@ -336,6 +363,9 @@ int ServantSaberKatana::activateNP2(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][4]);
+
+        log->addToEventLog(getFullName() + " used Handoreddosutoraiki!");
+
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             for (int z = 0; z < 100; z++)
@@ -350,13 +380,14 @@ int ServantSaberKatana::activateNP2(vector<Servant *> defenders)
                 int r = getRandNum();
                 if (accuracy >= r)
                     hit = true;
-                else if (opEvade.size() > 1)
+
+                if (opEvade.size() > 1 && hit)
                 {
-                    for (unsigned int j = 1; j < opEvade.size() && !hit; j++)
+                    for (unsigned int j = 1; j < opEvade.size() && hit; j++)
                     {
                         r = getRandNum();
-                        if (opEvade[j] <= r)
-                            hit = true;
+                        if (opEvade[j] >= r)
+                            hit = false;
                     }
                 }
 
@@ -373,7 +404,15 @@ int ServantSaberKatana::activateNP2(vector<Servant *> defenders)
                     // Deal the damage
                     dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
                                  attackMult);
+                    log->addToEventLog(getFullName() + " dealt " +
+                                       to_string(dam) + " damage to " +
+                                       defenders[i]->getFullName() + ".");
                     defenders[i]->subHP(dam, NP_STR);
+                }
+                else
+                {
+                    log->addToEventLog(getFullName() + " missed " +
+                                       defenders[i]->getFullName() + "!");
                 }
 
                 // Check to see if the defender is dead. If they are, do not
@@ -394,6 +433,10 @@ int ServantSaberKatana::activateNP2(vector<Servant *> defenders)
                         {
                             // Mad Counter activated! The attacking servant takes
                             // damage equal to the damage they dealt.
+                            log->addToEventLog(defenders[i]->getFullName() +
+                                               "' Mad Counter activated, dealing " +
+                                               to_string(dam) + " damage back to " +
+                                               getFullName() + ".");
                             subHP(dam, C_STR);
                         }
                     }
@@ -434,6 +477,9 @@ int ServantSaberKatana::activateNP3(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][5]);
+
+        log->addToEventLog(getFullName() + " used Sauzandosutoraiki!");
+
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             for (int z = 0; z < 1000; z++)
@@ -467,7 +513,15 @@ int ServantSaberKatana::activateNP3(vector<Servant *> defenders)
                     // Deal the damage
                     dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
                                  attackMult);
+                    log->addToEventLog(getFullName() + " dealt " +
+                                       to_string(dam) + " damage to " +
+                                       defenders[i]->getFullName() + ".");
                     defenders[i]->subHP(dam, OMNI);
+                }
+                else
+                {
+                    log->addToEventLog(getFullName() + " missed " +
+                                       defenders[i]->getFullName() + "!");
                 }
 
                 // Check to see if the defender is dead.

@@ -207,34 +207,36 @@ void MainWindow::mainSetup()
     }
     else
     {
-        debuffTab = new QStandardItemModel(numDebuffs, 14, this);
+        debuffTab = new QStandardItemModel(numDebuffs, 15, this);
         debuffTab->setHorizontalHeaderItem(0, new QStandardItem(
                                                QString("Name")));
         debuffTab->setHorizontalHeaderItem(1, new QStandardItem(
                                                QString("Description")));
         debuffTab->setHorizontalHeaderItem(2, new QStandardItem(
-                                               QString("MAX HP")));
+                                               QString("Turns Left")));
         debuffTab->setHorizontalHeaderItem(3, new QStandardItem(
-                                               QString("HP")));
+                                               QString("MAX HP")));
         debuffTab->setHorizontalHeaderItem(4, new QStandardItem(
-                                               QString("MAX MP")));
+                                               QString("HP")));
         debuffTab->setHorizontalHeaderItem(5, new QStandardItem(
-                                               QString("MP")));
+                                               QString("MAX MP")));
         debuffTab->setHorizontalHeaderItem(6, new QStandardItem(
-                                               QString("MOV")));
+                                               QString("MP")));
         debuffTab->setHorizontalHeaderItem(7, new QStandardItem(
-                                               QString("STR")));
+                                               QString("MOV")));
         debuffTab->setHorizontalHeaderItem(8, new QStandardItem(
-                                               QString("MAG")));
+                                               QString("STR")));
         debuffTab->setHorizontalHeaderItem(9, new QStandardItem(
-                                               QString("DEF")));
+                                               QString("MAG")));
         debuffTab->setHorizontalHeaderItem(10, new QStandardItem(
-                                               QString("RES")));
+                                               QString("DEF")));
         debuffTab->setHorizontalHeaderItem(11, new QStandardItem(
-                                               QString("SPD")));
+                                               QString("RES")));
         debuffTab->setHorizontalHeaderItem(12, new QStandardItem(
-                                               QString("SKL")));
+                                               QString("SPD")));
         debuffTab->setHorizontalHeaderItem(13, new QStandardItem(
+                                               QString("SKL")));
+        debuffTab->setHorizontalHeaderItem(14, new QStandardItem(
                                                QString("LUK")));
         for (int i = 0; i < numDebuffs; i++)
         {
@@ -244,18 +246,22 @@ void MainWindow::mainSetup()
             QStandardItem *dD = new QStandardItem(debDes);
             debuffTab->setItem(i,0,dN);
             debuffTab->setItem(i,1,dD);
-            debuffTab->setItem(i,2,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAXHP)))));
-            debuffTab->setItem(i,3,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(HP)))));
-            debuffTab->setItem(i,4,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAXMP)))));
-            debuffTab->setItem(i,5,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MP)))));
-            debuffTab->setItem(i,6,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MOV)))));
-            debuffTab->setItem(i,7,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(STR)))));
-            debuffTab->setItem(i,8,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAG)))));
-            debuffTab->setItem(i,9,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(DEF)))));
-            debuffTab->setItem(i,10,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(RES)))));
-            debuffTab->setItem(i,11,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(SPD)))));
-            debuffTab->setItem(i,12,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(SKL)))));
-            debuffTab->setItem(i,13,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(LUK)))));
+            if (deb[i]->getTurnsRemaining() > 0)
+                debuffTab->setItem(i,2,new QStandardItem(QString::fromStdString(to_string(deb[i]->getTurnsRemaining()))));
+            else
+                debuffTab->setItem(i,2,new QStandardItem(QString::fromStdString("---")));
+            debuffTab->setItem(i,3,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAXHP)))));
+            debuffTab->setItem(i,4,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(HP)))));
+            debuffTab->setItem(i,5,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAXMP)))));
+            debuffTab->setItem(i,6,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MP)))));
+            debuffTab->setItem(i,7,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MOV)))));
+            debuffTab->setItem(i,8,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(STR)))));
+            debuffTab->setItem(i,9,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAG)))));
+            debuffTab->setItem(i,10,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(DEF)))));
+            debuffTab->setItem(i,11,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(RES)))));
+            debuffTab->setItem(i,12,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(SPD)))));
+            debuffTab->setItem(i,13,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(SKL)))));
+            debuffTab->setItem(i,14,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(LUK)))));
         }
     }
 

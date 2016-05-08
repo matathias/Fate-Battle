@@ -147,6 +147,8 @@ int ServantSaber::guardianKnight(vector<Servant *> defenders)
         }
     }
 
+    log->addToEventLog(getFullName() + " activated Guardian Knight!");
+
     return 0;
 }
 
@@ -194,6 +196,8 @@ int ServantSaber::manaBurst(vector<Servant *> defenders)
                                   "You sacrifice defense to gain incredible power.",
                                   team, gvs, gvi, 3);
     addDebuff(guardian);
+
+    log->addToEventLog(getFullName() + " activated Mana Burst!");
 
     return 0;
 }

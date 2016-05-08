@@ -105,6 +105,8 @@ int ServantLancer::manaBurst(vector<Servant *> defenders)
                                   team, gvs, gvi, 3);
     addDebuff(guardian);
 
+    log->addToEventLog(getFullName() + " activated Mana Burst!");
+
     return 0;
 }
 

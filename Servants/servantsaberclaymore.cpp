@@ -182,6 +182,8 @@ int ServantSaberClaymore::activateNP1(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][3]);
+        log->addToEventLog(getTeamName() + " " + getName() +
+                           " used Knights of the Square Table!");
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             for (int z = 0; z < 15; z++)
@@ -196,13 +198,14 @@ int ServantSaberClaymore::activateNP1(vector<Servant *> defenders)
                 int r = getRandNum();
                 if (accuracy >= r)
                     hit = true;
-                else if (opEvade.size() > 1)
+
+                if (opEvade.size() > 1 && hit)
                 {
-                    for (unsigned int j = 1; j < opEvade.size() && !hit; j++)
+                    for (unsigned int j = 1; j < opEvade.size() && hit; j++)
                     {
                         r = getRandNum();
-                        if (opEvade[j] <= r)
-                            hit = true;
+                        if (opEvade[j] >= r)
+                            hit = false;
                     }
                 }
 
@@ -219,7 +222,17 @@ int ServantSaberClaymore::activateNP1(vector<Servant *> defenders)
                     // Deal the damage
                     dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
                                  attackMult);
+
+                    log->addToEventLog(getFullName() + " dealt " +
+                                       to_string(dam) + " damage to " +
+                                       defenders[i]->getFullName() + ".");
+
                     defenders[i]->subHP(dam, NP_STR);
+                }
+                else
+                {
+                    log->addToEventLog(getFullName() + " missed " +
+                                       defenders[i]->getFullName() + "!");
                 }
 
                 // Check to see if the defender is dead. If they are, do not
@@ -240,6 +253,10 @@ int ServantSaberClaymore::activateNP1(vector<Servant *> defenders)
                         {
                             // Mad Counter activated! The attacking servant takes
                             // damage equal to the damage they dealt.
+                            log->addToEventLog(defenders[i]->getFullName() +
+                                               "' Mad Counter activated, dealing " +
+                                               to_string(dam) + " damage back to " +
+                                               getFullName() + ".");
                             subHP(dam, C_STR);
                         }
                     }
@@ -288,6 +305,8 @@ int ServantSaberClaymore::activateNP2(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][4]);
+        log->addToEventLog(getFullName() + " used X-Calibre!");
+
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             // Check to see if you get a critical
@@ -295,6 +314,9 @@ int ServantSaberClaymore::activateNP2(vector<Servant *> defenders)
 
             // Deal the damage
             int dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
+            log->addToEventLog(getFullName() + " dealt " +
+                               to_string(dam) + " damage to " +
+                               defenders[i]->getFullName() + ".");
             defenders[i]->subHP(dam, NP_STR);
             atkDir = getDirectionAtoB(getCurrLoc(), defenders[i]->getCurrLoc());
         }

@@ -33,6 +33,7 @@ class Servant
         
         string getName();
         string getTeamName();
+        string getFullName();
 
         string getServantIcon();
         string getTeamIcon();
