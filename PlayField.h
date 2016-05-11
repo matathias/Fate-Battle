@@ -8,6 +8,7 @@ using namespace std;
 
 bool isInVector(vector<Coordinate> vec, Coordinate c);
 Direction getDirectionAtoB(Coordinate a, Coordinate b);
+vector<Coordinate> getLowToHighRange(int low, int high);
 
 class PlayField
 {
@@ -54,6 +55,7 @@ class PlayField
 
         int getFieldLength();
         int getFieldWidth();
+        int getLargestDimension();
 
         Coordinate getRandomCoord();
         Coordinate getNearestValidCoord(Coordinate c);

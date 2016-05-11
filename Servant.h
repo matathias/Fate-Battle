@@ -38,18 +38,19 @@ class Servant
         string getServantIcon();
         string getTeamIcon();
 
-        int getMaxHP();
+        // These are all virtual for the sake of the Avenger class
+        virtual int getMaxHP();
         int getCurrHP();
-        int getMaxMP();
+        virtual int getMaxMP();
         int getCurrMP();
-        int getMov();
-        int getStr();
-        int getMag();
-        int getDef();
-        int getRes();
-        int getSpd();
-        int getSkl();
-        int getLuk();
+        virtual int getMov();
+        virtual int getStr();
+        virtual int getMag();
+        virtual int getDef();
+        virtual int getRes();
+        virtual int getSpd();
+        virtual int getSkl();
+        virtual int getLuk();
         int getAscensionLvl();
         
         Class getClass();

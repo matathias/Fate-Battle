@@ -1,11 +1,16 @@
 #ifndef SERVANTBERSERKER_H
 #define SERVANTBERSERKER_H
 
+#pragma once
 
-class ServantBerserker
+#include "Servant.h"
+
+class ServantBerserker : public Servant
 {
 public:
-    ServantBerserker();
+    ServantBerserker(int as, Team t, Logger *l);
+
+    void madRoar(vector<Servant*> defenders);
 };
 
 #endif // SERVANTBERSERKER_H

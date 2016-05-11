@@ -246,8 +246,10 @@ void MainWindow::mainSetup()
             QStandardItem *dD = new QStandardItem(debDes);
             debuffTab->setItem(i,0,dN);
             debuffTab->setItem(i,1,dD);
-            if (deb[i]->getTurnsRemaining() > 0)
+            if (deb[i]->getTurnsRemaining() > 0 && deb[i]->getDebuffName().compare("Doom") != 0)
                 debuffTab->setItem(i,2,new QStandardItem(QString::fromStdString(to_string(deb[i]->getTurnsRemaining()))));
+            else if (deb[i]->getTurnsRemaining() > 0 && deb[i]->getDebuffName().compare("Doom") == 0)
+                debuffTab->setItem(i,2,new QStandardItem(QString::fromStdString(to_string(deb[i]->getTurnsRemaining() - 1))));
             else
                 debuffTab->setItem(i,2,new QStandardItem(QString::fromStdString("---")));
             debuffTab->setItem(i,3,new QStandardItem(QString::fromStdString(to_string(deb[i]->getDebuffAmount(MAXHP)))));

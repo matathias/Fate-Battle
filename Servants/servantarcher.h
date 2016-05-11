@@ -1,11 +1,16 @@
 #ifndef SERVANTARCHER_H
 #define SERVANTARCHER_H
 
+#pragma once
 
-class ServantArcher
+#include "Servant.h"
+
+class ServantArcher : public Servant
 {
 public:
-    ServantArcher();
+    ServantArcher(int as, Team t, Logger *l);
+
+    virtual vector<int> getEvade();
 };
 
 #endif // SERVANTARCHER_H

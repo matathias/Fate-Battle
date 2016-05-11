@@ -53,6 +53,28 @@ Direction getDirectionAtoB(Coordinate a, Coordinate b)
 }
 
 
+vector<Coordinate> getLowToHighRange(int low, int high)
+{
+    vector<Coordinate> range;
+
+    for (int i = -1*high; i <= high; i++)
+    {
+        for (int j = -1*high; j <= high; j++)
+        {
+            if (abs(i) + abs(j) >= low && abs(i) + abs(j) <= high)
+            {
+                Coordinate inRange;
+                inRange.x = i;
+                inRange.y = j;
+                range.push_back(inRange);
+            }
+        }
+    }
+
+    return range;
+}
+
+
 /********** Function Definitions **********/
 // Constructor
 PlayField::PlayField(int l, int w, vector<Servant *> servantList,
@@ -346,4 +368,12 @@ int PlayField::getFieldLength()
 int PlayField::getFieldWidth()
 {
     return width;
+}
+
+int PlayField::getLargestDimension()
+{
+    if (length > width)
+        return length;
+    else
+        return width;
 }

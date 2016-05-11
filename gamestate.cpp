@@ -10,6 +10,8 @@
 
 #include "GameState.h"
 #include "Servants/servantsaber.h"
+#include "Servants/servantavenger.h"
+#include "Servants/servantberserker.h"
 #include <cmath>
 #include <iostream>
 
@@ -793,11 +795,32 @@ int GameState::turnStatePreTurn()
     if (turnState != 0)
         return 10;
 
+    // If the servant is an Avenger, update their stats for Avenger's Rage.
+    // This only occurs at the beginning of their turn for consistency's sake.
+    if (currentServant->getClass() == Avenger)
+    {
+        ServantAvenger *currServ = dynamic_cast<ServantAvenger*>(currentServant);
+        currServ->updateAvengersRage();
+    }
+
     // Decrement the turns remaining on any Debuffs on this Servant. Remove any
     // Debuffs as necessary.
     currentServant->decDebuffs();
     log->addEventStartTurn(currentServant->getTeamName(),
                            currentServant->getName());
+
+    // Check for a Doom debuff. If turns remaining is 1, do the checks. If they
+    //  pass, print to the event log. Otherwise, kill them and skip to the
+    //  postTurn state.
+    vector<Debuff*> currDebuffs = currentServant->getDebuffs();
+    for (unsigned int i = 0; i < currDebuffs.size(); i++)
+    {
+        if (currDebuffs[i]->getDebuffName().compare("Doom") &&
+                currDebuffs[i]->getTurnsRemaining() == 1)
+        {
+            // TODO: the checks
+        }
+    }
 
     // Apply any relevant Debuffs, either that are on the Servant or the field.
     Debuff *tDebuff = field->getDebuffOnSpace(currentServant->getCurrLoc());
@@ -919,7 +942,6 @@ int GameState::turnStatePreTurn()
     }
 
     // If the player is a Berserker, check for the chance of activating Mad Roar
-    // TODO
     if (currentServant->getClass() == Berserker)
     {
         int berLuk = currentServant->getLuk();
@@ -927,8 +949,8 @@ int GameState::turnStatePreTurn()
         if(currentServant->getRandNum() <= (berLuk / 2) + (berSkl / 2))
         {
             log->addToEventLog("You let loose a Mad Roar!");
-            // ServantBerserker *currServ = dynamic_cast<ServantBerserker*>(currentServant);
-            // currServ->madRoar(getOpposingTeamAlive(currServ->getTeam());
+            ServantBerserker *currServ = dynamic_cast<ServantBerserker*>(currentServant);
+            currServ->madRoar(getOpposingTeamAlive(currServ->getTeam()));
         }
     }
 
@@ -1802,7 +1824,9 @@ int GameState::turnStateApplyAction()
                     chosenDefenders[i]->getCurrMP() > 40)
             {
                 activateNP = false;
-                log->addToEventLog("Sai Avenger's Essence of Fragarach activated! Your Noble Phantasm was stopped!");
+                log->addToEventLog("Sai Avenger's Essence of Fragarach activated! " +
+                                   currentServant->getFullName() +
+                                   "'s Noble Phantasm was stopped!");
                 currentServant->subHP((currentServant->getMaxHP() * 8) / 10, OMNI);
                 chosenDefenders[i]->subMP(40);
             }
