@@ -287,7 +287,7 @@ void Servant::remAllDebuffs(bool purgePermadead)
     {
         if(!purgePermadead)
         {
-            if(!debuffs[i]->getDebuffName().compare("Permadeath") == 0)
+            if(debuffs[i]->getDebuffName().compare("Permadeath") != 0)
             {
                 debuffs.erase(debuffs.begin()+i);
                 i--;
@@ -298,6 +298,29 @@ void Servant::remAllDebuffs(bool purgePermadead)
             }
         }
         else
+        {
+            debuffs.erase(debuffs.begin()+i);
+            i--;
+        }
+    }
+}
+
+void Servant::remAllDebuffs2(bool purgePermadeath, bool purgeDoom)
+{
+    for (int i = 0; i < (int) debuffs.size(); i++)
+    {
+        if(purgePermadeath && debuffs[i]->getDebuffName().compare("Permadeath") == 0)
+        {
+            debuffs.erase(debuffs.begin()+i);
+            i--;
+        }
+        else if (purgeDoom && debuffs[i]->getDebuffName().compare("Doom") == 0)
+        {
+            debuffs.erase(debuffs.begin()+i);
+            i--;
+        }
+        else if (debuffs[i]->getDebuffName().compare("Permadeath") != 0 &&
+                 debuffs[i]->getDebuffName().compare("Doom") != 0)
         {
             debuffs.erase(debuffs.begin()+i);
             i--;
@@ -803,4 +826,9 @@ int Servant::endRealityMarble()
 {
     realityMarbleActive = false;
     return 0;
+}
+
+void Servant::endTerritory()
+{
+    territoryActive = false;
 }

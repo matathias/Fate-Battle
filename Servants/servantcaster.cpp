@@ -43,6 +43,7 @@ ServantCaster::ServantCaster(int as, Team t, Logger *l) : Servant(as, t, l)
     clss = Caster;
     name = "Caster";
     ressurectCount = 0;
+    territoryActive = false;
 
     vector<string> basicActions;
     basicActions.push_back("1: Attack");

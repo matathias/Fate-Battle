@@ -815,7 +815,7 @@ int GameState::turnStatePreTurn()
     vector<Debuff*> currDebuffs = currentServant->getDebuffs();
     for (unsigned int i = 0; i < currDebuffs.size(); i++)
     {
-        if (currDebuffs[i]->getDebuffName().compare("Doom") &&
+        if (currDebuffs[i]->getDebuffName().compare("Doom") == 0 &&
                 currDebuffs[i]->getTurnsRemaining() == 1)
         {
             int r = currentServant->getRandNum();
@@ -1165,6 +1165,7 @@ int GameState::turnStatePreTurn()
         {
             log->addToEventLog("You lack the MP to continue your Territory. It has now dissolved.");
             field->eraseTerritory(currentServant->getTerritoryName());
+            currentServant->endTerritory();
         }
         else
         {

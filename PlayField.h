@@ -45,6 +45,7 @@ class PlayField
 
         void startRealityMarble(Servant* owner, Debuff* rm);
         void endRealityMarble();
+        void startTerritory(Servant* owner, Debuff* terr, vector<Coordinate> range);
         void eraseTerritory(string n);
         
         bool doesSpaceHaveServant(Coordinate c);

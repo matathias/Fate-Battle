@@ -152,6 +152,23 @@ void PlayField::endRealityMarble()
     }
 }
 
+void PlayField::startTerritory(Servant *owner, Debuff *terr, vector<Coordinate> range)
+{
+    if (realityMarbleOn)
+        return;
+
+    for (unsigned int i = 0; i < range.size(); i++)
+    {
+        Coordinate space = range[i];
+        space.x += owner->getCurrLoc().x;
+        space.y += owner->getCurrLoc().y;
+        if (isCoordinateInBounds(space))
+        {
+            tempEffects[space.x][space.y] = terr;
+        }
+    }
+}
+
 void PlayField::eraseTerritory(string n)
 {
     for (unsigned int i = 0; i < tempEffects.size(); i++)

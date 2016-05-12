@@ -57,9 +57,11 @@ class Servant
         Team getTeam();
 
         vector<Debuff*> getDebuffs();
-        void addDebuff(Debuff* d);
+        virtual void addDebuff(Debuff* d);
         void decDebuffs();
         void remAllDebuffs(bool purgePermadeath);
+        // The second version applies to a servant who is not dying
+        void remAllDebuffs2(bool purgePermadeath, bool purgeDoom);
         vector<Debuff*> getCastedDebuffs();
         void addCastedDebuff(Debuff* d);
         void decCastedDebuffs();
@@ -162,6 +164,8 @@ class Servant
         virtual Debuff* finalRevenge();
 
         virtual int endRealityMarble();
+
+        virtual void endTerritory();
         
     protected:
         string name; // Based on the Servant's class and weapon.
