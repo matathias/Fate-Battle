@@ -139,6 +139,7 @@ void PlayField::startRealityMarble(Servant *owner, Debuff* rm)
 
 void PlayField::endRealityMarble()
 {
+    rmServant->endRealityMarble();
     realityMarbleOn = false;
     rmServant = NULL;
 
@@ -173,7 +174,12 @@ void PlayField::servantDead(Servant *s)
     // Make sure that the space actually points to this Servant. Don't want to
     // accidentally remove a different Servant.
     if (field[c.x][c.y] == s)
+    {
         field[c.x][c.y] = NULL;
+        // If the Servant had a reality marble or territory going, erase it
+        if (isRealityMarbleOn() && realityMarbleServant() == s)
+            endRealityMarble();
+    }
 }
 
 void PlayField::servantRevived(Servant *s)

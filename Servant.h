@@ -160,6 +160,8 @@ class Servant
 
         // Placeholder. Will only really be used for Avengers.
         virtual Debuff* finalRevenge();
+
+        virtual int endRealityMarble();
         
     protected:
         string name; // Based on the Servant's class and weapon.
@@ -192,6 +194,7 @@ class Servant
         vector<Skill> skills;
 
         bool territoryActive; // Only relevant to casters
+        bool realityMarbleActive;
 
         Coordinate currLoc;
         PlayField *field;

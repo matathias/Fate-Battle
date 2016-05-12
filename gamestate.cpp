@@ -795,6 +795,12 @@ int GameState::turnStatePreTurn()
     if (turnState != 0)
         return 10;
 
+    // Decrement the turns remaining on any Debuffs on this Servant. Remove any
+    // Debuffs as necessary.
+    currentServant->decDebuffs();
+    log->addEventStartTurn(currentServant->getTeamName(),
+                           currentServant->getName());
+
     // If the servant is an Avenger, update their stats for Avenger's Rage.
     // This only occurs at the beginning of their turn for consistency's sake.
     if (currentServant->getClass() == Avenger)
@@ -802,12 +808,6 @@ int GameState::turnStatePreTurn()
         ServantAvenger *currServ = dynamic_cast<ServantAvenger*>(currentServant);
         currServ->updateAvengersRage();
     }
-
-    // Decrement the turns remaining on any Debuffs on this Servant. Remove any
-    // Debuffs as necessary.
-    currentServant->decDebuffs();
-    log->addEventStartTurn(currentServant->getTeamName(),
-                           currentServant->getName());
 
     // Check for a Doom debuff. If turns remaining is 1, do the checks. If they
     //  pass, print to the event log. Otherwise, kill them and skip to the
@@ -818,7 +818,30 @@ int GameState::turnStatePreTurn()
         if (currDebuffs[i]->getDebuffName().compare("Doom") &&
                 currDebuffs[i]->getTurnsRemaining() == 1)
         {
-            // TODO: the checks
+            int r = currentServant->getRandNum();
+            if (r > currentServant->getLuk())
+            {
+                // They failed the check, kill them and add a Permadeath debuff
+                vector<Stat> tDebStat;
+                tDebStat.push_back(MOV);
+                vector<int> tDebAm;
+                tDebAm.push_back(0);
+                Debuff *newDebuff = new Debuff("Permadeath",
+                                               "You are permanently dead.",
+                                               currentServant->getTeam(),
+                                               tDebStat, tDebAm, 1);
+                currentServant->addDebuff(newDebuff);
+                log->addToEventLog(currentServant->getFullName() +
+                                   " succombed to the effect of Doom and died permanently!");
+                turnState = 6;
+                return turnStatePostTurn();
+            }
+            else
+            {
+                // They passed the check, say so in the event log
+                log->addToEventLog(currentServant->getFullName() +
+                                   " survived Doom!");
+            }
         }
     }
 
@@ -1294,6 +1317,7 @@ int GameState::turnStateChoseAction()
             chosenDefenders = field->getAllInRange(currentServant,
                                    currentServant->getActionRange(chosenAction));
 
+        turnState = 4;
         return turnStateApplyAction();
     }
 
@@ -1818,7 +1842,7 @@ int GameState::turnStateApplyAction()
          abs(currentServant->isActionNP(chosenAction)) != 1) ||
             currentServant->isActionNP(chosenAction) >= 0)
     {
-        for (unsigned int i = 0; i < chosenDefenders.size(); i++)
+        for (unsigned int i = 0; i < chosenDefenders.size() && activateNP; i++)
         {
             if(chosenDefenders[i]->getName().compare("Sai Avenger") == 0 &&
                     chosenDefenders[i]->getCurrMP() > 40)

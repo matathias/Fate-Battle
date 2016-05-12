@@ -30,7 +30,7 @@ ServantSaberClaymore::ServantSaberClaymore(int as, Team t, Logger *l) : ServantS
 
     actionList[1].push_back("4: NP: Knights of the Square Table");
     actionList[2].push_back("4: NP: Knights of the Square Table");
-    actionList[2].push_back("5: X-Calibre");
+    actionList[2].push_back("5: NP: X-Calibre");
 
     actionListTypes[1].push_back(S);
     actionListTypes[2].push_back(S);
@@ -131,10 +131,10 @@ int ServantSaberClaymore::isActionNP(int action)
     switch(action)
     {
         case 3:
-            ret = 1;
+            ret = 0;
             break;
         case 4:
-            ret = 2;
+            ret = 1;
             break;
         default:
             break;

@@ -20,6 +20,7 @@ Servant::Servant(int as, Team t, Logger *l)
     log = l;
 
     territoryActive = false;
+    realityMarbleActive = false;
 }
 
 void Servant::setPlayField(PlayField *f)
@@ -796,4 +797,10 @@ int Servant::activateNP2(vector<Servant *> defenders)
 int Servant::activateNP3(vector<Servant *> defenders)
 {
     return 10 + defenders.size();
+}
+
+int Servant::endRealityMarble()
+{
+    realityMarbleActive = false;
+    return 0;
 }
