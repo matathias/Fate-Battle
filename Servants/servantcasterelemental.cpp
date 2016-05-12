@@ -359,10 +359,12 @@ int ServantCasterElemental::territoryCreation(vector<Servant *> defenders)
 
     vector<Coordinate> range = getLowToHighRange(0, 2 + ascension);
 
+    // Create the Debuff
     vector<Stat> tStats;
     tStats.push_back(HP);
     vector<int> tAmounts;
     tAmounts.push_back(-10);
+    // Get the Team of the opposing team
     Team otherTeam = All;
     vector<vector<Servant*>> pField = field->getServantLocations();
     for (unsigned int i = 0; i < pField.size(); i++)
@@ -380,6 +382,7 @@ int ServantCasterElemental::territoryCreation(vector<Servant *> defenders)
                                  otherTeam, tStats,
                                  tAmounts, -1);
 
+    // Start the territory
     field->startTerritory(this, tFlames, range);
 
     log->addToEventLog(getFullName() + " created a Flames territory!");
@@ -428,12 +431,167 @@ int ServantCasterElemental::isActionNP(int action)
 
 vector<Coordinate> ServantCasterElemental::getActionRange(int action)
 {
-    // TODO
+    vector<Coordinate> range;
+    Coordinate servLoc;
+    servLoc.x = 0; servLoc.y = 0;
+
+    if (action == 0) // Regular attack range
+    {
+        range = getLowToHighRange(getLowRange(), getHighRange());
+    }
+    else if (action == 1) // Heal
+    {
+        range = getLowToHighRange(0, field->getFieldLength() + field->getFieldWidth());
+    }
+    else if (action == 2) // Resurrect
+    {
+        range.push_back(servLoc);
+    }
+    else if (action == 3) // Cast From Life
+    {
+        range.push_back(servLoc);
+    }
+    else if (ascension == 2) // Final Ascension
+    {
+        if (action == 4) // Heal All
+        {
+            range.push_back(servLoc);
+        }
+        else if (action == 5 && !flameBladeCreated) // Item Construction
+        {
+            range.push_back(servLoc);
+        }
+        else if (action == 5 && flameBladeCreated) // Flame Blade
+        {
+            range = getLowToHighRange(1, 1);
+        }
+        else if (action == 6) // Territory Creation
+        {
+            range = getLowToHighRange(0, 2 + ascension);
+        }
+        else if (action == 7) // Cleansing Flame
+        {
+            range = getLowToHighRange(1, 1);
+        }
+        else // Noble Phantasms
+        {
+            range = getNPRange(action-8);
+        }
+    }
+    else // First or Second Ascension
+    {
+        if (action == 4 && !flameBladeCreated) // Item Construction
+        {
+            range.push_back(servLoc);
+        }
+        else if (action == 4 && flameBladeCreated) // Flame Blade
+        {
+            range = getLowToHighRange(1, 1);
+        }
+        else if (action == 5) // Territory Creation
+        {
+            range = getLowToHighRange(0, 2 + ascension);
+        }
+        else if (action == 6) // Cleansing Flame
+        {
+            range = getLowToHighRange(1, 1);
+        }
+        else // Noble Phantasms
+        {
+            range = getNPRange(action-7);
+        }
+    }
+
+    return range;
 }
 
 int ServantCasterElemental::doAction(int actionNum, vector<Servant *> defenders)
 {
-    // TODO
+    int ret = 0;
+    if (ascension != 2)
+    {
+        switch (actionNum)
+        {
+            case 0:
+                ret = attack(defenders, true);
+                break;
+            case 1:
+                ret = heal(defenders);
+                break;
+            case 2:
+                ret = resurrect(defenders);
+                break;
+            case 3:
+                ret = castFromLife();
+                break;
+            case 4:
+                if (flameBladeCreated)
+                    ret = flameBlade(defenders);
+                else
+                    ret = itemConstruction();
+                break;
+            case 5:
+                ret = territoryCreation(defenders);
+                break;
+            case 6:
+                ret = cleansingFlame(defenders);
+                break;
+            case 7:
+                ret = activateNP1(defenders);
+                break;
+            case 8:
+                ret = activateNP2(defenders);
+                break;
+            default:
+                return 2; // Not a valid choice
+                break;
+        }
+    }
+    else
+    {
+        switch (actionNum)
+        {
+            case 0:
+                ret = attack(defenders, true);
+                break;
+            case 1:
+                ret = heal(defenders);
+                break;
+            case 2:
+                ret = resurrect(defenders);
+                break;
+            case 3:
+                ret = castFromLife();
+                break;
+            case 4:
+                ret = healAll();
+                break;
+            case 5:
+                if (flameBladeCreated)
+                    ret = flameBlade(defenders);
+                else
+                    ret = itemConstruction();
+                break;
+            case 6:
+                ret = territoryCreation(defenders);
+                break;
+            case 7:
+                ret = cleansingFlame(defenders);
+                break;
+            case 8:
+                ret = activateNP1(defenders);
+                break;
+            case 9:
+                ret = activateNP2(defenders);
+                break;
+            case 10:
+                ret = activateNP3(defenders);
+                break;
+                return 2; // Not a valid choice
+                break;
+        }
+    }
+    return ret;
 }
 
 /***** Noble Phantasms *****/

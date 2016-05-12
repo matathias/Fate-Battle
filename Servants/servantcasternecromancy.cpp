@@ -1,6 +1,6 @@
 #include "servantcasternecromancy.h"
 
-ServantCasterNecromancy::ServantCasterNecromancy()
+ServantCasterNecromancy::ServantCasterNecromancy(int as, Team t, Logger *l) : ServantCaster(as, t, l)
 {
 
 }

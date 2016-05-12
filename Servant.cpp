@@ -625,7 +625,13 @@ vector<vector<Coordinate>> Servant::getNPRanges()
 
 vector<Coordinate> Servant::getNPRange(int np)
 {
-    return npRanges[np];
+    if (np >= (int) npRanges.size())
+    {
+        vector<Coordinate> ran;
+        return ran;
+    }
+    else
+        return npRanges[np];
 }
 
 bool Servant::isPermaDead()
