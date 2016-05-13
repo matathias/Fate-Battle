@@ -361,6 +361,8 @@ int ServantCasterNecromancy::territoryCreation(vector<Servant *> defenders)
     // Start the territory
     field->startTerritory(this, tEssence, range);
 
+    territoryActive = true;
+
     log->addToEventLog(getFullName() + " created an Essencesap territory!");
 
     return 0;

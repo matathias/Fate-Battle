@@ -357,6 +357,47 @@ Coordinate PlayField::getNearestValidCoord(Coordinate c)
     return ret;
 }
 
+Coordinate PlayField::getFarthestValidFrom(vector<Servant *> s)
+{
+    if (s.size() == 0)
+        return getRandomCoord();
+
+    int maxDist = 0;
+    int maxX = 0;
+    int maxY = 0;
+
+    for (unsigned int i = 0; i < field.size(); i++)
+    {
+        for (unsigned int j = 0; j < field[i].size(); j++)
+        {
+            Coordinate temp;
+            temp.x = i; temp.y = j;
+            if (isValidCoordinate(temp))
+            {
+                int dist = 0;
+                for (unsigned int k = 0; k < s.size(); k++)
+                {
+                    Coordinate servT = s[k]->getCurrLoc();
+                    dist += abs(temp.x - servT.x) + abs(temp.y - servT.y);
+                }
+                dist = dist / s.size();
+
+                if (dist > maxDist)
+                {
+                    maxDist = dist;
+                    maxX = temp.x;
+                    maxY = temp.y;
+                }
+            }
+        }
+    }
+
+    Coordinate ret;
+    ret.x = maxX; ret.y = maxY;
+
+    return ret;
+}
+
 // Returns the four adjacent spaces to c.
 // If a space is out of bounds it is not included.
 vector<Coordinate> PlayField::getAdjacentSpaces(Coordinate c)

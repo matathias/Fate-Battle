@@ -60,6 +60,7 @@ class PlayField
 
         Coordinate getRandomCoord();
         Coordinate getNearestValidCoord(Coordinate c);
+        Coordinate getFarthestValidFrom(vector<Servant*> s);
         vector<Coordinate> getAdjacentSpaces(Coordinate c);
         
     protected:

@@ -132,12 +132,12 @@ ServantCasterElemental::ServantCasterElemental(int as, Team t, Logger *l) : Serv
     // Both Meteor Slam and Searing Maelstron have the entire field as their
     //  range, though for slightly different reasons
     vector<Coordinate> npc2;
-    for (int i = 0; i < field->getFieldLength(); i++)
+    for (int i = 0; i < field->getLargestDimension(); i++)
     {
-        for (int j = 0; j < field->getFieldWidth(); j++)
+        for (int j = 0; j < field->getLargestDimension(); j++)
         {
             Coordinate tc;
-            tc.x = j; tc.x = i;
+            tc.x = j; tc.y = i;
             npc2.push_back(tc);
         }
     }
@@ -386,6 +386,7 @@ int ServantCasterElemental::territoryCreation(vector<Servant *> defenders)
 
     // Start the territory
     field->startTerritory(this, tFlames, range);
+    territoryActive = true;
 
     log->addToEventLog(getFullName() + " created a Flames territory!");
 
