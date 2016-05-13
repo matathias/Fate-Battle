@@ -161,7 +161,6 @@ int Servant::getMaxMP()
     if (ret < 0)
         ret = 0;
     return ret;
-    return maxMP[ascension];
 }
 
 int Servant::getCurrMP()
