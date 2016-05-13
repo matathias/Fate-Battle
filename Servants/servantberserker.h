@@ -11,6 +11,9 @@ public:
     ServantBerserker(int as, Team t, Logger *l);
 
     void madRoar(vector<Servant*> defenders);
+
+    virtual void turnUpdate();
+    virtual int isActionNP(int action);
 };
 
 #endif // SERVANTBERSERKER_H

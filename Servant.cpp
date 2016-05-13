@@ -35,8 +35,11 @@ void Servant::setHP(int hp)
     int mhp = getMaxHP();
     if (currHP > mhp)
         currHP = mhp;
-    else if (currHP < 0)
+    else if (currHP <= 0)
+    {
         currHP = 0;
+        remAllDebuffs(false);
+    }
 }
 
 void Servant::setMP(int mp)
@@ -283,9 +286,12 @@ void Servant::decDebuffs()
 
 void Servant::remAllDebuffs(bool purgePermadead)
 {
-    for (int i = 0; i < (int) debuffs.size(); i++)
+    if (purgePermadead)
+        debuffs.clear();
+
+    else
     {
-        if(!purgePermadead)
+        for (int i = 0; i < (int) debuffs.size(); i++)
         {
             if(debuffs[i]->getDebuffName().compare("Permadeath") != 0)
             {
@@ -296,11 +302,6 @@ void Servant::remAllDebuffs(bool purgePermadead)
             {
                 debuffs[i]->setTurnsRemaining(-1);
             }
-        }
-        else
-        {
-            debuffs.erase(debuffs.begin()+i);
-            i--;
         }
     }
 }
@@ -722,7 +723,7 @@ int Servant::attack(vector<Servant *> defenders, bool counter)
                         // Mad Counter activated! The attacking servant takes
                         // damage equal to the damage they dealt.
                         log->addToEventLog(defenders[i]->getFullName() +
-                                           "' Mad Counter activated, dealing " +
+                                           "'s Mad Counter activated, dealing " +
                                            to_string(dam) + " damage back to " +
                                            getFullName() + ".");
                         subHP(dam, C_STR);

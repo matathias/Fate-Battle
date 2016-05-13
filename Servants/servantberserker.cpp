@@ -97,3 +97,13 @@ void ServantBerserker::madRoar(vector<Servant *> defenders)
         }
     }
 }
+
+void ServantBerserker::turnUpdate()
+{
+    return;
+}
+
+int ServantBerserker::isActionNP(int action)
+{
+    return -1;
+}

@@ -24,7 +24,7 @@ class Servant
 
         void setPlayField(PlayField *f);
                 
-        void setHP(int hp);
+        virtual void setHP(int hp);
         void setMP(int mp);
         void addHP(int hp);
         void addMP(int mp);
@@ -43,14 +43,14 @@ class Servant
         int getCurrHP();
         virtual int getMaxMP();
         int getCurrMP();
-        virtual int getMov();
-        virtual int getStr();
-        virtual int getMag();
-        virtual int getDef();
-        virtual int getRes();
-        virtual int getSpd();
-        virtual int getSkl();
-        virtual int getLuk();
+        int getMov();
+        int getStr();
+        int getMag();
+        int getDef();
+        int getRes();
+        int getSpd();
+        int getSkl();
+        int getLuk();
         int getAscensionLvl();
         
         Class getClass();

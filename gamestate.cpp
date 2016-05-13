@@ -974,16 +974,19 @@ int GameState::turnStatePreTurn()
     }
 
     // If the player is a Berserker, check for the chance of activating Mad Roar
+    // Also call turnUpdate to do any necessary processing
     if (currentServant->getClass() == Berserker)
     {
         int berLuk = currentServant->getLuk();
         int berSkl = currentServant->getSkl();
+        ServantBerserker *currServ = dynamic_cast<ServantBerserker*>(currentServant);
         if(currentServant->getRandNum() <= (berLuk / 2) + (berSkl / 2))
         {
-            log->addToEventLog("You let loose a Mad Roar!");
-            ServantBerserker *currServ = dynamic_cast<ServantBerserker*>(currentServant);
+            log->addToEventLog(currentServant->getFullName() +
+                               " let loose a Mad Roar!");
             currServ->madRoar(getOpposingTeamAlive(currServ->getTeam()));
         }
+        currServ->turnUpdate();
     }
 
     int hpSub = currentServant->getDebuffAmount(HP);
