@@ -23,7 +23,7 @@ public:
 
     virtual int doAction(int actionNum, vector<Servant *> defenders);
 
-private:
+protected:
     Debuff *classDebuff;
     bool presenceConcealed();
 };

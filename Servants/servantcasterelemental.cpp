@@ -63,7 +63,7 @@ ServantCasterElemental::ServantCasterElemental(int as, Team t, Logger *l) : Serv
     actionMPCosts[1].push_back(400);
 
     actionMPCosts[2].push_back(75);
-    actionMPCosts[2].push_back(maxMP[0] / 5);
+    actionMPCosts[2].push_back(maxMP[2] / 5);
     actionMPCosts[2].push_back(50);
     actionMPCosts[2].push_back(100);
     actionMPCosts[2].push_back(400);
@@ -189,6 +189,8 @@ int ServantCasterElemental::itemConstruction()
         subMP(actionMPCosts[ascension][4]);
 
     flameBladeCreated = true;
+
+    log->addToEventLog(getFullName() + " created a Flame Blade!");
 
     // Modify the action lists
     if (ascension != 2)
@@ -406,7 +408,8 @@ void ServantCasterElemental::addDebuff(Debuff *d)
     if(d->getDebuffName().compare("Reality Marble") == 0 ||
             d->getDebuffName().compare("Territory") == 0 ||
             d->getDebuffName().compare("Doom") == 0 ||
-            d->getDebuffName().compare("Permadeath") == 0)
+            d->getDebuffName().compare("Permadeath") == 0 ||
+            d->getDebuffName().compare("Necroally") == 0)
     {
         debuffs.push_back(d);
     }
@@ -415,7 +418,7 @@ void ServantCasterElemental::addDebuff(Debuff *d)
 int ServantCasterElemental::isActionNP(int action)
 {
     int ret = -1;
-    if (ascension == 2)
+    if (ascension != 2)
     {
         if (action >= 7)
             ret = action - 7;

@@ -21,7 +21,7 @@ public:
     virtual int isActionNP(int action);
     virtual vector<Coordinate> getActionRange(int action);
 
-private:
+protected:
     bool guardianKnightActive();
     bool manaBurstActive();
 };

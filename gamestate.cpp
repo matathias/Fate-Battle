@@ -829,7 +829,7 @@ int GameState::turnStatePreTurn()
                 Debuff *newDebuff = new Debuff("Permadeath",
                                                "You are permanently dead.",
                                                currentServant->getTeam(),
-                                               tDebStat, tDebAm, 1);
+                                               tDebStat, tDebAm, -1);
                 currentServant->addDebuff(newDebuff);
                 log->addToEventLog(currentServant->getFullName() +
                                    " succombed to the effect of Doom and died permanently!");
@@ -898,6 +898,15 @@ int GameState::turnStatePreTurn()
                                            "If you die while this debuff is active, you cannot be ressurected.",
                                            currentServant->getTeam(),
                                            tDebStat, tDebAm, 1);
+            currentServant->addDebuff(newDebuff);
+        }
+        else
+        {
+            Debuff *newDebuff = new Debuff(tDebuff->getDebuffName(),
+                                           tDebuff->getDebuffDescrip(),
+                                           tDebuff->getTargetTeam(),
+                                           tDebuff->getDebuffStats(),
+                                           tDebuff->getDebuffAmounts(), 1);
             currentServant->addDebuff(newDebuff);
         }
 

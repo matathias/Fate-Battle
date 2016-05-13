@@ -21,7 +21,7 @@ public:
 
     virtual int attack(vector<Servant *> defenders, bool counter);
 
-private:
+protected:
     vector<Servant*> teamServants; // Includes the Avenger
     bool carriedTheTorch;
 };

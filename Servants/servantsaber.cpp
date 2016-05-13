@@ -44,8 +44,8 @@ ServantSaber::ServantSaber(int as, Team t, Logger *l) : Servant(as, t, l)
 
     vector<string> basicActions;
     basicActions.push_back("1: Attack");
-    basicActions.push_back("2: Skill: Guardian Knight");
-    basicActions.push_back("3: Skill: Mana Burst");
+    basicActions.push_back("2: Guardian Knight");
+    basicActions.push_back("3: Mana Burst");
     actionList.push_back(basicActions);
     actionList.push_back(basicActions);
     actionList.push_back(basicActions);

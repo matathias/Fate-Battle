@@ -24,7 +24,7 @@ public:
 
     virtual bool isHealAction(int action);
 
-private:
+protected:
     int ressurectCount;
 };
 
