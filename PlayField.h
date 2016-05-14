@@ -9,6 +9,7 @@ using namespace std;
 bool isInVector(vector<Coordinate> vec, Coordinate c);
 Direction getDirectionAtoB(Coordinate a, Coordinate b);
 vector<Coordinate> getLowToHighRange(int low, int high);
+vector<Coordinate> getAbsoluteRange(int low, int high, Servant* s);
 
 class PlayField
 {
@@ -47,6 +48,9 @@ class PlayField
         void endRealityMarble();
         void startTerritory(Servant* owner, Debuff* terr, vector<Coordinate> range);
         void eraseTerritory(string n);
+
+        void addDebuffToSpace(Debuff* d, Coordinate c);
+        void addDebuffToRange(Debuff* d, vector<Coordinate> range);
         
         bool doesSpaceHaveServant(Coordinate c);
         vector<Coordinate> pruneRange(vector<Coordinate> range, Servant* source);

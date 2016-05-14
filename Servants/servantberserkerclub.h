@@ -12,8 +12,6 @@ public:
 
     virtual void turnUpdate();
 
-    virtual int doAction(int actionNum, vector<Servant *> defenders);
-
     virtual int attack(vector<Servant *> defenders, bool counter);
 
     virtual void subHP(int hp, DamageType dt);

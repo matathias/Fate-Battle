@@ -14,6 +14,7 @@ public:
 
     virtual void turnUpdate();
     virtual int isActionNP(int action);
+    virtual int doAction(int actionNum, vector<Servant *> defenders);
 };
 
 #endif // SERVANTBERSERKER_H

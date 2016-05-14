@@ -74,6 +74,27 @@ vector<Coordinate> getLowToHighRange(int low, int high)
     return range;
 }
 
+vector<Coordinate> getAbsoluteRange(int low, int high, Servant *s)
+{
+    vector<Coordinate> range;
+
+    for (int i = -1*high; i <= high; i++)
+    {
+        for (int j = -1*high; j <= high; j++)
+        {
+            if (abs(i) + abs(j) >= low && abs(i) + abs(j) <= high)
+            {
+                Coordinate inRange;
+                inRange.x = i + s->getCurrLoc().x;
+                inRange.y = j + s->getCurrLoc().y;
+                range.push_back(inRange);
+            }
+        }
+    }
+
+    return range;
+}
+
 
 /********** Function Definitions **********/
 // Constructor
@@ -181,6 +202,22 @@ void PlayField::eraseTerritory(string n)
                 tempEffects[i][j] = NULL;
             }
         }
+    }
+}
+
+void PlayField::addDebuffToSpace(Debuff *d, Coordinate c)
+{
+    if (isCoordinateInBounds(c))
+    {
+        tempEffects[c.x][c.y] = d;
+    }
+}
+
+void PlayField::addDebuffToRange(Debuff *d, vector<Coordinate> range)
+{
+    for (unsigned int i = 0; i < range.size(); i++)
+    {
+        addDebuffToSpace(d, range[i]);
     }
 }
 

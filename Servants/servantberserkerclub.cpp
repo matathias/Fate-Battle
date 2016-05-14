@@ -61,14 +61,6 @@ void ServantBerserkerClub::turnUpdate()
     }
 }
 
-int ServantBerserkerClub::doAction(int actionNum, vector<Servant *> defenders)
-{
-    if (actionNum == 0)
-        return attack(defenders, true);
-    else
-        return 2;
-}
-
 int ServantBerserkerClub::attack(vector<Servant *> defenders, bool counter)
 {
     if (actionMPCosts[ascension][0] > currMP)

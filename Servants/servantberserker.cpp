@@ -98,6 +98,15 @@ void ServantBerserker::madRoar(vector<Servant *> defenders)
     }
 }
 
+
+int ServantBerserker::doAction(int actionNum, vector<Servant *> defenders)
+{
+    if (actionNum == 0)
+        return attack(defenders, true);
+    else
+        return 2;
+}
+
 void ServantBerserker::turnUpdate()
 {
     return;
