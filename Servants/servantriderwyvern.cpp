@@ -162,7 +162,7 @@ vector<Coordinate> ServantRiderWyvern::getActionRange(int action)
     // Attack
     if (action == 0)
         range = getLowToHighRange(getLowRange(), getHighRange());
-    // Wings of Icarus
+    // Dragonborn
     else if (action == 1)
         range = getLowToHighRange(0,0);
     // Noble Phantasms
