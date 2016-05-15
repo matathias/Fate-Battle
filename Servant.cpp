@@ -7,6 +7,7 @@
  */
 
 #include "Servant.h"
+#include "PlayField.h"
 #include <cmath>
 #include <iostream>
 
@@ -837,4 +838,32 @@ int Servant::endRealityMarble()
 void Servant::endTerritory()
 {
     territoryActive = false;
+}
+
+Coordinate Servant::getEndLocation(Coordinate c, int range)
+{
+    Coordinate n, s, e, w, err;
+    n.x = s.x = c.x;
+    e.y = w.y = c.y;
+    n.y = c.y + 1;
+    s.y = c.y - 1;
+    e.x = c.x + 1;
+    w.x = c.x - 1;
+
+    err.x = err.y = -1;
+
+    if (field->isValidCoordinate(n) &&
+            (abs(n.x - currLoc.x) + abs(n.y - currLoc.y)) <= range)
+        return n;
+    else if (field->isValidCoordinate(s) &&
+             (abs(s.x - currLoc.x) + abs(s.y - currLoc.y)) <= range)
+        return s;
+    else if (field->isValidCoordinate(e) &&
+             (abs(e.x - currLoc.x) + abs(e.y - currLoc.y)) <= range)
+        return e;
+    else if (field->isValidCoordinate(w) &&
+             (abs(w.x - currLoc.x) + abs(w.y - currLoc.y)) <= range)
+        return w;
+    else
+        return err;
 }

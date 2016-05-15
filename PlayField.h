@@ -55,6 +55,7 @@ class PlayField
         bool doesSpaceHaveServant(Coordinate c);
         vector<Coordinate> pruneRange(vector<Coordinate> range, Servant* source);
         vector<Servant*> getAllInRange(Servant* s, vector<Coordinate> range);
+        vector<Servant*> getAllInRange2(vector<Coordinate> range);
         Servant* getServantOnSpace(Coordinate c);
         Debuff* getDebuffOnSpace(Coordinate c);
 
@@ -66,6 +67,10 @@ class PlayField
         Coordinate getNearestValidCoord(Coordinate c);
         Coordinate getFarthestValidFrom(vector<Servant*> s);
         vector<Coordinate> getAdjacentSpaces(Coordinate c);
+        vector<Coordinate> getAdjacentToRange(vector<Coordinate> range);
+
+        // Functions to find a straight line from start to end
+        vector<Coordinate> pathFind(Coordinate start, Coordinate end);
         
     protected:
         int length;

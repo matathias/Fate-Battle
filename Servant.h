@@ -166,6 +166,8 @@ class Servant
         virtual int endRealityMarble();
 
         virtual void endTerritory();
+
+        Coordinate getEndLocation(Coordinate c, int range);
         
     protected:
         string name; // Based on the Servant's class and weapon.

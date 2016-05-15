@@ -16,7 +16,6 @@ public:
     virtual int activateNP3(vector<Servant *> defenders);
 
 private:
-    Coordinate getEndLocation(Coordinate c, int range);
     vector<Coordinate> getCoordRange(int range);
 
     int doDamage(Servant* defender, double damMult);

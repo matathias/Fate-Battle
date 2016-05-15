@@ -95,7 +95,6 @@ vector<Coordinate> getAbsoluteRange(int low, int high, Servant *s)
     return range;
 }
 
-
 /********** Function Definitions **********/
 // Constructor
 PlayField::PlayField(int l, int w, vector<Servant *> servantList,
@@ -310,6 +309,27 @@ vector<Servant*> PlayField::getAllInRange(Servant *s, vector<Coordinate> range)
     return targets;
 }
 
+vector<Servant*> PlayField::getAllInRange2(vector<Coordinate> range)
+{
+    vector<Servant*> targets;
+
+    for (unsigned int i = 0; i < range.size(); i++)
+    {
+        int x = range[i].x;
+        int y = range[i].y;
+        if (x >= 0 && x < width && y >= 0 && y < length)
+        {
+            Servant* potential = field[x][y];
+            if (potential != NULL)
+            {
+                targets.push_back(potential);
+            }
+        }
+    }
+
+    return targets;
+}
+
 bool PlayField::isRealityMarbleOn()
 {
     return realityMarbleOn;
@@ -459,6 +479,88 @@ vector<Coordinate> PlayField::getAdjacentSpaces(Coordinate c)
         spaces.push_back(west);
 
     return spaces;
+}
+
+vector<Coordinate> PlayField::getAdjacentToRange(vector<Coordinate> range)
+{
+    vector<Coordinate> fullRange = range;
+
+    for (unsigned int i = 0; i < range.size(); i++)
+    {
+        vector<Coordinate> adj = getAdjacentSpaces(range[i]);
+        for (unsigned int j = 0; j < adj.size(); j++)
+        {
+            if (!isInVector(fullRange, adj[j]))
+            {
+                fullRange.push_back(adj[j]);
+            }
+        }
+    }
+
+    return fullRange;
+}
+
+// Gets the straight-line path betweeen start and end using the Bresenham
+//  algorithm.
+vector<Coordinate> PlayField::pathFind(Coordinate start, Coordinate end)
+{
+    vector<Coordinate> path;
+
+    int x = start.x, y = start.y;
+    int w = end.x - start.x;
+    int h = end.y - start.y;
+    int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+    if (w < 0)
+    {
+        dx1 = -1;
+        dx2 = -1;
+    }
+    else if (w > 0)
+    {
+        dx1 = 1;
+        dx2 = 1;
+    }
+
+    if (h < 0)
+        dy1 = -1;
+    else if (h > 0)
+        dy2 = 1;
+
+    int longest = abs(w);
+    int shortest = abs(h);
+    if (!(longest > shortest))
+    {
+        longest = abs(h);
+        shortest = abs(w);
+        if (h < 0)
+            dy2 = -1;
+        else if (h > 0)
+            dy2 = 1;
+        dx2 = 0;
+    }
+
+    int numerator = longest >> 1;
+    for (int i = 0; i <= longest; i++)
+    {
+        Coordinate next;
+        next.x = x; next.y = y;
+        path.push_back(next);
+
+        numerator += shortest;
+        if (!(numerator < longest))
+        {
+            numerator -= longest;
+            x += dy1;
+            y += dy1;
+        }
+        else
+        {
+            x += dx2;
+            y += dy2;
+        }
+    }
+
+    return path;
 }
 
 int PlayField::getFieldLength()
