@@ -1917,9 +1917,8 @@ int GameState::turnStateApplyAction()
             archerSecondTurn = true;
             turnState = 1;
             validMoves = getValidMoves(currentServant, currentServant->getMov());
+            return 0;
         }
-        turnState++;
-        return 0;
     }
 
     // If the "Essence of Ionioi Hetairoi" reality marble is active and this
@@ -1937,18 +1936,14 @@ int GameState::turnStateApplyAction()
             ionioiSecondTurn = true;
             turnState = 1;
             validMoves = getValidMoves(currentServant, currentServant->getMov());
+            return 0;
         }
-        turnState++;
-        return 0;
     }
 
 
     // End the non-Rider turn by calling the Post-turn turn state.
-    else
-    {
-        turnState += 2;
-        return endTurnProcess();
-    }
+    turnState += 2;
+    return endTurnProcess();
 }
 
 int GameState::turnStateExtraMove()

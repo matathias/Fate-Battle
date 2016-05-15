@@ -414,6 +414,64 @@ Coordinate PlayField::getNearestValidCoord(Coordinate c)
     return ret;
 }
 
+// Unlike the first version of this function, this function will also search
+// out-of-bound coordinates until it finds a valid coordinate.
+Coordinate PlayField::getNearestValidCoord2(Coordinate c)
+{
+    Coordinate ret;
+    if (isValidCoordinate(c))
+        ret = c;
+    else
+    {
+        bool found = false;
+        vector<Coordinate> nextCoords;
+        vector<Coordinate> procCoords;
+        procCoords.push_back(c);
+
+        int i = 0;
+        while (!found)
+        {
+            //
+            Coordinate north, south, east, west;
+            north.x = south.x = procCoords[i].x;
+            north.y = procCoords[i].y + 1;
+            south.y = procCoords[i].y - 1;
+
+            east.y = west.y = procCoords[i].y;
+            east.x = procCoords[i].x - 1;
+            west.x = procCoords[i].x + 1;
+
+            nextCoords.push_back(north);
+            nextCoords.push_back(south);
+            nextCoords.push_back(east);
+            nextCoords.push_back(west);
+            //
+
+            i++;
+
+            while (nextCoords.size() > 0 && !found)
+            {
+                if (isInVector(procCoords, nextCoords[0]))
+                {
+                    nextCoords.erase(nextCoords.begin());
+                }
+                else if (isValidCoordinate(nextCoords[0]))
+                {
+                    ret = nextCoords[0];
+                    found = true;
+                }
+                else
+                {
+                    procCoords.push_back(nextCoords[0]);
+                    nextCoords.erase(nextCoords.begin());
+                }
+            }
+        }
+    }
+
+    return ret;
+}
+
 Coordinate PlayField::getFarthestValidFrom(vector<Servant *> s)
 {
     if (s.size() == 0)

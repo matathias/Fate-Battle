@@ -6,8 +6,9 @@ ServantRiderPegasus::ServantRiderPegasus(int as, Team t, Logger *l) : ServantRid
     name = "Pegasus Rider";
 
     /** Stat modifiers **/
-    int resMod = 5;
-    int spdMod = 5;
+    int resMod = 10;
+    int spdMod = 10;
+    int movMod = 1;
 
     spd[0] += spdMod;
     spd[1] += spdMod;
@@ -16,6 +17,10 @@ ServantRiderPegasus::ServantRiderPegasus(int as, Team t, Logger *l) : ServantRid
     res[0] += resMod;
     res[1] += resMod;
     res[2] += resMod;
+
+    mov[0] += movMod;
+    mov[1] += movMod;
+    mov[2] += movMod;
 
     actionList[0].push_back("2: Wings of Icarus");
     actionList[0].push_back("3: NP: Rare Foal");
@@ -122,7 +127,10 @@ void ServantRiderPegasus::subHP(int hp, DamageType dt)
     bool noDamage = false;
 
     if (dt != OMNI && highInTheSky())
+    {
+        log->addToEventLog(getFullName() + " is flying high in the sky! They take no damage!");
         noDamage = true;
+    }
 
     if (!noDamage)
     {
@@ -202,6 +210,9 @@ int ServantRiderPegasus::activateNP1(vector<Servant *> defenders)
         return 1; // Not enough MP to attack
 
     subMP(actionMPCosts[ascension][2]);
+
+    log->addToEventLog(getFullName() + " engaged Rare Foal!");
+
     for (unsigned int i = 0; i < defenders.size(); i++)
     {
         int dam = 0;
