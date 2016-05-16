@@ -45,8 +45,8 @@ ServantAssassin::ServantAssassin(int as, Team t, Logger *l) : Servant(as, t, l)
 
     vector<string> basicActions;
     basicActions.push_back("1: Attack");
-    basicActions.push_back("2: Skill: Poison Strike");
-    basicActions.push_back("3: Skill: Presence Concealment");
+    basicActions.push_back("2: Poison Strike");
+    basicActions.push_back("3: Presence Concealment");
     actionList.push_back(basicActions);
     actionList.push_back(basicActions);
     actionList.push_back(basicActions);
@@ -212,16 +212,6 @@ int ServantAssassin::attack(vector<Servant *> defenders, bool counter)
                 if (critChance >= r)
                     attackMult *= 3;
 
-                // Add the weapon-specific debuff to the target
-                Debuff *deb = new Debuff(classDebuff->getDebuffName(),
-                                         classDebuff->getDebuffDescrip(),
-                                         defenders[i]->getTeam(),
-                                         classDebuff->getDebuffStats(),
-                                         classDebuff->getDebuffAmounts(),
-                                         classDebuff->getTurnsRemaining());
-
-                defenders[i]->addDebuff(deb);
-
                 // Calculate the chance of Lethality
                 r = getRandNum();
                 if (getSkl() / 8 > r)
@@ -244,6 +234,16 @@ int ServantAssassin::attack(vector<Servant *> defenders, bool counter)
                                        defenders[i]->getFullName() + ".");
                     defenders[i]->subHP(dam, D_STR);
                 }
+
+                // Add the weapon-specific debuff to the target
+                Debuff *deb = new Debuff(classDebuff->getDebuffName(),
+                                         classDebuff->getDebuffDescrip(),
+                                         defenders[i]->getTeam(),
+                                         classDebuff->getDebuffStats(),
+                                         classDebuff->getDebuffAmounts(),
+                                         classDebuff->getTurnsRemaining());
+
+                defenders[i]->addDebuff(deb);
             }
             else
             {

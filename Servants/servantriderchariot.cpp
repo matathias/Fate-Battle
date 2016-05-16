@@ -366,7 +366,7 @@ int ServantRiderChariot::activateNP1(vector<Servant *> defenders)
     // Get the landing location
     //  If there is no valid landing location next to the target servant,
     //  stop processing and return 41.
-    Coordinate landingCoord = getEndLocation(defenders[0]->getCurrLoc(), 4);
+    Coordinate landingCoord = getEndLocation(defenders[0]->getCurrLoc(), 10);
     if(landingCoord.x == -1 && landingCoord.y == -1)
     {
         // No valid adjacent space

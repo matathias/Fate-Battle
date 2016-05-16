@@ -270,4 +270,6 @@ int ServantLancerNaginata::doDamage(Servant *defender, double damMult)
             }
         }
     }
+
+    return 0;
 }
