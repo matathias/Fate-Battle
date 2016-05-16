@@ -325,9 +325,9 @@ void ServantBerserkerAxe::subHP(int hp, DamageType dt)
     bool noDamage = false;
 
     // Godking
-    if (isGodmindExtended() && (dt != NP_STR && dt != NP_MAG && dt != OMNI))
+    if (isGodmindExtended() && (dt != NP_STR && dt != NP_MAG && dt != OMNI && dt != GAEBOLG))
         noDamage = true;
-    else if (ascension == 2 && dt != NP_STR && dt != NP_MAG &&
+    else if (ascension == 2 && dt != NP_STR && dt != NP_MAG && dt != GAEBOLG &&
              hp <= (0.1 * getMaxHP()))
         noDamage = true;
 

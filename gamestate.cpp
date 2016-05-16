@@ -1849,11 +1849,13 @@ int GameState::turnStateApplyAction()
     // Apply the chosen action to the chosen targets.
     // If the action is a noble phantasm and one of the targets is the Sai
     //  Avenger with at least 40 MP, then stop the action and deal the
-    //  currentServant .8 * MAXMP damage.
+    //  currentServant .8 * MAXMP damage. This only happens at ascension level 1
+    //  or higher though
     bool activateNP = true;
-    if ((currentServant->getName().compare("Lance Lancer") == 0 &&
-         abs(currentServant->isActionNP(chosenAction)) != 1) ||
-            currentServant->isActionNP(chosenAction) >= 0)
+    if (currentServant->getAscensionLvl() >= 1 &&
+            ((currentServant->getName().compare("Lance Lancer") == 0 &&
+            abs(currentServant->isActionNP(chosenAction)) != 1) ||
+            currentServant->isActionNP(chosenAction) >= 0))
     {
         for (unsigned int i = 0; i < chosenDefenders.size() && activateNP; i++)
         {
@@ -1869,6 +1871,37 @@ int GameState::turnStateApplyAction()
             }
         }
     }
+    // If the current servant is a Lance Lancer using Gae Bolg, they still
+    // sustain damage, but they also get a guaranteed hit off.
+    else if (currentServant->getAscensionLvl() >= 1 &&
+             (currentServant->getName().compare("Lance Lancer") == 0 &&
+              currentServant->isActionNP(chosenAction) == 1))
+    {
+        for (unsigned int i = 0; i < chosenDefenders.size() && activateNP; i++)
+        {
+            if(chosenDefenders[i]->getName().compare("Sai Avenger") == 0 &&
+                    chosenDefenders[i]->getCurrMP() > 40)
+            {
+                log->addToEventLog("Sai Avenger's Essence of Fragarach activated! But " +
+                                   currentServant->getFullName() +
+                                   "'s Gae Bolg was not stopped!");
+                currentServant->subHP((currentServant->getMaxHP() * 8) / 10, OMNI);
+                chosenDefenders[i]->subMP(40);
+
+                // Set the Avenger's luck to 0, to ensure that Gae Bolg hits
+                vector<Stat> tDebStat;
+                tDebStat.push_back(LUK);
+                vector<int> tDebAm;
+                tDebAm.push_back(-1 * chosenDefenders[i]->getLuk());
+                Debuff *newDebuff = new Debuff("GB",
+                                               "Gae Bolg will kill you.",
+                                               chosenDefenders[i]->getTeam(),
+                                               tDebStat, tDebAm, 1);
+                chosenDefenders[i]->addDebuff(newDebuff);
+            }
+        }
+    }
+
     int ret = 0;
     if (activateNP)
         ret = currentServant->doAction(chosenAction, chosenDefenders);

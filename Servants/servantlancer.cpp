@@ -127,13 +127,13 @@ bool ServantLancer::manaBurstActive()
 void ServantLancer::subHP(int hp, DamageType dt)
 {
     // Skill: Battle Continuation
-    //  Does not activate against "Omni" damage
-    if (currHP == 1 && dt != OMNI)
+    //  Does not activate against "Omni" or "Gae Bolg" damage
+    if (currHP == 1 && dt != OMNI && dt != GAEBOLG)
     {
         if (getRandNum() <= getLuk() / 2)
             return;
     }
-    else if (currHP - hp <= 0 && dt != OMNI)
+    else if (currHP - hp <= 0 && dt != OMNI && dt != GAEBOLG)
     {
         if (getRandNum() <= getLuk())
         {

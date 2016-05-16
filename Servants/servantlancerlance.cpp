@@ -192,7 +192,7 @@ int ServantLancerLance::activateNP2(vector<Servant *> defenders)
             log->addToEventLog(getFullName() + " dealt " +
                                to_string(dam) + " damage to " +
                                defenders[i]->getFullName() + ".");
-            defenders[i]->subHP(dam, NP_STR);
+            defenders[i]->subHP(dam, GAEBOLG);
 
             // Check to see if the defender is dead. If they are, do not call
             // the counterattack. Additionally, if they are an Avenger and they

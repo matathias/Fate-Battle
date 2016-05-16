@@ -191,7 +191,7 @@ void ServantAvenger::updateAvengersRage()
         vector<Stat> tStats;
         tStats.push_back(MAXHP);
         tStats.push_back(MAXMP);
-        tStats.push_back(MOV);
+        //tStats.push_back(MOV);
         tStats.push_back(STR);
         tStats.push_back(MAG);
         tStats.push_back(DEF);
@@ -202,7 +202,7 @@ void ServantAvenger::updateAvengersRage()
         vector<int> tAmounts;
         tAmounts.push_back(statBonus);
         tAmounts.push_back(statBonus);
-        tAmounts.push_back(statBonus);
+        //tAmounts.push_back(statBonus / 4); // The MOV buff is divided by 4 again
         tAmounts.push_back(statBonus);
         tAmounts.push_back(statBonus);
         tAmounts.push_back(statBonus);
