@@ -125,9 +125,9 @@ GameState::GameState(vector<Servant *> tO, int l, int w, Logger *lo) : QWidget()
 }
 
 /***** Slots *****/
-void GameState::processDeathComboBox(QComboBox *qcb)
+void GameState::processDeathComboBox(int index)
 {
-    deathComboBoxIndex = qcb->currentIndex();
+    deathComboBoxIndex = index;
 }
 
 /***** Manipulators *****/
@@ -1104,8 +1104,8 @@ int GameState::turnStatePreTurn()
                                                    aliveServants[i]->getName()));
                     }
 
-                    QObject::connect(chooseServant, SIGNAL(activated()), deathDialog,
-                                     SLOT(processDeathComboBox(deathDialog)));
+                    QObject::connect(chooseServant, SIGNAL(activated(int)), this,
+                                     SLOT(processDeathComboBox(int)));
 
                     QPushButton *okButton = new QPushButton(QWidget::tr("OK"));
                     //QPushButton *cancelButton = new QPushButton(QWidget::tr("Cancel"));
@@ -1408,8 +1408,8 @@ int GameState::turnStateChoseAction()
                                        deadServ[i]->getName()));
         }
 
-        QObject::connect(chooseServant, SIGNAL(activated()), this,
-                         SLOT(processDeathComboBox(chooseServant)));
+        QObject::connect(chooseServant, SIGNAL(activated(int)), this,
+                         SLOT(processDeathComboBox(int)));
 
         QPushButton *okButton = new QPushButton(QWidget::tr("OK"));
         QPushButton *cancelButton = new QPushButton(QWidget::tr("Cancel"));

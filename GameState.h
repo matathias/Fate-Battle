@@ -144,7 +144,7 @@ class GameState : public QWidget
         int capZero(int num);
 
     private slots:
-        void processDeathComboBox(QComboBox *qcb);
+        void processDeathComboBox(int index);
     
     protected:
         vector<Servant*> turnOrder; // Contains servant pointers in turn order.
