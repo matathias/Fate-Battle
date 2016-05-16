@@ -16,6 +16,7 @@
 #include <QRadioButton>
 #include <QLayout>
 #include <QGraphicsSceneEvent>
+#include <QSpinBox>
 #include <typeinfo>
 
 QT_BEGIN_NAMESPACE
@@ -39,6 +40,10 @@ public:
     void reDrawMenus();
     GameState *getGameState();
 
+    void loadGame();
+
+    void initGameState();
+
 public slots:
     void redrawEverything();
 
@@ -55,9 +60,37 @@ private slots:
     void but7();
     void but8();
     void but9();
+    void but10();
+    void but11();
+    void but12();
 
     void endTurn();
     void cancelAction();
+
+    void loadCBTeam1_0(int index);
+    void loadCBTeam1_1(int index);
+    void loadCBTeam1_2(int index);
+    void loadCBTeam1_3(int index);
+    void loadCBTeam1_4(int index);
+    void loadCBTeam1_5(int index);
+    void loadCBTeam1_6(int index);
+    void loadCBTeam1_7(int index);
+    void loadCBTeam2_0(int index);
+    void loadCBTeam2_1(int index);
+    void loadCBTeam2_2(int index);
+    void loadCBTeam2_3(int index);
+    void loadCBTeam2_4(int index);
+    void loadCBTeam2_5(int index);
+    void loadCBTeam2_6(int index);
+    void loadCBTeam2_7(int index);
+
+    void loadCBTeam1(int index);
+    void loadCBTeam2(int index);
+
+    void loadAscLvl(int index);
+
+    void loadFieldWidth(int index);
+    void loadFieldLength(int index);
 
 private:
     Ui::MainWindow *ui;
@@ -74,8 +107,12 @@ private:
     int capZero(int num);
 
     void clearLayout(QLayout *l);
+    void clearSelections();
+    void setStringLists();
 
     void buttonProcess();
+
+    bool isTeamEmpty(vector<string> team);
 
     int eventLogSize;
 
@@ -103,6 +140,9 @@ private:
     QRadioButton *button7;
     QRadioButton *button8;
     QRadioButton *button9;
+    QRadioButton *button10;
+    QRadioButton *button11;
+    QRadioButton *button12;
 
     QTableView *statsTable1;
     QTableView *statsTable2;
@@ -113,6 +153,18 @@ private:
 
     GameState *gs;
     Logger *log;
+
+    // Stuff for the loading dialog
+    vector<string> teamOne;
+    vector<string> teamTwo;
+    QStringList servantNames;
+    Team tOne;
+    Team tTwo;
+    QStringList teamNames;
+    QStringList ascLevelNames;
+    int ascLevel;
+    int fieldWid;
+    int fieldLen;
 };
 
 #endif // MAINWINDOW_H

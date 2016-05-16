@@ -11,7 +11,7 @@
 using namespace std;
 
 
-class GameState
+class GameState : public QWidget
 {
     public:
         // Initialize the playing field within this constructor. Can also sort

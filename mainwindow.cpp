@@ -29,6 +29,12 @@ MainWindow::MainWindow(QWidget *parent) :
     // pointer to it
 
     startGameState();
+
+    setStringLists();
+    clearSelections();
+
+    loadGame();
+
     populateScene(gs->getFieldWidth(), gs->getFieldLength());
 }
 
@@ -331,6 +337,21 @@ void MainWindow::mainSetup()
                 button9 = new QRadioButton(text, this);
                 connect(button9, SIGNAL(clicked()), this, SLOT(but9()));
                 actionList->addWidget(button9);
+                break;
+            case 9:
+                button10 = new QRadioButton(text, this);
+                connect(button10, SIGNAL(clicked()), this, SLOT(but10()));
+                actionList->addWidget(button10);
+                break;
+            case 10:
+                button11 = new QRadioButton(text, this);
+                connect(button11, SIGNAL(clicked()), this, SLOT(but11()));
+                actionList->addWidget(button11);
+                break;
+            case 11:
+                button12 = new QRadioButton(text, this);
+                connect(button12, SIGNAL(clicked()), this, SLOT(but12()));
+                actionList->addWidget(button12);
                 break;
             default:
                 // there's an extra action?? there shouldn't be!
@@ -755,6 +776,21 @@ void MainWindow::but9()
     gs->setChosenAction(8);
     buttonProcess();
 }
+void MainWindow::but10()
+{
+    gs->setChosenAction(9);
+    buttonProcess();
+}
+void MainWindow::but11()
+{
+    gs->setChosenAction(10);
+    buttonProcess();
+}
+void MainWindow::but12()
+{
+    gs->setChosenAction(11);
+    buttonProcess();
+}
 
 void MainWindow::endTurn()
 {
@@ -789,6 +825,111 @@ void MainWindow::cancelAction()
     }
 }
 
+// Load Dialog Comboboxes
+void MainWindow::loadCBTeam1_0(int index)
+{
+    teamOne[0] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam1_1(int index)
+{
+    teamOne[2] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam1_2(int index)
+{
+    teamOne[3] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam1_3(int index)
+{
+    teamOne[4] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam1_4(int index)
+{
+    teamOne[5] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam1_5(int index)
+{
+    teamOne[6] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam1_6(int index)
+{
+    teamOne[7] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam1_7(int index)
+{
+    teamOne[8] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam2_0(int index)
+{
+    teamTwo[0] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam2_1(int index)
+{
+    teamTwo[2] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam2_2(int index)
+{
+    teamTwo[3] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam2_3(int index)
+{
+    teamTwo[4] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam2_4(int index)
+{
+    teamTwo[5] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam2_5(int index)
+{
+    teamTwo[6] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam2_6(int index)
+{
+    teamTwo[7] = servantNames.at(index).toStdString();
+}
+void MainWindow::loadCBTeam2_7(int index)
+{
+    teamTwo[8] = servantNames.at(index).toStdString();
+}
+
+void MainWindow::loadCBTeam1(int index)
+{
+    string cbTeam = teamNames.at(index).toStdString();
+    if (cbTeam.compare("Alpha") == 0)
+        tOne = Alpha;
+    else if (cbTeam.compare("Omega") == 0)
+        tOne = Omega;
+    else
+        tOne = Boss;
+}
+void MainWindow::loadCBTeam2(int index)
+{
+    string cbTeam = teamNames.at(index).toStdString();
+    if (cbTeam.compare("Alpha") == 0)
+        tTwo = Alpha;
+    else if (cbTeam.compare("Omega") == 0)
+        tTwo = Omega;
+    else
+        tTwo = Boss;
+}
+
+void MainWindow::loadAscLvl(int index)
+{
+    ascLevel = index;
+}
+
+void MainWindow::loadFieldLength(int index)
+{
+    fieldLen = index;
+}
+
+void MainWindow::loadFieldWidth(int index)
+{
+    fieldWid = index;
+}
+
+
+/********** END OF SLOTS **********/
+
 void MainWindow::redrawEverything()
 {
     populateScene(gs->getFieldWidth(), gs->getFieldLength());
@@ -800,6 +941,274 @@ int MainWindow::capZero(int num)
         return 0;
     else
         return num;
+}
+
+void MainWindow::loadGame()
+{
+    // TODO: pop up a dialog box asking
+    //  the user to specify what servants are on what teams
+    QDialog *initDialog = new QDialog;
+    QComboBox *team1Box0 = new QComboBox;
+    QComboBox *team1Box1 = new QComboBox;
+    QComboBox *team1Box2 = new QComboBox;
+    QComboBox *team1Box3 = new QComboBox;
+    QComboBox *team1Box4 = new QComboBox;
+    QComboBox *team1Box5 = new QComboBox;
+    QComboBox *team1Box6 = new QComboBox;
+    QComboBox *team1Box7 = new QComboBox;
+    QComboBox *team2Box0 = new QComboBox;
+    QComboBox *team2Box1 = new QComboBox;
+    QComboBox *team2Box2 = new QComboBox;
+    QComboBox *team2Box3 = new QComboBox;
+    QComboBox *team2Box4 = new QComboBox;
+    QComboBox *team2Box5 = new QComboBox;
+    QComboBox *team2Box6 = new QComboBox;
+    QComboBox *team2Box7 = new QComboBox;
+
+    QComboBox *team1Box = new QComboBox;
+    QComboBox *team2Box = new QComboBox;
+
+    QComboBox *ascLevelBox = new QComboBox;
+
+    QSpinBox *fieldLengthBox = new QSpinBox;
+    QSpinBox *fieldWidthBox = new QSpinBox;
+
+    QPushButton *startGameButton = new QPushButton("Start Game");
+    QPushButton *quitGameButton = new QPushButton("Quit");
+
+    team1Box0->addItems(servantNames);
+    team1Box1->addItems(servantNames);
+    team1Box2->addItems(servantNames);
+    team1Box3->addItems(servantNames);
+    team1Box4->addItems(servantNames);
+    team1Box5->addItems(servantNames);
+    team1Box6->addItems(servantNames);
+    team1Box7->addItems(servantNames);
+    team2Box0->addItems(servantNames);
+    team2Box1->addItems(servantNames);
+    team2Box2->addItems(servantNames);
+    team2Box3->addItems(servantNames);
+    team2Box4->addItems(servantNames);
+    team2Box5->addItems(servantNames);
+    team2Box6->addItems(servantNames);
+    team2Box7->addItems(servantNames);
+
+    team1Box->addItems(teamNames);
+    team2Box->addItems(teamNames);
+
+    ascLevelBox->addItems(ascLevelNames);
+
+    fieldLengthBox->setMinimum(10);
+    fieldLengthBox->setMaximum(100);
+    fieldLengthBox->setWrapping(true);
+    fieldWidthBox->setMinimum(10);
+    fieldWidthBox->setMaximum(100);
+    fieldWidthBox->setWrapping(true);
+
+    connect(team1Box0, SIGNAL(activated(int)), this, SLOT(loadCBTeam1_0(int)));
+    connect(team1Box1, SIGNAL(activated(int)), this, SLOT(loadCBTeam1_1(int)));
+    connect(team1Box2, SIGNAL(activated(int)), this, SLOT(loadCBTeam1_2(int)));
+    connect(team1Box3, SIGNAL(activated(int)), this, SLOT(loadCBTeam1_3(int)));
+    connect(team1Box4, SIGNAL(activated(int)), this, SLOT(loadCBTeam1_4(int)));
+    connect(team1Box5, SIGNAL(activated(int)), this, SLOT(loadCBTeam1_5(int)));
+    connect(team1Box6, SIGNAL(activated(int)), this, SLOT(loadCBTeam1_6(int)));
+    connect(team1Box7, SIGNAL(activated(int)), this, SLOT(loadCBTeam1_7(int)));
+    connect(team2Box0, SIGNAL(activated(int)), this, SLOT(loadCBTeam2_0(int)));
+    connect(team2Box1, SIGNAL(activated(int)), this, SLOT(loadCBTeam2_1(int)));
+    connect(team2Box2, SIGNAL(activated(int)), this, SLOT(loadCBTeam2_2(int)));
+    connect(team2Box3, SIGNAL(activated(int)), this, SLOT(loadCBTeam2_3(int)));
+    connect(team2Box4, SIGNAL(activated(int)), this, SLOT(loadCBTeam2_4(int)));
+    connect(team2Box5, SIGNAL(activated(int)), this, SLOT(loadCBTeam2_5(int)));
+    connect(team2Box6, SIGNAL(activated(int)), this, SLOT(loadCBTeam2_6(int)));
+    connect(team2Box7, SIGNAL(activated(int)), this, SLOT(loadCBTeam2_7(int)));
+
+    connect(team1Box, SIGNAL(activated(int)), this, SLOT(loadCBTeam1(int)));
+    connect(team2Box, SIGNAL(activated(int)), this, SLOT(loadCBTeam2(int)));
+
+    connect(ascLevelBox, SIGNAL(activated(int)), this, SLOT(loadAscLvl(int)));
+
+    connect(fieldLengthBox, SIGNAL(valueChanged(int)), this, SLOT(loadFieldLength(int)));
+    connect(fieldWidthBox, SIGNAL(valueChanged(int)), this, SLOT(loadFieldWidth(int)));
+
+    connect(startGameButton, SIGNAL(clicked()), initDialog, SLOT(accept()));
+    connect(quitGameButton, SIGNAL(clicked()), initDialog, SLOT(reject()));
+
+    // Create all the labels
+    QLabel *team1Label = new QLabel("Team One");
+    QLabel *team2Label = new QLabel("Team Two");
+    QLabel *team1ChooseLabel = new QLabel("Choose Team: ");
+    QLabel *team2ChooseLabel = new QLabel("Choose Team: ");
+    QLabel *team1ServantLabel = new QLabel("Team Composition");
+    QLabel *team2ServantLabel = new QLabel("Team Composition");
+    QLabel *fieldLenLabel = new QLabel("Field Length");
+    QLabel *fieldWidLabel = new QLabel("\nField Width");
+    QLabel *ascLvlLabel = new QLabel("Ascension Level");
+    team1Label->setAlignment(Qt::AlignCenter);
+    team2Label->setAlignment(Qt::AlignCenter);
+    team1ServantLabel->setAlignment(Qt::AlignCenter);
+    team2ServantLabel->setAlignment(Qt::AlignCenter);
+    fieldLenLabel->setAlignment(Qt::AlignCenter);
+    fieldWidLabel->setAlignment(Qt::AlignCenter);
+    ascLvlLabel->setAlignment(Qt::AlignCenter);
+
+    /** Set up the layouts **/
+    // Team 1 Layout
+    QVBoxLayout *team1ServantBoxes = new QVBoxLayout;
+    team1ServantBoxes->addWidget(team1ServantLabel);
+    team1ServantBoxes->addWidget(team1Box0);
+    team1ServantBoxes->addWidget(team1Box1);
+    team1ServantBoxes->addWidget(team1Box2);
+    team1ServantBoxes->addWidget(team1Box3);
+    team1ServantBoxes->addWidget(team1Box4);
+    team1ServantBoxes->addWidget(team1Box5);
+    team1ServantBoxes->addWidget(team1Box6);
+    team1ServantBoxes->addWidget(team1Box7);
+    team1ServantBoxes->setSpacing(20);
+    QHBoxLayout *team1TeamBoxLay = new QHBoxLayout;
+    team1TeamBoxLay->addWidget(team1ChooseLabel);
+    team1TeamBoxLay->addWidget(team1Box);
+    QVBoxLayout *team1AllLayout = new QVBoxLayout;
+    team1AllLayout->addWidget(team1Label);
+    team1AllLayout->addLayout(team1TeamBoxLay);
+    team1AllLayout->addLayout(team1ServantBoxes);
+
+    // Team 2 Layout
+    QVBoxLayout *team2ServantBoxes = new QVBoxLayout;
+    team2ServantBoxes->addWidget(team2ServantLabel);
+    team2ServantBoxes->addWidget(team2Box0);
+    team2ServantBoxes->addWidget(team2Box1);
+    team2ServantBoxes->addWidget(team2Box2);
+    team2ServantBoxes->addWidget(team2Box3);
+    team2ServantBoxes->addWidget(team2Box4);
+    team2ServantBoxes->addWidget(team2Box5);
+    team2ServantBoxes->addWidget(team2Box6);
+    team2ServantBoxes->addWidget(team2Box7);
+    team2ServantBoxes->setSpacing(20);
+    QHBoxLayout *team2TeamBoxLay = new QHBoxLayout;
+    team2TeamBoxLay->addWidget(team2ChooseLabel);
+    team2TeamBoxLay->addWidget(team2Box);
+    QVBoxLayout *team2AllLayout = new QVBoxLayout;
+    team2AllLayout->addWidget(team2Label);
+    team2AllLayout->addLayout(team2TeamBoxLay);
+    team2AllLayout->addLayout(team2ServantBoxes);
+
+    // Field Layout
+    QVBoxLayout *fieldLayout = new QVBoxLayout;
+    fieldLayout->addWidget(fieldLenLabel);
+    fieldLayout->addWidget(fieldLengthBox);
+    //fieldLayout->addSpacing(3);
+    fieldLayout->addWidget(fieldWidLabel);
+    fieldLayout->addWidget(fieldWidthBox);
+    fieldLayout->addWidget(ascLvlLabel);
+    fieldLayout->addWidget(ascLevelBox);
+
+    // Main Layout
+    QHBoxLayout *mainLayout = new QHBoxLayout;
+    mainLayout->addLayout(team1AllLayout);
+    mainLayout->addLayout(fieldLayout);
+    mainLayout->addLayout(team2AllLayout);
+    mainLayout->setSpacing(10);
+
+    // Everything Layout
+    QVBoxLayout *everythingLayout = new QVBoxLayout;
+    everythingLayout->addLayout(mainLayout);
+    everythingLayout->addWidget(startGameButton);
+    everythingLayout->addWidget(quitGameButton);
+
+    initDialog->setLayout(everythingLayout);
+    initDialog->setWindowTitle("Final Fate Game Setup");
+
+    int result = initDialog->exec();
+
+    if (result == QDialog::Rejected)
+    {
+        // Quit
+        qApp->quit();
+        exit(0);
+    }
+
+    // Check that the inputs are valid. If they aren't, tell the user and bring
+    //  up the dialog box again.
+    if (tOne == tTwo || isTeamEmpty(teamOne) || isTeamEmpty(teamTwo) ||
+            ascLevel < 0 || ascLevel > 2)
+    {
+        QMessageBox checkMessage;
+        checkMessage.setWindowTitle(QObject::tr("Final Fate"));
+        checkMessage.setText("Invalid Inputs!");
+        checkMessage.setStandardButtons(QMessageBox::Ok);
+        checkMessage.setDefaultButton(QMessageBox::Ok);
+        checkMessage.exec();
+
+        // Clear the selections
+        clearSelections();
+
+        // get the dialog again
+        loadGame();
+    }
+
+    initGameState();
+}
+
+void MainWindow::clearSelections()
+{
+    teamOne.clear();
+    teamTwo.clear();
+    tOne = Alpha;
+    tTwo = Alpha;
+    ascLevel = 0;
+    fieldWid = 10;
+    fieldLen = 10;
+
+    while (teamOne.size() < 8)
+    {
+        teamOne.push_back("No Servant");
+        teamTwo.push_back("No Servant");
+    }
+}
+
+void MainWindow::setStringLists()
+{
+    servantNames.clear();
+    teamNames.clear();
+    ascLevelNames.clear();
+
+    // Servant Names
+    servantNames << "No Servant";
+    servantNames << "Saber - Claymore" << "Saber - Katana";
+    servantNames << "Lancer - Lance" << "Lancer - Halberd" << "Lancer - Naginata";
+    servantNames << "Archer - Box" << "Archer - Pistols" << "Archer - Projectiles";
+    servantNames << "Rider - Pegasus" << "Rider - Wyvern" << "Rider - Chariot";
+    servantNames << "Caster - Elemental" << "Caster - Necromancer" << "Caster - Summoner";
+    servantNames << "Berserker - Axe" << "Berserker - Club" << "Berserker - Flail";
+    servantNames << "Assassin - Daggers" << "Assassin - Shuriken";
+    servantNames << "Avenger - Sai" << "Avenger - Scythe";
+    servantNames << "Boss: Dallas Jones" << "Boss: Rin Tohsaka";
+    servantNames << "Boss: Mika" << "Boss: Yuu";
+    servantNames << "Boss: Gilgamesh";
+    servantNames << "Minion: Saber" << "Minion: Archer" << "Minion: Caster";
+
+    // Team Names
+    teamNames << "Alpha" << "Omega" << "Boss";
+
+    // Ascension Levels
+    ascLevelNames << "Base Level" << "1st Ascension" << "Final Ascension";
+}
+
+bool MainWindow::isTeamEmpty(vector<string> team)
+{
+    bool isEmpty = true;
+
+    for (unsigned int i = 0; i < team.size() && isEmpty; i++)
+    {
+        // Start at 1 to skip "No Servant"
+        for (int j = 1; j < servantNames.length(); j++)
+        {
+            if (team[i].compare(servantNames.at(j).toStdString()) == 0)
+                isEmpty = false;
+        }
+    }
+
+    return isEmpty;
 }
 
 void MainWindow::startGameState()
@@ -816,20 +1225,24 @@ void MainWindow::startGameState()
     gs = new GameState(all, 10, 10, log);
 }
 
+void MainWindow::initGameState()
+{
+    // TODO
+}
+
 // Finish writing this when all classes are complete...
 void MainWindow::restartGameState(vector<string> team1, vector<string> team2,
                                   Team t1, Team t2, int ascensionLvl, int fX, int fY)
 {
-    log = new Logger;
+    teamOne = team1;
+    teamTwo = team2;
+    tOne = t1;
+    tTwo = t2;
+    ascLevel = ascensionLvl;
+    fieldWid = fX;
+    fieldLen = fY;
 
-    vector<Servant*> all;
-    /*for (unsigned int i = 0; i < team1.size(); i++)
-    {
-        if(team1[i].compare("Claymore Saber") == 0)
-            all.push_back(new ServantSaberClaymore(ascensionLvl, t1, log));
-    }*/
-
-    gs = new GameState(all, fX, fY, log);
+    initGameState();
 
     redrawEverything();
 }

@@ -27,7 +27,7 @@
 using namespace std;
 
 /********** Function Definitions **********/
-GameState::GameState(vector<Servant *> tO, int l, int w, Logger *lo)
+GameState::GameState(vector<Servant *> tO, int l, int w, Logger *lo) : QWidget()
 {
     // Get the turn order (based on speed)
     while (tO.size() > 0)
@@ -1408,8 +1408,8 @@ int GameState::turnStateChoseAction()
                                        deadServ[i]->getName()));
         }
 
-        QObject::connect(chooseServant, SIGNAL(activated()), deathDialog,
-                         SLOT(processDeathComboBox(deathDialog)));
+        QObject::connect(chooseServant, SIGNAL(activated()), this,
+                         SLOT(processDeathComboBox(chooseServant)));
 
         QPushButton *okButton = new QPushButton(QWidget::tr("OK"));
         QPushButton *cancelButton = new QPushButton(QWidget::tr("Cancel"));
@@ -1424,6 +1424,8 @@ int GameState::turnStateChoseAction()
         finalLayout->addWidget(instructionLabel);
         finalLayout->addWidget(chooseServant);
         finalLayout->addLayout(buttons);
+
+        deathDialog->setLayout(finalLayout);
 
         // Display the dialog and get the result
         int result = deathDialog->exec();
