@@ -120,6 +120,12 @@ ServantCasterElemental::ServantCasterElemental(int as, Team t, Logger *l) : Serv
     noblePhantasms.push_back(np2);
     noblePhantasms.push_back(np3);
 
+    flameBladeCreated = false;
+}
+
+void ServantCasterElemental::setPlayField(PlayField *f)
+{
+    field = f;
     // Elemental Beam Range
     vector<Coordinate> npc1;
     for (int i = 0; i < field->getLargestDimension(); i++)
@@ -145,8 +151,6 @@ ServantCasterElemental::ServantCasterElemental(int as, Team t, Logger *l) : Serv
     npRanges.push_back(npc1);
     npRanges.push_back(npc2);
     npRanges.push_back(npc2);
-
-    flameBladeCreated = false;
 }
 
 /***** Active Skills *****/

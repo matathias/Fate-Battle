@@ -5,10 +5,14 @@
 
 #include "servantlancer.h"
 
+class PlayField;
+
 class ServantLancerLance : public ServantLancer
 {
 public:
     ServantLancerLance(int as, Team t, Logger *l);
+
+    virtual void setPlayField(PlayField *h);
 
     // Titanreach
     virtual int activateNP1(vector<Servant *> defenders);

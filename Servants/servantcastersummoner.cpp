@@ -145,6 +145,25 @@ ServantCasterSummoner::ServantCasterSummoner(int as, Team t, Logger *l) : Servan
     // Black Hole Rift Range
     npRanges.push_back(getLowToHighRange(1, 6));
 
+    /*
+    // Univseral Rift has the entire field as its range
+    vector<Coordinate> npc2;
+    for (int i = 0; i < field->getLargestDimension(); i++)
+    {
+        for (int j = 0; j < field->getLargestDimension(); j++)
+        {
+            Coordinate tc;
+            tc.x = j; tc.y = i;
+            npc2.push_back(tc);
+        }
+    }
+    npRanges.push_back(npc2); */
+}
+
+void ServantCasterSummoner::setPlayField(PlayField *f)
+{
+    field = f;
+
     // Univseral Rift has the entire field as its range
     vector<Coordinate> npc2;
     for (int i = 0; i < field->getLargestDimension(); i++)

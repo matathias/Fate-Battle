@@ -3,7 +3,7 @@
 
 ServantLancerNaginata::ServantLancerNaginata(int as, Team t, Logger *l) : ServantLancer(as, t, l)
 {
-    name = "Halberd Lancer";
+    name = "Naginata Lancer";
 
     /** Stat modifiers **/
     int strMod = -5;

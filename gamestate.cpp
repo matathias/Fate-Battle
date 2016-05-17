@@ -117,7 +117,22 @@ GameState::GameState(vector<Servant *> tO, int l, int w, Logger *lo) : QWidget()
     field = new PlayField(l, w, turnOrder, servantLocations);
 
     for (unsigned int i = 0; i < turnOrder.size(); i++)
+    {
         turnOrder[i]->setPlayField(field);
+
+        // If the Servant is an Avenger, we need to pass them the team
+        if (turnOrder[i]->getClass() == Avenger)
+        {
+            ServantAvenger *thisAvenger = dynamic_cast<ServantAvenger*>(turnOrder[i]);
+            if (thisAvenger->getTeam() == Alpha)
+                thisAvenger->setTeam(alphaTeam);
+            else if (thisAvenger->getTeam() == Omega)
+                thisAvenger->setTeam(omegaTeam);
+            else
+                thisAvenger->setTeam(bossTeam);
+        }
+    }
+
 
     resetTurnValues();
     currentServant = getNextServant();
@@ -969,6 +984,7 @@ int GameState::turnStatePreTurn()
             + abs(currentServant->getCurrLoc().y - alliedSaberC->getCurrLoc().y)
             <= alliedSaberC->getCharismaRange())
         {
+            std::cout << "Pre-turn. Adding Charisma Buff.\n" << std::flush;
             currentServant->addDebuff(alliedSaberC->getCharisma());
         }
     }

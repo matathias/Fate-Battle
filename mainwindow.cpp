@@ -3,10 +3,30 @@
 #include "mainwindow.h"
 #include "view.h"
 #include "ui_mainwindow.h"
+#include "playfieldsquare.h"
+
 #include "Servants/servanttest.h"
 #include "Servants/servantsaberclaymore.h"
 #include "Servants/servantsaberkatana.h"
-#include "playfieldsquare.h"
+#include "Servants/servantarcherbow.h"
+#include "Servants/servantarcherpistols.h"
+#include "Servants/servantarcherprojectiles.h"
+#include "Servants/servantlancerhalberd.h"
+#include "Servants/servantlancerlance.h"
+#include "Servants/servantlancernaginata.h"
+#include "Servants/servantriderchariot.h"
+#include "Servants/servantriderpegasus.h"
+#include "Servants/servantriderwyvern.h"
+#include "Servants/servantcasterelemental.h"
+#include "Servants/servantcasternecromancy.h"
+#include "Servants/servantcastersummoner.h"
+#include "Servants/servantberserkeraxe.h"
+#include "Servants/servantberserkerclub.h"
+#include "Servants/servantberserkerflail.h"
+#include "Servants/servantassassindagger.h"
+#include "Servants/servantassassinshuriken.h"
+#include "Servants/servantavengersai.h"
+#include "Servants/servantavengerscythe.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -28,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // gameState to populateScene so that the playFieldSquares can have a
     // pointer to it
 
-    startGameState();
+    //startGameState();
 
     setStringLists();
     clearSelections();
@@ -117,6 +137,7 @@ void MainWindow::mainSetup()
     QString mp = QString::fromStdString(
                     to_string(gs->getCurrentServant()->getCurrMP()) + "/" +
                     to_string(gs->getCurrentServant()->getMaxMP()));
+
     hplab->setText("HP:");
     hplab->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     mplab->setText("MP:");
@@ -143,12 +164,15 @@ void MainWindow::mainSetup()
 
     // Attack, Hit rate, critical rate, and evasion
     QLabel *extraStats = new QLabel(this);
-    extraStats->setText(QString::fromStdString("Accuracy: " +
-                                to_string(gs->getCurrentServant()->getHitRate())
-                                               + "\nEvasion: " +
-                                to_string(gs->getCurrentServant()->getEvade()[0])
-                                               + "\nCritical Rate: " +
-                                to_string(gs->getCurrentServant()->getCriticalRate())));
+    string accur = "Accuracy: " + to_string(gs->getCurrentServant()->getHitRate());
+    vector<int> servEvade;
+    Servant *gsServ = gs->getCurrentServant();
+    servEvade = gsServ->getEvade();
+    int ev = servEvade[0];
+    string eva = "Evasion: " + to_string(ev);
+    string cri = "Critical Rate: " + to_string(gs->getCurrentServant()->getCriticalRate());
+    string allSTring = accur + "\n" + eva + "\n" + cri;
+    extraStats->setText(QString::fromStdString(allSTring));
     extraStats->setAlignment(Qt::AlignCenter);
     extraStats->setFrameStyle(QFrame::Box | QFrame::Sunken);
 
@@ -281,7 +305,6 @@ void MainWindow::mainSetup()
     debuffLayout->addWidget(debLabel);
     debuffLayout->addWidget(debuffTable);
 
-
     /* Servant Action List Widget */
     QVBoxLayout *actionList = new QVBoxLayout;
     vector<string> actList = gs->getActionList();
@@ -410,6 +433,7 @@ void MainWindow::mainSetup()
                                         gs->peekNextServant()->getName() +
                                         "\nNext Player's Team: " +
                                         gs->peekNextServant()->getTeamName());
+
     nextServ->setText(nS);
     nextServ->setAlignment(Qt::AlignCenter);
     nextServ->setFrameStyle(QFrame::Box | QFrame::Sunken);
@@ -446,6 +470,8 @@ void MainWindow::mainSetup()
     setLayout(mainLayout);
 
     setWindowTitle(tr("Final Fate / Emblem of the Holy Grail"));
+
+    std::cout << "mainSetup end\n" << std::flush;
 }
 
 void MainWindow::populateScene(int w, int l)
@@ -945,8 +971,6 @@ int MainWindow::capZero(int num)
 
 void MainWindow::loadGame()
 {
-    // TODO: pop up a dialog box asking
-    //  the user to specify what servants are on what teams
     QDialog *initDialog = new QDialog;
     QComboBox *team1Box0 = new QComboBox;
     QComboBox *team1Box1 = new QComboBox;
@@ -1041,7 +1065,7 @@ void MainWindow::loadGame()
     QLabel *team1ServantLabel = new QLabel("Team Composition");
     QLabel *team2ServantLabel = new QLabel("Team Composition");
     QLabel *fieldLenLabel = new QLabel("Field Length");
-    QLabel *fieldWidLabel = new QLabel("\nField Width");
+    QLabel *fieldWidLabel = new QLabel("Field Width");
     QLabel *ascLvlLabel = new QLabel("Ascension Level");
     team1Label->setAlignment(Qt::AlignCenter);
     team2Label->setAlignment(Qt::AlignCenter);
@@ -1176,7 +1200,7 @@ void MainWindow::setStringLists()
     servantNames << "No Servant";
     servantNames << "Saber - Claymore" << "Saber - Katana";
     servantNames << "Lancer - Lance" << "Lancer - Halberd" << "Lancer - Naginata";
-    servantNames << "Archer - Box" << "Archer - Pistols" << "Archer - Projectiles";
+    servantNames << "Archer - Bow" << "Archer - Pistols" << "Archer - Projectiles";
     servantNames << "Rider - Pegasus" << "Rider - Wyvern" << "Rider - Chariot";
     servantNames << "Caster - Elemental" << "Caster - Necromancer" << "Caster - Summoner";
     servantNames << "Berserker - Axe" << "Berserker - Club" << "Berserker - Flail";
@@ -1227,7 +1251,104 @@ void MainWindow::startGameState()
 
 void MainWindow::initGameState()
 {
-    // TODO
+    log = new Logger;
+    vector<Servant*> all;
+    for (unsigned int i = 0; i < teamOne.size(); i++)
+    {
+        string servName = teamOne[i];
+        Team te = tOne;
+        if (servName.compare("Saber - Claymore") == 0)
+            all.push_back(new ServantSaberClaymore(ascLevel, te, log));
+        else if (servName.compare("Saber - Katana") == 0)
+            all.push_back(new ServantSaberKatana(ascLevel, te, log));
+        else if (servName.compare("Lancer - Lance") == 0)
+            all.push_back(new ServantLancerLance(ascLevel, te, log));
+        else if (servName.compare("Lancer - Halberd") == 0)
+            all.push_back(new ServantLancerHalberd(ascLevel, te, log));
+        else if (servName.compare("Lancer - Naginata") == 0)
+            all.push_back(new ServantLancerNaginata(ascLevel, te, log));
+        else if (servName.compare("Archer - Bow") == 0)
+            all.push_back(new ServantArcherBow(ascLevel, te, log));
+        else if (servName.compare("Archer - Pistols") == 0)
+            all.push_back(new ServantArcherPistols(ascLevel, te, log));
+        else if (servName.compare("Archer - Projectiles") == 0)
+            all.push_back(new ServantArcherProjectiles(ascLevel, te, log));
+        else if (servName.compare("Rider - Pegasus") == 0)
+            all.push_back(new ServantRiderPegasus(ascLevel, te, log));
+        else if (servName.compare("Rider - Wyvern") == 0)
+            all.push_back(new ServantRiderWyvern(ascLevel, te, log));
+        else if (servName.compare("Rider - Chariot") == 0)
+            all.push_back(new ServantRiderChariot(ascLevel, te, log));
+        else if (servName.compare("Caster - Elemental") == 0)
+            all.push_back(new ServantCasterElemental(ascLevel, te, log));
+        else if (servName.compare("Caster - Necromancer") == 0)
+            all.push_back(new ServantCasterNecromancy(ascLevel, te, log));
+        else if (servName.compare("Caster - Summoner") == 0)
+            all.push_back(new ServantCasterSummoner(ascLevel, te, log));
+        else if (servName.compare("Berserker - Axe") == 0)
+            all.push_back(new ServantBerserkerAxe(ascLevel, te, log));
+        else if (servName.compare("Berserker - Club") == 0)
+            all.push_back(new ServantBerserkerClub(ascLevel, te, log));
+        else if (servName.compare("Berserker - Flail") == 0)
+            all.push_back(new ServantBerserkerFlail(ascLevel, te, log));
+        else if (servName.compare("Assassin - Daggers") == 0)
+            all.push_back(new ServantAssassinDagger(ascLevel, te, log));
+        else if (servName.compare("Assassin - Shuriken") == 0)
+            all.push_back(new ServantAssassinShuriken(ascLevel, te, log));
+        else if (servName.compare("Avenger - Sai") == 0)
+            all.push_back(new ServantAvengerSai(ascLevel, te, log));
+        else if (servName.compare("Avenger - Scythe") == 0)
+            all.push_back(new ServantAvengerScythe(ascLevel, te, log));
+    }
+    for (unsigned int i = 0; i < teamTwo.size(); i++)
+    {
+        string servName = teamTwo[i];
+        Team te = tTwo;
+        if (servName.compare("Saber - Claymore") == 0)
+            all.push_back(new ServantSaberClaymore(ascLevel, te, log));
+        else if (servName.compare("Saber - Katana") == 0)
+            all.push_back(new ServantSaberKatana(ascLevel, te, log));
+        else if (servName.compare("Lancer - Lance") == 0)
+            all.push_back(new ServantLancerLance(ascLevel, te, log));
+        else if (servName.compare("Lancer - Halberd") == 0)
+            all.push_back(new ServantLancerHalberd(ascLevel, te, log));
+        else if (servName.compare("Lancer - Naginata") == 0)
+            all.push_back(new ServantLancerNaginata(ascLevel, te, log));
+        else if (servName.compare("Archer - Bow") == 0)
+            all.push_back(new ServantArcherBow(ascLevel, te, log));
+        else if (servName.compare("Archer - Pistols") == 0)
+            all.push_back(new ServantArcherPistols(ascLevel, te, log));
+        else if (servName.compare("Archer - Projectiles") == 0)
+            all.push_back(new ServantArcherProjectiles(ascLevel, te, log));
+        else if (servName.compare("Rider - Pegasus") == 0)
+            all.push_back(new ServantRiderPegasus(ascLevel, te, log));
+        else if (servName.compare("Rider - Wyvern") == 0)
+            all.push_back(new ServantRiderWyvern(ascLevel, te, log));
+        else if (servName.compare("Rider - Chariot") == 0)
+            all.push_back(new ServantRiderChariot(ascLevel, te, log));
+        else if (servName.compare("Caster - Elemental") == 0)
+            all.push_back(new ServantCasterElemental(ascLevel, te, log));
+        else if (servName.compare("Caster - Necromancer") == 0)
+            all.push_back(new ServantCasterNecromancy(ascLevel, te, log));
+        else if (servName.compare("Caster - Summoner") == 0)
+            all.push_back(new ServantCasterSummoner(ascLevel, te, log));
+        else if (servName.compare("Berserker - Axe") == 0)
+            all.push_back(new ServantBerserkerAxe(ascLevel, te, log));
+        else if (servName.compare("Berserker - Club") == 0)
+            all.push_back(new ServantBerserkerClub(ascLevel, te, log));
+        else if (servName.compare("Berserker - Flail") == 0)
+            all.push_back(new ServantBerserkerFlail(ascLevel, te, log));
+        else if (servName.compare("Assassin - Daggers") == 0)
+            all.push_back(new ServantAssassinDagger(ascLevel, te, log));
+        else if (servName.compare("Assassin - Shuriken") == 0)
+            all.push_back(new ServantAssassinShuriken(ascLevel, te, log));
+        else if (servName.compare("Avenger - Sai") == 0)
+            all.push_back(new ServantAvengerSai(ascLevel, te, log));
+        else if (servName.compare("Avenger - Scythe") == 0)
+            all.push_back(new ServantAvengerScythe(ascLevel, te, log));
+    }
+
+    gs = new GameState(all, fieldLen, fieldWid, log);
 }
 
 // Finish writing this when all classes are complete...

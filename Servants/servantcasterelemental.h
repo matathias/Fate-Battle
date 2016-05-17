@@ -16,6 +16,7 @@ public:
     int territoryCreation(vector<Servant*> defenders);
 
     // Re-defined functions
+    virtual void setPlayField(PlayField *f);
     virtual int getTerritoryMP();
     virtual string getTerritoryName();
 

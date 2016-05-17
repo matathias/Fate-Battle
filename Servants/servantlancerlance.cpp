@@ -1,6 +1,8 @@
 #include "servantlancerlance.h"
 #include "PlayField.h"
 
+#include <iostream>
+
 ServantLancerLance::ServantLancerLance(int as, Team t, Logger *l) : ServantLancer(as, t, l)
 {
     name = "Lance Lancer";
@@ -91,11 +93,16 @@ ServantLancerLance::ServantLancerLance(int as, Team t, Logger *l) : ServantLance
     npc2.push_back(c3);
     npc2.push_back(c4);
 
-    vector<Coordinate> npc3;
-    int ran = field->getFieldLength();
-    if (field->getFieldWidth() > field->getFieldLength())
-        ran = field->getFieldWidth();
+    npRanges.push_back(npc1);
+    npRanges.push_back(npc2);
+}
 
+void ServantLancerLance::setPlayField(PlayField *f)
+{
+    field = f;
+    int ran = field->getLargestDimension();
+
+    vector<Coordinate> npc3;
     for (int i = 1; i <= ran; i++)
     {
         Coordinate nc1, nc2, nc3;
@@ -107,8 +114,6 @@ ServantLancerLance::ServantLancerLance(int as, Team t, Logger *l) : ServantLance
         npc3.push_back(nc3);
     }
 
-    npRanges.push_back(npc1);
-    npRanges.push_back(npc2);
     npRanges.push_back(npc3);
 }
 

@@ -1,6 +1,8 @@
 #include "servantlancerhalberd.h"
 #include "PlayField.h"
 
+#include <iostream>
+
 ServantLancerHalberd::ServantLancerHalberd(int as, Team t, Logger *l) : ServantLancer(as, t, l)
 {
     name = "Halberd Lancer";

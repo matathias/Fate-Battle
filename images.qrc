@@ -1,10 +1,35 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-    <file>qt4logo.png</file>
-    <file>zoomin.png</file>
-    <file>zoomout.png</file>
-    <file>rotateleft.png</file>
-    <file>rotateright.png</file>
-    <file>fileprint.png</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>zoomin.png</file>
+        <file>zoomout.png</file>
+        <file>fileprint.png</file>
+        <file>ServantIcons/Axe Berserker.png</file>
+        <file>ServantIcons/Bow Archer.png</file>
+        <file>ServantIcons/Chariot Rider.png</file>
+        <file>ServantIcons/Claymore Saber.png</file>
+        <file>ServantIcons/Club Berserker.png</file>
+        <file>ServantIcons/Dagger Assassin.png</file>
+        <file>ServantIcons/Elemental Caster.png</file>
+        <file>ServantIcons/Flail Berserker.png</file>
+        <file>ServantIcons/Halberd Lancer.png</file>
+        <file>ServantIcons/Katana Saber.png</file>
+        <file>ServantIcons/Lance Lancer.png</file>
+        <file>ServantIcons/Naginata Lancer.png</file>
+        <file>ServantIcons/Necromancer Caster.png</file>
+        <file>ServantIcons/Pegasus Rider.png</file>
+        <file>ServantIcons/Pistol Archer.png</file>
+        <file>ServantIcons/Projectile Archer.png</file>
+        <file>ServantIcons/Saber Test.png</file>
+        <file>ServantIcons/Sai Avenger.png</file>
+        <file>ServantIcons/Scythe Avenger.png</file>
+        <file>ServantIcons/Shuriken Assassin.png</file>
+        <file>ServantIcons/Summoner Caster.png</file>
+        <file>ServantIcons/Wyvern Rider.png</file>
+        <file>TeamIcons/Alpha.png</file>
+        <file>TeamIcons/Omega.png</file>
+        <file>TeamIcons/Psi.png</file>
+        <file>qt4logo.png</file>
+        <file>rotateleft.png</file>
+        <file>rotateright.png</file>
+    </qresource>
 </RCC>

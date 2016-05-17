@@ -124,17 +124,17 @@ string Servant::getFullName()
 
 string Servant::getServantIcon()
 {
-    return "../FateBattle/ServantIcons/" + name + ".png";
+    return ":/ServantIcons/" + name + ".png";
 }
 
 string Servant::getTeamIcon()
 {
     if (team == Alpha)
-        return "../FateBattle/TeamIcons/Alpha.png";
+        return ":/TeamIcons/Alpha.png";
     else if (team == Omega)
-        return "../FateBattle/TeamIcons/Omega.png";
+        return ":/TeamIcons/Omega.png";
     else
-        return "../FateBattle/TeamIcons/Psi.png";
+        return ":/TeamIcons/Psi.png";
 }
 
 // Stat Retrievers
@@ -228,6 +228,7 @@ int Servant::getSpd()
 
 int Servant::getSkl()
 {
+    std::cout << "getSkl\n" << std::flush;
     int d = getDebuffAmount(SKL);
     int ret = skl[ascension] + d;
     if (ret < 0)
@@ -268,6 +269,9 @@ vector<Debuff*> Servant::getDebuffs()
 
 void Servant::addDebuff(Debuff *d)
 {
+    cout << "Add Debuff\n" << std::flush;
+    //cout << "Debuff pointer: " << d << "\n" << std::flush;
+    //cout << "Debuff Name: " << d->getDebuffName() << "\n" << std::flush;
     debuffs.push_back(d);
 }
 
@@ -365,8 +369,12 @@ void Servant::remCastedDebuffs()
 int Servant::getDebuffAmount(Stat s)
 {
     int d = 0;
+
+    //std::cout << "getDebuffAmount 1\n" << std::flush;
     for (unsigned int i = 0; i < debuffs.size(); i++)
     {
+        //std::cout << "getDebuffAmount 2 (loop)\n" << std::flush;
+        //std::cout << "Debuff name: " << debuffs[i]->getDebuffName() << "\n" << std::flush;
         vector<Stat> dStats = debuffs[i]->getDebuffStats();
         vector<int> dAmount = debuffs[i]->getDebuffAmounts();
         for (unsigned int j = 0; j < dStats.size(); j++)
@@ -445,6 +453,7 @@ int Servant::getHighRange()
 int Servant::getHitRate()
 {
     // Hit Rate = Skill * 2 + Luck
+    std::cout << "getHitRate\n" << std::flush;
     return (getSkl() * 2) + getLuk();
 }
 
@@ -453,6 +462,7 @@ int Servant::getHitRate()
 vector<int> Servant::getEvade()
 {
     // Evasion = Speed * 2 + Luck
+    std::cout << "getEvade\n" << std::flush;
     vector<int> evade;
     evade.push_back((getSpd() * 2) + getLuk());
     return evade;
@@ -461,6 +471,7 @@ vector<int> Servant::getEvade()
 int Servant::getCriticalRate()
 {
     // Critical Rate = Skill / 2
+    std::cout << "getCriticalRate\n" << std::flush;
     return (getSkl() / 2);
 }
 

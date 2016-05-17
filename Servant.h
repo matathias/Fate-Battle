@@ -22,7 +22,7 @@ class Servant
     public:
         Servant(int as, Team t, Logger *l);
 
-        void setPlayField(PlayField *f);
+        virtual void setPlayField(PlayField *f);
                 
         virtual void setHP(int hp);
         void setMP(int mp);
@@ -39,9 +39,9 @@ class Servant
         string getTeamIcon();
 
         // These are all virtual for the sake of the Avenger class
-        virtual int getMaxHP();
+        int getMaxHP();
         int getCurrHP();
-        virtual int getMaxMP();
+        int getMaxMP();
         int getCurrMP();
         int getMov();
         int getStr();
