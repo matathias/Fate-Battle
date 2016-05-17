@@ -1035,7 +1035,7 @@ int GameState::turnStatePreTurn()
             // Pop up a dialog box confirming this action.
             // THIS HAS NOT YET BEEN TESTED.
             string check = "\n" + currentServant->getFullName() +
-                           ": Do you wish to continue your Reality Marble for " +
+                           ":\nDo you wish to continue your Reality Marble for " +
                            to_string(currentServant->getRealityMarbleMP()) +
                            " MP?\nYou currently have " +
                            to_string(currentServant->getCurrMP()) + " / " +
@@ -1140,6 +1140,8 @@ int GameState::turnStatePreTurn()
                     finalLayout->addWidget(chooseServant);
                     finalLayout->addLayout(buttons);
 
+                    deathDialog->setLayout(finalLayout);
+
                     // Display the dialog and get the result
                     int result = deathDialog->exec();
                     deathComboBoxIndex = 0;
@@ -1199,13 +1201,22 @@ int GameState::turnStatePreTurn()
             field->eraseTerritory(currentServant->getTerritoryName());
             currentServant->endTerritory();
         }
+        else if (field->isRealityMarbleOn())
+        {
+            log->addToEventLog("The Reality Marble killed your Territory!");
+            field->eraseTerritory(currentServant->getTerritoryName());
+            currentServant->endTerritory();
+        }
         else
         {
             // Pop up a dialog box confirming this action.
             // THIS HAS NOT YET BEEN TESTED.
-            string check = "\nDo you wish to continue your Territory for " +
+            string check = "\n" + currentServant->getFullName() +
+                           ":\nDo you wish to continue your Territory for " +
                            to_string(currentServant->getTerritoryMP()) +
-                           " MP?\n";
+                           " MP?\nYou currently have " +
+                           to_string(currentServant->getCurrMP()) + " / " +
+                           to_string(currentServant->getMaxMP()) + " MP.";
             QMessageBox checkMessage;
             checkMessage.setWindowTitle(QObject::tr("Final Fate"));
             checkMessage.setText(QString::fromStdString(check));
@@ -1215,6 +1226,7 @@ int GameState::turnStatePreTurn()
             {
                 log->addToEventLog("You chose to discontinue your Territory. It has now dissolved.");
                 field->eraseTerritory(currentServant->getTerritoryName());
+                currentServant->endTerritory();
             }
             else
             {
@@ -1361,12 +1373,12 @@ int GameState::turnStateChoseAction()
         // Process immediately. No need for the extra turnstate.
         // THIS PART REMAINS UNTESTED
         deathComboBoxIndex = 0;
-        vector<Servant*> targetList;
-        if (currentServant->getClass() == Caster &&
-                currentServant->isKillDeadAction(chosenAction))
-            targetList = getOpposingTeamDead(currentServant->getTeam());
-        else
-            targetList = getTeamDead(currentServant->getTeam());
+        vector<Servant*> targetList = getDead();
+        //if (currentServant->getClass() == Caster &&
+        //        currentServant->isKillDeadAction(chosenAction))
+        //    targetList = getOpposingTeamDead(currentServant->getTeam());
+        //else
+        //    targetList = getTeamDead(currentServant->getTeam());
 
         // Count the number of permadead and regular-dead servants
         int numDead = 0;
@@ -1981,7 +1993,7 @@ int GameState::turnStateApplyAction()
     // see if they get a second turn.
     else if (!ionioiSecondTurn &&
              field->isRealityMarbleOn() &&
-             field->getDebuffOnSpace(currentServant->getCurrLoc())->getDebuffDescrip().compare("Essence of Ionioi Hetairoi")
+             field->getDebuffOnSpace(currentServant->getCurrLoc())->getDebuffDescrip().compare("Essence of Ionioi Hetairoi") == 0
              && field->getDebuffOnSpace(currentServant->getCurrLoc())->getTargetTeam() == currentServant->getTeam())
     {
         int r = currentServant->getRandNum();

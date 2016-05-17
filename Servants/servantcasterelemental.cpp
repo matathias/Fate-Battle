@@ -128,7 +128,7 @@ void ServantCasterElemental::setPlayField(PlayField *f)
     field = f;
     // Elemental Beam Range
     vector<Coordinate> npc1;
-    for (int i = 0; i < field->getLargestDimension(); i++)
+    for (int i = 1; i < field->getLargestDimension(); i++)
     {
         Coordinate tc;
         tc.x = 0; tc.y = i;
@@ -144,13 +144,14 @@ void ServantCasterElemental::setPlayField(PlayField *f)
         {
             Coordinate tc;
             tc.x = j; tc.y = i;
-            npc2.push_back(tc);
+            if (!(j == 0 && i == 0))
+                npc2.push_back(tc);
         }
     }
 
     npRanges.push_back(npc1);
-    npRanges.push_back(npc2);
-    npRanges.push_back(npc2);
+    npRanges.push_back(getLowToHighRange(1, field->getLargestDimension() * 2));
+    npRanges.push_back(getLowToHighRange(0, field->getLargestDimension() * 2));
 }
 
 /***** Active Skills *****/

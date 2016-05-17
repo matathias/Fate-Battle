@@ -258,25 +258,25 @@ int ServantLancerHalberd::activateNP2(vector<Servant *> defenders)
             if(atkDir == NORTH)
             {
                 tempC.y = currLoc.y + i;
-                if (!field->doesSpaceHaveServant(tempC))
+                if (!field->doesSpaceHaveServant(tempC) && field->isCoordinateInBounds(tempC))
                     finalC = tempC;
             }
             else if (atkDir == SOUTH)
             {
                 tempC.y = currLoc.y - i;
-                if (!field->doesSpaceHaveServant(tempC))
+                if (!field->doesSpaceHaveServant(tempC) && field->isCoordinateInBounds(tempC))
                     finalC = tempC;
             }
             else if (atkDir == EAST)
             {
                 tempC.x = currLoc.x + i;
-                if (!field->doesSpaceHaveServant(tempC))
+                if (!field->doesSpaceHaveServant(tempC) && field->isCoordinateInBounds(tempC))
                     finalC = tempC;
             }
             else
             {
                 tempC.x = currLoc.x - i;
-                if (!field->doesSpaceHaveServant(tempC))
+                if (!field->doesSpaceHaveServant(tempC) && field->isCoordinateInBounds(tempC))
                     finalC = tempC;
             }
         }
@@ -365,25 +365,25 @@ int ServantLancerHalberd::activateNP3(vector<Servant *> defenders)
             if(atkDir == NORTH)
             {
                 tempC.y = currLoc.y + i;
-                if (!field->doesSpaceHaveServant(tempC))
+                if (!field->doesSpaceHaveServant(tempC) && field->isCoordinateInBounds(tempC))
                     finalC = tempC;
             }
             else if (atkDir == SOUTH)
             {
                 tempC.y = currLoc.y - i;
-                if (!field->doesSpaceHaveServant(tempC))
+                if (!field->doesSpaceHaveServant(tempC) && field->isCoordinateInBounds(tempC))
                     finalC = tempC;
             }
             else if (atkDir == EAST)
             {
                 tempC.x = currLoc.x + i;
-                if (!field->doesSpaceHaveServant(tempC))
+                if (!field->doesSpaceHaveServant(tempC) && field->isCoordinateInBounds(tempC))
                     finalC = tempC;
             }
             else
             {
                 tempC.x = currLoc.x - i;
-                if (!field->doesSpaceHaveServant(tempC))
+                if (!field->doesSpaceHaveServant(tempC) && field->isCoordinateInBounds(tempC))
                     finalC = tempC;
             }
         }

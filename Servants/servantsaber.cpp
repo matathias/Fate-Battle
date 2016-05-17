@@ -130,6 +130,10 @@ int ServantSaber::guardianKnight(vector<Servant *> defenders)
     //  debuff.
     for (unsigned int i = 0; i < defenders.size(); i++)
     {
+        // Don't provoke members of your own team!
+        if (defenders[i]->getTeam() == getTeam())
+            continue;
+
         // Check against defender's (SKL / 2 + LUK / 2)
         int resistChance = (defenders[i]->getSkl() / 2) +
                            (defenders[i]->getLuk() / 2);
