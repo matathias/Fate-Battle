@@ -88,6 +88,7 @@ class Servant
                                         // offer multiple evasion chances. Only
                                         // the first value is checked against
                                         // hit rate
+        int getInitialEvade();
         int getCriticalRate();
         int getCriticalEvade();
 

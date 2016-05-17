@@ -125,7 +125,6 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     gState->setClickedX(x);
     gState->setClickedY(y);
-    //cout << "Coord is (" << x << "," << y << ")\n" << std::flush;
     int result = 1000;
     if (gState->getTurnState() == 1)
         result = gState->turnStateMove();
@@ -159,7 +158,8 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
     else if (result == 666)
     {
-        qApp->quit();
+        //qApp->quit();
+        window->quitGame();
     }
     else if (result != 0 && result != 1000)
     {

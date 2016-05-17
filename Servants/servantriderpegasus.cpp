@@ -105,6 +105,8 @@ int ServantRiderPegasus::wingsOfIcarus()
     addDebuff(wings);
 
     log->addToEventLog(getFullName() + " activated Wings of Icarus and flew up high in the sky!");
+
+    return 0;
 }
 
 /***** Helper Functions *****/
@@ -150,7 +152,7 @@ vector<int> ServantRiderPegasus::getEvade()
 {
     // Evasion = Speed * 2 + Luck
     vector<int> evade;
-    evade.push_back((getSpd() * 2) + getLuk());
+    evade.push_back(getInitialEvade());
     // Mythical Steed = Luck * 2.5 (only add this one at the right ascension)
     if (ascension >= 1)
         evade.push_back(getLuk() * 2);
@@ -263,7 +265,7 @@ int ServantRiderPegasus::activateNP1(vector<Servant *> defenders)
 
 int ServantRiderPegasus::activateNP2(vector<Servant *> defenders)
 {
-    if (actionMPCosts[ascension][4] > currMP)
+    if (actionMPCosts[ascension][3] > currMP)
         return 1; // Not enough MP to attack
 
     // Get the landing location
@@ -277,7 +279,7 @@ int ServantRiderPegasus::activateNP2(vector<Servant *> defenders)
         return 41;
     }
 
-    subMP(actionMPCosts[ascension][4]);
+    subMP(actionMPCosts[ascension][3]);
     Coordinate startCoord = getCurrLoc();
 
     // Move to be adjacent to the target servant
@@ -310,31 +312,31 @@ int ServantRiderPegasus::activateNP2(vector<Servant *> defenders)
 
         // Calculate crit chance
         int attackMult = 5;
-        int critChance = capZero(getCriticalRate() -
-                         defenders[i]->getCriticalEvade());
+        int defCritEv = targets[i]->getCriticalEvade();
+        int critChance = capZero(getCriticalRate() - defCritEv);
         int r = getRandNum();
         if (critChance >= r)
             attackMult *= 3;
 
         // Deal the damage
-        dam = capZero(getMag() - defenders[i]->getRes()) * attackMult;
+        dam = capZero(getMag() - targets[i]->getRes()) * attackMult;
         log->addToEventLog(getFullName() + " dealt " +
                            to_string(dam) + " damage to " +
-                           defenders[i]->getFullName() + ".");
-        defenders[i]->subHP(dam, NP_MAG);
+                           targets[i]->getFullName() + ".");
+        targets[i]->subHP(dam, NP_MAG);
 
         // Check to see if the defender is dead. If they are and they are an
         //  Avenger, activate Final Revenge.
         // If they are not dead but they are a Berserker, check to see if
         //  Mad Counter activates.
-        if(defenders[i]->getCurrHP() <= 0)
+        if(targets[i]->getCurrHP() <= 0)
         {
-            if (defenders[i]->getClass() == Avenger)
+            if (targets[i]->getClass() == Avenger)
             {
                 // Activate Final Revenge
-                Debuff *finRev = defenders[i]->finalRevenge();
+                Debuff *finRev = targets[i]->finalRevenge();
                 addDebuff(finRev);
-                if (defenders[i]->getAscensionLvl() == 2)
+                if (targets[i]->getAscensionLvl() == 2)
                 {
                     subHP(.1 * getMaxHP(), OMNI);
                     subMP(.1 * getMaxMP());

@@ -24,7 +24,6 @@ SOURCES += main.cpp\
     Servants/servantsaberclaymore.cpp \
     Servants/servantsaberkatana.cpp \
     Servants/servantlancerlance.cpp \
-    Servants/servantlancerglaive.cpp \
     Servants/servantlancerhalberd.cpp \
     Servants/servantlancernaginata.cpp \
     Servants/servantarcherbow.cpp \
@@ -70,7 +69,6 @@ HEADERS  += mainwindow.h \
     Servants/servantsaberclaymore.h \
     Servants/servantsaberkatana.h \
     Servants/servantlancerlance.h \
-    Servants/servantlancerglaive.h \
     Servants/servantlancerhalberd.h \
     Servants/servantlancernaginata.h \
     Servants/servantarcherbow.h \

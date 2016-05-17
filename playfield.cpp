@@ -268,7 +268,7 @@ bool PlayField::isCoordinateInBounds(Coordinate c)
 
 bool PlayField::doesSpaceHaveServant(Coordinate c)
 {
-    return field[c.x][c.y] != NULL;
+    return  (isCoordinateInBounds(c) && field[c.x][c.y] != NULL);
 }
 
 vector<Coordinate> PlayField::pruneRange(vector<Coordinate> range, Servant* source)
@@ -375,6 +375,8 @@ Coordinate PlayField::getRandomCoord()
 // This function assumes that a valid coordinate exists on the playing field.
 Coordinate PlayField::getNearestValidCoord(Coordinate c)
 {
+    std::cout << "getNearestValidCoord: (" << c.x << "," << c.y << ")\n" << std::flush;
+
     Coordinate ret;
     if (isValidCoordinate(c))
         ret = c;
@@ -411,6 +413,7 @@ Coordinate PlayField::getNearestValidCoord(Coordinate c)
         }
     }
 
+    std::cout << "getNearestValidCoord result: (" << c.x << "," << c.y << ")\n" << std::flush;
     return ret;
 }
 
@@ -431,7 +434,6 @@ Coordinate PlayField::getNearestValidCoord2(Coordinate c)
         int i = 0;
         while (!found)
         {
-            //
             Coordinate north, south, east, west;
             north.x = south.x = procCoords[i].x;
             north.y = procCoords[i].y + 1;
@@ -445,7 +447,6 @@ Coordinate PlayField::getNearestValidCoord2(Coordinate c)
             nextCoords.push_back(south);
             nextCoords.push_back(east);
             nextCoords.push_back(west);
-            //
 
             i++;
 
@@ -519,11 +520,13 @@ vector<Coordinate> PlayField::getAdjacentSpaces(Coordinate c)
 {
     vector<Coordinate> spaces;
     Coordinate north, south, east, west;
-    north.x = south.x = c.x;
+    north.x = c.x;
+    south.x = c.x;
     north.y = c.y + 1;
     south.y = c.y - 1;
 
-    east.y = west.y = c.y;
+    east.y = c.y;
+    west.y = c.y;
     east.x = c.x - 1;
     west.x = c.x + 1;
 

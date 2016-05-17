@@ -44,6 +44,8 @@ public:
 
     void initGameState();
 
+    void quitGame();
+
 public slots:
     void redrawEverything();
 
@@ -113,6 +115,9 @@ private:
     void buttonProcess();
 
     bool isTeamEmpty(vector<string> team);
+
+    void printErrorLog();
+    void printEventLog();
 
     int eventLogSize;
 

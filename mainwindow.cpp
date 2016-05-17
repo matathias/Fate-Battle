@@ -35,6 +35,7 @@
 #include <QListView>
 #include <QProgressBar>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -470,8 +471,6 @@ void MainWindow::mainSetup()
     setLayout(mainLayout);
 
     setWindowTitle(tr("Final Fate / Emblem of the Holy Grail"));
-
-    std::cout << "mainSetup end\n" << std::flush;
 }
 
 void MainWindow::populateScene(int w, int l)
@@ -651,6 +650,49 @@ void MainWindow::clearLayout(QLayout *layout)
     //delete layout;
 }
 
+void MainWindow::quitGame()
+{
+    printErrorLog();
+    printEventLog();
+
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(QObject::tr("Final Fate"));
+    messageBox.setText(QObject::tr("Quitting Game."));
+    messageBox.setStandardButtons(QMessageBox::Ok);
+    messageBox.setDefaultButton(QMessageBox::Ok);
+    messageBox.exec();
+
+    qApp->quit();
+}
+
+void MainWindow::printErrorLog()
+{
+    vector<string> errLog = log->getErrorLog();
+    std::ofstream outFile;
+    outFile.open("ErrorLog.txt");
+
+    for (unsigned int i = 0; i < errLog.size(); i++)
+    {
+        outFile << errLog[i] << endl;
+    }
+
+    outFile.close();
+}
+
+void MainWindow::printEventLog()
+{
+    vector<string> eventLog = log->getEventLog();
+    std::ofstream outFile;
+    outFile.open("EventLog.txt");
+
+    for (unsigned int i = 0; i < eventLog.size(); i++)
+    {
+        outFile << eventLog[i] << endl;
+    }
+
+    outFile.close();
+}
+
 void MainWindow::open()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
@@ -740,7 +782,7 @@ void MainWindow::quit()
     messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     messageBox.setDefaultButton(QMessageBox::No);
     if (messageBox.exec() == QMessageBox::Yes)
-        qApp->quit();
+        quitGame();
 }
 
 void MainWindow::buttonProcess()

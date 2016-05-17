@@ -148,6 +148,8 @@ void GameState::processDeathComboBox(int index)
 /***** Manipulators *****/
 void GameState::addDead(Servant *s)
 {
+    log->addToEventLog(s->getFullName() + " died!");
+
     dead.push_back(s);
     // Remove all casted debuffs
     // Check if there is an active territory -- if there is, delete all
@@ -964,7 +966,7 @@ int GameState::turnStatePreTurn()
                                        tDebStat, tDebAm, 1);
         currentServant->addDebuff(newDebuff);
     }
-    else if (tDebuff != NULL)
+    /*else if (tDebuff != NULL)
     {
         Debuff *newDebuff = new Debuff(tDebuff->getDebuffName(),
                                        tDebuff->getDebuffDescrip(),
@@ -972,7 +974,7 @@ int GameState::turnStatePreTurn()
                                        tDebuff->getDebuffStats(),
                                        tDebuff->getDebuffAmounts(), 1);
         currentServant->addDebuff(newDebuff);
-    }
+    }*/
 
     // If the player is standing within Charisma range of their team's Servant,
     // give them the Charisma buff (for 1 turn).
@@ -984,7 +986,6 @@ int GameState::turnStatePreTurn()
             + abs(currentServant->getCurrLoc().y - alliedSaberC->getCurrLoc().y)
             <= alliedSaberC->getCharismaRange())
         {
-            std::cout << "Pre-turn. Adding Charisma Buff.\n" << std::flush;
             currentServant->addDebuff(alliedSaberC->getCharisma());
         }
     }
@@ -1033,9 +1034,12 @@ int GameState::turnStatePreTurn()
         {
             // Pop up a dialog box confirming this action.
             // THIS HAS NOT YET BEEN TESTED.
-            string check = "\nDo you wish to continue your Reality Marble for " +
+            string check = "\n" + currentServant->getFullName() +
+                           ": Do you wish to continue your Reality Marble for " +
                            to_string(currentServant->getRealityMarbleMP()) +
-                           " MP?\n";
+                           " MP?\nYou currently have " +
+                           to_string(currentServant->getCurrMP()) + " / " +
+                           to_string(currentServant->getMaxMP()) + " MP.";
             QMessageBox checkMessage;
             checkMessage.setWindowTitle(QObject::tr("Final Fate"));
             checkMessage.setText(QString::fromStdString(check));
@@ -2036,8 +2040,6 @@ int GameState::turnStatePostTurn()
     if (turnState != 6)
         return 70;
 
-    log->addEventEndTurn(currentServant->getTeamName(),
-                         currentServant->getName());
     int returnValue = 0;
 
     // Check the Servant's ending location to see if any end-of-turn affects
@@ -2057,7 +2059,7 @@ int GameState::turnStatePostTurn()
     // Check if anyone has died and modify the death list accordingly.
     for (unsigned int i = 0; i < turnOrder.size(); i++)
     {
-        if (turnOrder[i]->getCurrHP() <= 0)
+        if (turnOrder[i]->getCurrHP() <= 0 && !isServantDead(turnOrder[i]))
         {
             addDead(turnOrder[i]);
         }
@@ -2094,6 +2096,9 @@ int GameState::turnStatePostTurn()
                 returnValue = 1002;
         }
     }
+
+    log->addEventEndTurn(currentServant->getTeamName(),
+                         currentServant->getName());
 
     // Reset the turnState and all relevant variables and get the next Servant.
     resetTurnValues();

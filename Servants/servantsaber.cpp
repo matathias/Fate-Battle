@@ -144,7 +144,11 @@ int ServantSaber::guardianKnight(vector<Servant *> defenders)
                                                 defenders[i]->getTeam(),
                                                 vs, vi, 3);
             defenders[i]->addDebuff(provokedDebuff);
+            log->addToEventLog(defenders[i]->getFullName() + " was provoked by "
+                               + getFullName());
         }
+        else
+            log->addToEventLog(defenders[i]->getFullName() + " resisted provoke.");
     }
 
     log->addToEventLog(getFullName() + " activated Guardian Knight!");
@@ -256,7 +260,7 @@ vector<int> ServantSaber::getEvade()
 {
     // Evasion = Speed * 2 + Luck
     vector<int> evade;
-    evade.push_back((getSpd() * 2) + getLuk());
+    evade.push_back(getInitialEvade());
     // Eye of the Mind: (SKL / 4) chance of taking no damage.
     evade.push_back(getSkl() / 4);
     return evade;

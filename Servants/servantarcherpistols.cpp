@@ -73,7 +73,7 @@ ServantArcherPistols::ServantArcherPistols(int as, Team t, Logger *l) : ServantA
     {
         for (int j = 0; j <= 3; j++)
         {
-            if (abs(i) + abs(j) <= 3)
+            if (abs(i) + abs(j) <= 3 && abs(i) + abs(j) != 0)
             {
                 Coordinate tc;
                 tc.x = i; tc.y = j;

@@ -74,7 +74,7 @@ vector<int> ServantArcher::getEvade()
 {
     // Evasion = Speed * 2 + Luck
     vector<int> evade;
-    evade.push_back((getSpd() * 2) + getLuk());
+    evade.push_back(getInitialEvade());
     // Eye of the Mind: (SKL / 4) chance of taking no damage.
     evade.push_back(getSkl() / 4);
     return evade;

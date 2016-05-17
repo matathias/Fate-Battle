@@ -109,7 +109,7 @@ vector<int> ServantAvengerSai::getEvade()
 {
     // Evasion = Speed * 2 + Luck
     vector<int> evade;
-    evade.push_back((getSpd() * 2) + getLuk());
+    evade.push_back(getInitialEvade());
     // Bladecatcher = Skl / 4
     evade.push_back(getSkl() / 4);
     return evade;

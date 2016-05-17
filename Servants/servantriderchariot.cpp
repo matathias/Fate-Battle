@@ -114,6 +114,8 @@ int ServantRiderChariot::whipOfTheMaster()
     addDebuff(whip);
 
     log->addToEventLog(getFullName() + " whipped their horse to go faster!");
+
+    return 0;
 }
 
 /***** Private Helper Functions *****/
@@ -408,17 +410,17 @@ int ServantRiderChariot::activateNP1(vector<Servant *> defenders)
         // Calculate crit chance
         int attackMult = 1;
         int critChance = capZero(getCriticalRate() -
-                         defenders[i]->getCriticalEvade());
+                         targets[i]->getCriticalEvade());
         int r = getRandNum();
         if (critChance >= r)
             attackMult *= 3;
 
         // Deal the damage
-        dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
+        dam = capZero(getStr() - targets[i]->getDef()) * attackMult;
         log->addToEventLog(getFullName() + " dealt " +
                            to_string(dam) + " damage to " +
-                           defenders[i]->getFullName() + ".");
-        defenders[i]->subHP(dam, NP_STR);
+                           targets[i]->getFullName() + ".");
+        targets[i]->subHP(dam, NP_STR);
 
         // Immobilize the target for 2 turns.
         string descrip = "You were trampled by " + getFullName() +
@@ -426,24 +428,24 @@ int ServantRiderChariot::activateNP1(vector<Servant *> defenders)
         vector<Stat> dStats;
         dStats.push_back(MOV);
         vector<int> dAmount;
-        dAmount.push_back(-1 * defenders[i]->getMov());
+        dAmount.push_back(-1 * targets[i]->getMov());
         Debuff *trample = new Debuff("Trample", descrip,
-                                     defenders[i]->getTeam(),
+                                     targets[i]->getTeam(),
                                      dStats, dAmount, 3);
-        defenders[i]->addDebuff(trample);
+        targets[i]->addDebuff(trample);
 
         // Check to see if the defender is dead. If they are and they are an
         //  Avenger, activate Final Revenge.
         // If they are not dead but they are a Berserker, check to see if
         //  Mad Counter activates.
-        if(defenders[i]->getCurrHP() <= 0)
+        if(targets[i]->getCurrHP() <= 0)
         {
-            if (defenders[i]->getClass() == Avenger)
+            if (targets[i]->getClass() == Avenger)
             {
                 // Activate Final Revenge
-                Debuff *finRev = defenders[i]->finalRevenge();
+                Debuff *finRev = targets[i]->finalRevenge();
                 addDebuff(finRev);
-                if (defenders[i]->getAscensionLvl() == 2)
+                if (targets[i]->getAscensionLvl() == 2)
                 {
                     subHP(.1 * getMaxHP(), OMNI);
                     subMP(.1 * getMaxMP());

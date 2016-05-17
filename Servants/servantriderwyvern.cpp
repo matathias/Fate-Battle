@@ -217,25 +217,33 @@ int ServantRiderWyvern::activateNP1(vector<Servant *> defenders)
         {
             finalLoc.x = targetLoc.x;
             finalLoc.y = targetLoc.y + shoveDistance;
+            if (finalLoc.y >= field->getFieldLength())
+                finalLoc.y = field->getFieldLength() - 1;
         }
         else if (fromPlayer == SOUTH)
         {
             finalLoc.x = targetLoc.x;
             finalLoc.y = targetLoc.y - shoveDistance;
+            if (finalLoc.y < 0)
+                finalLoc.y = 0;
         }
         else if (fromPlayer == EAST)
         {
             finalLoc.x = targetLoc.x + shoveDistance;
             finalLoc.y = finalLoc.y;
+            if (finalLoc.x >= field->getFieldWidth())
+                finalLoc.x = field->getFieldWidth() - 1;
         }
         else // West
         {
             finalLoc.x = targetLoc.x - shoveDistance;
             finalLoc.y = targetLoc.y;
+            if (finalLoc.x < 0)
+                finalLoc.x = 0;
         }
 
         // Get the nearest valid coordinate from the "finalLoc"
-        Coordinate actualLoc = field->getNearestValidCoord2(finalLoc);
+        Coordinate actualLoc = field->getNearestValidCoord(finalLoc);
 
         // Move the target Servant to this location
         field->moveServant(defenders[i], actualLoc);
@@ -277,25 +285,33 @@ int ServantRiderWyvern::activateNP2(vector<Servant *> defenders)
         {
             finalLoc.x = targetLoc.x;
             finalLoc.y = targetLoc.y + shoveDistance;
+            if (finalLoc.y >= field->getFieldLength())
+                finalLoc.y = field->getFieldLength() - 1;
         }
         else if (fromPlayer == SOUTH)
         {
             finalLoc.x = targetLoc.x;
             finalLoc.y = targetLoc.y - shoveDistance;
+            if (finalLoc.y < 0)
+                finalLoc.y = 0;
         }
         else if (fromPlayer == EAST)
         {
             finalLoc.x = targetLoc.x + shoveDistance;
             finalLoc.y = finalLoc.y;
+            if (finalLoc.x >= field->getFieldWidth())
+                finalLoc.x = field->getFieldWidth() - 1;
         }
         else // West
         {
             finalLoc.x = targetLoc.x - shoveDistance;
             finalLoc.y = targetLoc.y;
+            if (finalLoc.x < 0)
+                finalLoc.x = 0;
         }
 
         // Get the nearest valid coordinate from the "finalLoc"
-        Coordinate actualLoc = field->getNearestValidCoord2(finalLoc);
+        Coordinate actualLoc = field->getNearestValidCoord(finalLoc);
 
         // Move the target Servant to this location
         field->moveServant(defenders[i], actualLoc);
@@ -337,7 +353,7 @@ int ServantRiderWyvern::activateNP3(vector<Servant *> defenders)
         if (fromPlayer == NORTH)
         {
             finalLoc.x = targetLoc.x;
-            finalLoc.y = field->getFieldLength();
+            finalLoc.y = field->getFieldLength() - 1;
         }
         else if (fromPlayer == SOUTH)
         {
@@ -346,7 +362,7 @@ int ServantRiderWyvern::activateNP3(vector<Servant *> defenders)
         }
         else if (fromPlayer == EAST)
         {
-            finalLoc.x = field->getFieldWidth();
+            finalLoc.x = field->getFieldWidth() - 1;
             finalLoc.y = finalLoc.y;
         }
         else // West
@@ -356,7 +372,7 @@ int ServantRiderWyvern::activateNP3(vector<Servant *> defenders)
         }
 
         // Get the nearest valid coordinate from the "finalLoc"
-        Coordinate actualLoc = field->getNearestValidCoord2(finalLoc);
+        Coordinate actualLoc = field->getNearestValidCoord(finalLoc);
 
         // Move the target Servant to this location
         field->moveServant(defenders[i], actualLoc);

@@ -315,7 +315,7 @@ vector<int> ServantAssassin::getEvade()
 {
     // Evasion = Speed * 2 + Luck
     // If presence concealment is active, add 25 to evade.
-    int ev = (getSpd() * 2) + getLuk();
+    int ev = getInitialEvade();
     vector<int> evade;
     if (presenceConcealed())
         evade.push_back(ev + 25);

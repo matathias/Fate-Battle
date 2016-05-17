@@ -22,6 +22,8 @@ Servant::Servant(int as, Team t, Logger *l)
 
     territoryActive = false;
     realityMarbleActive = false;
+
+    //vector<Debuff*> debuffs (0);
 }
 
 void Servant::setPlayField(PlayField *f)
@@ -228,7 +230,6 @@ int Servant::getSpd()
 
 int Servant::getSkl()
 {
-    std::cout << "getSkl\n" << std::flush;
     int d = getDebuffAmount(SKL);
     int ret = skl[ascension] + d;
     if (ret < 0)
@@ -269,9 +270,6 @@ vector<Debuff*> Servant::getDebuffs()
 
 void Servant::addDebuff(Debuff *d)
 {
-    cout << "Add Debuff\n" << std::flush;
-    //cout << "Debuff pointer: " << d << "\n" << std::flush;
-    //cout << "Debuff Name: " << d->getDebuffName() << "\n" << std::flush;
     debuffs.push_back(d);
 }
 
@@ -370,11 +368,8 @@ int Servant::getDebuffAmount(Stat s)
 {
     int d = 0;
 
-    //std::cout << "getDebuffAmount 1\n" << std::flush;
     for (unsigned int i = 0; i < debuffs.size(); i++)
     {
-        //std::cout << "getDebuffAmount 2 (loop)\n" << std::flush;
-        //std::cout << "Debuff name: " << debuffs[i]->getDebuffName() << "\n" << std::flush;
         vector<Stat> dStats = debuffs[i]->getDebuffStats();
         vector<int> dAmount = debuffs[i]->getDebuffAmounts();
         for (unsigned int j = 0; j < dStats.size(); j++)
@@ -452,9 +447,8 @@ int Servant::getHighRange()
 // Battle formula retrievers
 int Servant::getHitRate()
 {
-    // Hit Rate = Skill * 2 + Luck
-    std::cout << "getHitRate\n" << std::flush;
-    return (getSkl() * 2) + getLuk();
+    // Originally was = Skill * 2 + Luck
+    return (getSkl() * 3) + getLuk();
 }
 
 // This function should be overridden by Servants with multiple evasion
@@ -462,16 +456,20 @@ int Servant::getHitRate()
 vector<int> Servant::getEvade()
 {
     // Evasion = Speed * 2 + Luck
-    std::cout << "getEvade\n" << std::flush;
     vector<int> evade;
-    evade.push_back((getSpd() * 2) + getLuk());
+    evade.push_back(getInitialEvade());
     return evade;
+}
+
+int Servant::getInitialEvade()
+{
+    // Original was Speed * 2 + Luck
+    return getSpd() + getLuk();
 }
 
 int Servant::getCriticalRate()
 {
     // Critical Rate = Skill / 2
-    std::cout << "getCriticalRate\n" << std::flush;
     return (getSkl() / 2);
 }
 

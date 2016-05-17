@@ -96,7 +96,7 @@ vector<int> ServantLancerNaginata::getEvade()
 {
     // Evasion = Speed * 2 + Luck
     vector<int> evade;
-    evade.push_back((getSpd() * 2) + getLuk());
+    evade.push_back(getInitialEvade());
     // Eye of the Mind: (SKL / 4) chance of taking no damage.
     evade.push_back(getSkl() / 4);
     // Blade Deflector: (SKL / 4) chance of taking no damage.
@@ -167,7 +167,7 @@ int ServantLancerNaginata::activateNP2(vector<Servant *> defenders)
         field->moveServant(this, landingCoord);
 
         // Get all Servants adjacent to this location
-        vector<Coordinate> landRange = getCoordRange(1);
+        vector<Coordinate> landRange = getLowToHighRange(1,1);
         vector<Servant*> trueDefenders = field->getAllInRange(this, landRange);
 
         for (unsigned int i = 0; i < trueDefenders.size(); i++)
@@ -209,7 +209,7 @@ int ServantLancerNaginata::activateNP3(vector<Servant *> defenders)
         field->moveServant(this, landingCoord);
 
         // Get all Servants adjacent to this location
-        vector<Coordinate> landRange = getCoordRange(2);
+        vector<Coordinate> landRange = getLowToHighRange(1,2);
         vector<Servant*> trueDefenders = field->getAllInRange(this, landRange);
 
         for (unsigned int i = 0; i < trueDefenders.size(); i++)
