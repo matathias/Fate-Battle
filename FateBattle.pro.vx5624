@@ -60,7 +60,17 @@ SOURCES += main.cpp\
     Servants/bossrin.cpp \
     Servants/bossdallas.cpp \
     Servants/bossyuu.cpp \
-    Servants/bossmika.cpp
+    Servants/bossmika.cpp \
+    Bin/Debuff.cpp \
+    Bin/GameState.cpp \
+    Bin/logger.cpp \
+    Bin/main.cpp \
+    Bin/mainwindow.cpp \
+    Bin/PlayField.cpp \
+    Bin/playfieldsquare.cpp \
+    Bin/Servant.cpp \
+    Bin/Skill.cpp \
+    Bin/view.cpp
 
 HEADERS  += mainwindow.h \
     Debuff.h \
@@ -107,9 +117,21 @@ HEADERS  += mainwindow.h \
     Servants/bossrin.h \
     Servants/bossdallas.h \
     Servants/bossyuu.h \
-    Servants/bossmika.h
+    Servants/bossmika.h \
+    Bin/allservants.h \
+    Bin/datatypes.h \
+    Bin/Debuff.h \
+    Bin/GameState.h \
+    Bin/logger.h \
+    Bin/mainwindow.h \
+    Bin/PlayField.h \
+    Bin/playfieldsquare.h \
+    Bin/Servant.h \
+    Bin/Skill.h \
+    Bin/view.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    Bin/mainwindow.ui
 
 RESOURCES += \
     images.qrc
@@ -140,7 +162,4 @@ DISTFILES += \
     ServantIcons/Scythe Avenger.png \
     ServantIcons/Shuriken Assassin.png \
     ServantIcons/Summoner Caster.png \
-    ServantIcons/Wyvern Rider.png \
-    Bin/TeamIcons/Alpha.png \
-    Bin/TeamIcons/Omega.png \
-    Bin/TeamIcons/Psi.png
+    ServantIcons/Wyvern Rider.png

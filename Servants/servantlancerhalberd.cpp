@@ -470,6 +470,8 @@ int ServantLancerHalberd::piercingBlow(vector<Servant *> defenders, int damMult)
             }
         }
     }
+
+    return 0;
 }
 
 int ServantLancerHalberd::piercingTip(Servant* defender)
@@ -580,4 +582,6 @@ int ServantLancerHalberd::swingingLunge(vector<Servant *> defenders, int damMult
             }
         }
     }
+
+    return 0;
 }
