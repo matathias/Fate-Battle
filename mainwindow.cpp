@@ -900,31 +900,31 @@ void MainWindow::loadCBTeam1_0(int index)
 }
 void MainWindow::loadCBTeam1_1(int index)
 {
-    teamOne[2] = servantNames.at(index).toStdString();
+    teamOne[1] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam1_2(int index)
 {
-    teamOne[3] = servantNames.at(index).toStdString();
+    teamOne[2] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam1_3(int index)
 {
-    teamOne[4] = servantNames.at(index).toStdString();
+    teamOne[3] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam1_4(int index)
 {
-    teamOne[5] = servantNames.at(index).toStdString();
+    teamOne[4] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam1_5(int index)
 {
-    teamOne[6] = servantNames.at(index).toStdString();
+    teamOne[5] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam1_6(int index)
 {
-    teamOne[7] = servantNames.at(index).toStdString();
+    teamOne[6] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam1_7(int index)
 {
-    teamOne[8] = servantNames.at(index).toStdString();
+    teamOne[7] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam2_0(int index)
 {
@@ -932,31 +932,31 @@ void MainWindow::loadCBTeam2_0(int index)
 }
 void MainWindow::loadCBTeam2_1(int index)
 {
-    teamTwo[2] = servantNames.at(index).toStdString();
+    teamTwo[1] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam2_2(int index)
 {
-    teamTwo[3] = servantNames.at(index).toStdString();
+    teamTwo[2] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam2_3(int index)
 {
-    teamTwo[4] = servantNames.at(index).toStdString();
+    teamTwo[3] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam2_4(int index)
 {
-    teamTwo[5] = servantNames.at(index).toStdString();
+    teamTwo[4] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam2_5(int index)
 {
-    teamTwo[6] = servantNames.at(index).toStdString();
+    teamTwo[5] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam2_6(int index)
 {
-    teamTwo[7] = servantNames.at(index).toStdString();
+    teamTwo[6] = servantNames.at(index).toStdString();
 }
 void MainWindow::loadCBTeam2_7(int index)
 {
-    teamTwo[8] = servantNames.at(index).toStdString();
+    teamTwo[7] = servantNames.at(index).toStdString();
 }
 
 void MainWindow::loadCBTeam1(int index)
