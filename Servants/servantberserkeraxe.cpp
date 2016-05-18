@@ -173,7 +173,14 @@ int ServantBerserkerAxe::attack(vector<Servant *> defenders, bool counter)
 int ServantBerserkerAxe::extendGodmind()
 {
     if (ascension != 2 || !isGodmindActive() || isGodmindExtended())
+    {
+        // Godmind is not active!
+        if (!isGodmindActive())
+            log->addToEventLog("Godmind is not currently active!");
+        else if (isGodmindExtended())
+            log->addToEventLog("Godmind has already been extended!");
         return 41;
+    }
 
     if (actionMPCosts[ascension][2] > currMP)
         return 1; // Not enough MP to attack
@@ -307,7 +314,8 @@ void ServantBerserkerAxe::turnUpdate()
         addHP(0.025 * getMaxHP());
     }
 
-    numDamageFreeTurns++;
+    if (!isGodmindActive())
+        numDamageFreeTurns++;
 }
 
 int ServantBerserkerAxe::doAction(int actionNum, vector<Servant *> defenders)
@@ -327,7 +335,7 @@ void ServantBerserkerAxe::subHP(int hp, DamageType dt)
     // Godking
     if (isGodmindExtended() && (dt != NP_STR && dt != NP_MAG && dt != OMNI && dt != GAEBOLG))
         noDamage = true;
-    else if (ascension == 2 && dt != NP_STR && dt != NP_MAG && dt != GAEBOLG &&
+    else if (ascension == 2 && dt != NP_STR && dt != NP_MAG && dt != GAEBOLG && dt != OMNI &&
              hp <= (0.1 * getMaxHP()))
         noDamage = true;
 
@@ -360,6 +368,10 @@ void ServantBerserkerAxe::subHP(int hp, DamageType dt)
                 remAllDebuffs(false);
             }
         }
+    }
+    else
+    {
+        log->addToEventLog(getFullName() + " resisted taking damage!");
     }
 }
 

@@ -20,8 +20,9 @@ protected:
     bool previouslyTargeted(Servant *target);
 
     bool damageFreeTurn;
-    int strIncreases;
+    int increases;
     int strIncrement;
+    int sklIncrement;
 
     vector<Servant*> previousTargets;
 };

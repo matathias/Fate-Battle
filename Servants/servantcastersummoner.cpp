@@ -44,7 +44,7 @@ ServantCasterSummoner::ServantCasterSummoner(int as, Team t, Logger *l) : Servan
     actionList[1].push_back("9: NP: Black Hole Rift");
 
     actionList[2].push_back("6: Item Construction - Minor Gate");
-    actionList[2].push_back("7: Territory Creation - Dimensionl Gate");
+    actionList[2].push_back("7: Territory Creation - Dimensional Gate");
     actionList[2].push_back("8: Summon Golem");
     actionList[2].push_back("9: NP: Solar Rift");
     actionList[2].push_back("10: NP: Black Hole Rift");
@@ -161,7 +161,7 @@ void ServantCasterSummoner::setPlayField(PlayField *f)
             npc2.push_back(tc);
         }
     }
-    npRanges.push_back(npc2);
+    npRanges.push_back(getLowToHighRange(1, field->getLargestDimension() * 2));
 }
 
 /***** Active Skills *****/
@@ -172,7 +172,11 @@ int ServantCasterSummoner::summonGolem()
         return 1; // Not enough MP
 
     if (golemSummoned)
+    {
+        // Golem already summoned
+        log->addToEventLog(getFullName() + " already has an active golem.");
         return 41;
+    }
 
     golemCost *= 3;
 

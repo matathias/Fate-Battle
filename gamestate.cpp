@@ -848,6 +848,7 @@ int GameState::turnStatePreTurn()
                                                currentServant->getTeam(),
                                                tDebStat, tDebAm, -1);
                 currentServant->addDebuff(newDebuff);
+                currentServant->setHP(0);
                 log->addToEventLog(currentServant->getFullName() +
                                    " succombed to the effect of Doom and died permanently!");
                 turnState = 6;
@@ -858,6 +859,7 @@ int GameState::turnStatePreTurn()
                 // They passed the check, say so in the event log
                 log->addToEventLog(currentServant->getFullName() +
                                    " survived Doom!");
+                currentServant->removeDoom();
             }
         }
     }
@@ -1308,6 +1310,7 @@ int GameState::turnStateChoseAction()
     {
         selectionRange = currentServant->getActionRange(chosenAction);
         selectionRange = field->pruneRange(selectionRange, currentServant);
+        log->addToEventLog("Choose target.");
     }
 
     // If the action is AOE, have the player determine the direction of
@@ -1327,6 +1330,7 @@ int GameState::turnStateChoseAction()
         selectionRange.push_back(s);
         selectionRange.push_back(e);
         selectionRange.push_back(w);
+        log->addToEventLog("AOE Attack: Choose direction.");
     }
 
     // If the action is territory creation, skip straight to the apply action
@@ -1889,7 +1893,8 @@ int GameState::turnStateApplyAction()
     if (currentServant->getAscensionLvl() >= 1 &&
             ((currentServant->getName().compare("Lance Lancer") == 0 &&
             abs(currentServant->isActionNP(chosenAction)) != 1) ||
-            currentServant->isActionNP(chosenAction) >= 0))
+            (currentServant->getName().compare("Lance Lancer") != 0 &&
+             currentServant->isActionNP(chosenAction) >= 0)))
     {
         for (unsigned int i = 0; i < chosenDefenders.size() && activateNP; i++)
         {

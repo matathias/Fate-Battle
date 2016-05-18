@@ -331,6 +331,18 @@ void Servant::remAllDebuffs2(bool purgePermadeath, bool purgeDoom)
     }
 }
 
+void Servant::removeDoom()
+{
+    for (int i = 0; i < (int) debuffs.size(); i++)
+    {
+        if (debuffs[i]->getDebuffName().compare("Doom") == 0)
+        {
+            debuffs.erase(debuffs.begin()+i);
+            i--;
+        }
+    }
+}
+
 vector<Debuff*> Servant::getCastedDebuffs()
 {
     return castedDebuffs;

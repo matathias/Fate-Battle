@@ -30,8 +30,9 @@ ServantBerserkerClub::ServantBerserkerClub(int as, Team t, Logger *l) : ServantB
     npRanges.push_back(npc3);
 
     damageFreeTurn = true;
-    strIncreases = 0;
+    increases = 0;
     strIncrement = 5;
+    sklIncrement = 2;
 }
 
 /***** Function Re-definitions *****/
@@ -39,21 +40,24 @@ void ServantBerserkerClub::turnUpdate()
 {
     if (damageFreeTurn)
     {
-        strIncreases -= 2;
+        increases -= 2;
     }
 
     damageFreeTurn = true;
 
-    if (strIncreases < 0)
-        strIncreases = 0;
-    else if (strIncreases > 0)
+    if (increases < 0)
+        increases = 0;
+    else if (increases > 0)
     {
-        int totalStrIncrease = strIncreases * strIncrement;
+        int totalStrIncrease = increases * strIncrement;
+        int totalSklIncrease = increases * sklIncrement;
 
         vector<Stat> tS;
         tS.push_back(STR);
+        tS.push_back(SKL);
         vector<int> tA;
         tA.push_back(totalStrIncrease);
+        tA.push_back(totalSklIncrease);
         Debuff* br = new Debuff("Barbarian's Rage",
                                 "Taking damage fuels your rage, greatly increasing your strength.",
                                 getTeam(), tS, tA, 1);
@@ -230,7 +234,7 @@ int ServantBerserkerClub::attack(vector<Servant *> defenders, bool counter)
 void ServantBerserkerClub::subHP(int hp, DamageType dt)
 {
     damageFreeTurn = false;
-    strIncreases++;
+    increases++;
 
     currHP -= hp;
     int mhp = getMaxHP();

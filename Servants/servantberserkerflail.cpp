@@ -66,7 +66,7 @@ int ServantBerserkerFlail::attack(vector<Servant *> defenders, bool counter)
         tA.push_back(-5);
         tA.push_back(2);
         // Get the Team of the opposing team
-        Team otherTeam = All;
+        /*Team otherTeam = All;
         vector<vector<Servant*>> pField = field->getServantLocations();
         for (unsigned int i = 0; i < pField.size(); i++)
         {
@@ -77,9 +77,9 @@ int ServantBerserkerFlail::attack(vector<Servant *> defenders, bool counter)
                     otherTeam = pField[i][j]->getTeam();
                 }
             }
-        }
+        }*/
         Debuff* br = new Debuff("Cratered", "The ground has been cratered.",
-                                otherTeam, tS, tA, -1);
+                                All, tS, tA, -1);
 
         vector<Coordinate> crateredRange;
 

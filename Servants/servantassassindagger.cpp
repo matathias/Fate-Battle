@@ -263,7 +263,7 @@ int ServantAssassinDagger::activateNP3(vector<Servant *> defenders)
     // Remove teammates from the defenders vector
     for (int i = 0; i < (int) defenders.size(); i++)
     {
-        if (defenders[0]->getTeam() == getTeam())
+        if (defenders[i]->getTeam() == getTeam())
         {
             defenders.erase(defenders.begin()+i);
             i--;

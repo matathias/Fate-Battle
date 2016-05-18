@@ -118,7 +118,7 @@ int ServantAssassin::poisonStrike(vector<Servant *> defenders)
                 vector<Stat> dStats;
                 dStats.push_back(HP);
                 vector<int> dAmount;
-                dAmount.push_back(defenders[i]->getMaxHP() / 10);
+                dAmount.push_back(defenders[i]->getMaxHP() / 20);
                 Debuff *poison = new Debuff("Poison",
                                             "Poison does damage over time.",
                                             defenders[i]->getTeam(),
@@ -392,6 +392,7 @@ int ServantAssassin::doAction(int actionNum, vector<Servant *> defenders)
             break;
         case 5:
             ret = activateNP3(defenders);
+            break;
         default:
             return 2; // Not a valid choice
             break;

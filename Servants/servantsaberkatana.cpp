@@ -254,6 +254,8 @@ int ServantSaberKatana::activateNP1(vector<Servant *> defenders)
 
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
+            int totalDam = 0;
+
             for (int z = 0; z < 10; z++)
             {
                 int dam = 0;
@@ -290,6 +292,7 @@ int ServantSaberKatana::activateNP1(vector<Servant *> defenders)
                     // Deal the damage
                     dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
                                  attackMult);
+                    totalDam += dam;
                     log->addToEventLog(getFullName() + " dealt " +
                                        to_string(dam) + " damage to " +
                                        defenders[i]->getFullName() + ".");
@@ -348,6 +351,10 @@ int ServantSaberKatana::activateNP1(vector<Servant *> defenders)
                     }
                 }
             }
+
+            log->addToEventLog(getFullName() + " dealt " +
+                               to_string(totalDam) + " total damage to " +
+                               defenders[i]->getFullName() + "!");
         }
     }
 
@@ -368,6 +375,7 @@ int ServantSaberKatana::activateNP2(vector<Servant *> defenders)
 
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
+            int totalDam = 0;
             for (int z = 0; z < 100; z++)
             {
                 int dam = 0;
@@ -404,6 +412,7 @@ int ServantSaberKatana::activateNP2(vector<Servant *> defenders)
                     // Deal the damage
                     dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
                                  attackMult);
+                    totalDam += dam;
                     log->addToEventLog(getFullName() + " dealt " +
                                        to_string(dam) + " damage to " +
                                        defenders[i]->getFullName() + ".");
@@ -462,6 +471,10 @@ int ServantSaberKatana::activateNP2(vector<Servant *> defenders)
                     }
                 }
             }
+
+            log->addToEventLog(getFullName() + " dealt " +
+                               to_string(totalDam) + " total damage to " +
+                               defenders[i]->getFullName() + "!");
         }
     }
 
@@ -482,6 +495,7 @@ int ServantSaberKatana::activateNP3(vector<Servant *> defenders)
 
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
+            int totalDam = 0;
             for (int z = 0; z < 1000; z++)
             {
                 int dam = 0;
@@ -513,6 +527,7 @@ int ServantSaberKatana::activateNP3(vector<Servant *> defenders)
                     // Deal the damage
                     dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
                                  attackMult);
+                    totalDam += dam;
                     log->addToEventLog(getFullName() + " dealt " +
                                        to_string(dam) + " damage to " +
                                        defenders[i]->getFullName() + ".");
@@ -528,6 +543,10 @@ int ServantSaberKatana::activateNP3(vector<Servant *> defenders)
                 if(defenders[i]->getCurrHP() <= 0)
                     z = 1000;
             }
+
+            log->addToEventLog(getFullName() + " dealt " +
+                               to_string(totalDam) + " total damage to " +
+                               defenders[i]->getFullName() + "!");
         }
     }
 

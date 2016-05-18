@@ -62,6 +62,7 @@ class Servant
         void remAllDebuffs(bool purgePermadeath);
         // The second version applies to a servant who is not dying
         void remAllDebuffs2(bool purgePermadeath, bool purgeDoom);
+        void removeDoom();
         vector<Debuff*> getCastedDebuffs();
         void addCastedDebuff(Debuff* d);
         void decCastedDebuffs();

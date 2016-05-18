@@ -185,7 +185,7 @@ void ServantAvenger::updateAvengersRage()
         totalHPLoss = totalHPLoss / teamServants.size();
 
         // Get the stat bonus from this loss
-        int statBonus = totalHPLoss / 5;
+        int statBonus = totalHPLoss / 3;
 
         // Make a new debuff with statBonus
         vector<Stat> tStats;
