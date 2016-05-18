@@ -60,7 +60,10 @@ SOURCES += main.cpp\
     Servants/bossrin.cpp \
     Servants/bossdallas.cpp \
     Servants/bossyuu.cpp \
-    Servants/bossmika.cpp
+    Servants/bossmika.cpp \
+    Servants/servantarcherminion.cpp \
+    Servants/servantcasterminion.cpp \
+    Servants/servantsaberminion.cpp
 
 HEADERS  += mainwindow.h \
     Debuff.h \
@@ -107,7 +110,10 @@ HEADERS  += mainwindow.h \
     Servants/bossrin.h \
     Servants/bossdallas.h \
     Servants/bossyuu.h \
-    Servants/bossmika.h
+    Servants/bossmika.h \
+    Servants/servantarcherminion.h \
+    Servants/servantcasterminion.h \
+    Servants/servantsaberminion.h
 
 FORMS    += mainwindow.ui
 

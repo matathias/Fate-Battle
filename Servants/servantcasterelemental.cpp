@@ -596,6 +596,7 @@ int ServantCasterElemental::doAction(int actionNum, vector<Servant *> defenders)
             case 10:
                 ret = activateNP3(defenders);
                 break;
+            default:
                 return 2; // Not a valid choice
                 break;
         }

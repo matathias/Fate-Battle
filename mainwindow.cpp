@@ -27,6 +27,14 @@
 #include "Servants/servantassassinshuriken.h"
 #include "Servants/servantavengersai.h"
 #include "Servants/servantavengerscythe.h"
+#include "Servants/servantsaberminion.h"
+#include "Servants/servantarcherminion.h"
+#include "Servants/servantcasterminion.h"
+#include "Servants/bossdallas.h"
+#include "Servants/bossgil.h"
+#include "Servants/bossmika.h"
+#include "Servants/bossrin.h"
+#include "Servants/bossyuu.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -1341,6 +1349,12 @@ void MainWindow::initGameState()
             all.push_back(new ServantAvengerSai(ascLevel, te, log));
         else if (servName.compare("Avenger - Scythe") == 0)
             all.push_back(new ServantAvengerScythe(ascLevel, te, log));
+        else if (servName.compare("Minion: Saber") == 0)
+            all.push_back(new ServantSaberMinion(ascLevel, te, log));
+        else if (servName.compare("Minion: Archer") == 0)
+            all.push_back(new ServantArcherMinion(ascLevel, te, log));
+        else if (servName.compare("Minion: Caster") == 0)
+            all.push_back(new ServantCasterMinion(ascLevel, te, log));
     }
     for (unsigned int i = 0; i < teamTwo.size(); i++)
     {
@@ -1388,6 +1402,12 @@ void MainWindow::initGameState()
             all.push_back(new ServantAvengerSai(ascLevel, te, log));
         else if (servName.compare("Avenger - Scythe") == 0)
             all.push_back(new ServantAvengerScythe(ascLevel, te, log));
+        else if (servName.compare("Minion: Saber") == 0)
+            all.push_back(new ServantSaberMinion(ascLevel, te, log));
+        else if (servName.compare("Minion: Archer") == 0)
+            all.push_back(new ServantArcherMinion(ascLevel, te, log));
+        else if (servName.compare("Minion: Caster") == 0)
+            all.push_back(new ServantCasterMinion(ascLevel, te, log));
     }
 
     gs = new GameState(all, fieldLen, fieldWid, log);
