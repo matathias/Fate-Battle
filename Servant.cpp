@@ -824,6 +824,14 @@ int Servant::capZero(int num)
         return num;
 }
 
+int Servant::capOne(int num)
+{
+    if (num < 1)
+        return 1;
+    else
+        return num;
+}
+
 /* Placeholder definitions. Override in subclasses. */
 Debuff* Servant::finalRevenge()
 {

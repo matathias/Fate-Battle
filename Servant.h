@@ -163,6 +163,8 @@ class Servant
 
         // If num is less than 0, returns 0. Otherwise, returns num.
         int capZero(int num);
+        // If num is less than 1, returns 1. Otherwise, returns num.
+        int capOne(int num);
 
         // Placeholder. Will only really be used for Avengers.
         virtual Debuff* finalRevenge();

@@ -290,8 +290,8 @@ int ServantSaberKatana::activateNP1(vector<Servant *> defenders)
                         attackMult *= 3;
 
                     // Deal the damage
-                    dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
-                                 attackMult);
+                    dam = (int) capOne((capOne(getStr() - defenders[i]->getDef()) *
+                                 attackMult));
                     totalDam += dam;
                     log->addToEventLog(getFullName() + " dealt " +
                                        to_string(dam) + " damage to " +
@@ -410,7 +410,7 @@ int ServantSaberKatana::activateNP2(vector<Servant *> defenders)
                         attackMult *= 3;
 
                     // Deal the damage
-                    dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
+                    dam = (int) capOne(capOne(getStr() - defenders[i]->getDef()) *
                                  attackMult);
                     totalDam += dam;
                     log->addToEventLog(getFullName() + " dealt " +
@@ -525,7 +525,7 @@ int ServantSaberKatana::activateNP3(vector<Servant *> defenders)
                         attackMult *= 2;
 
                     // Deal the damage
-                    dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
+                    dam = (int) capOne(capOne(getStr() - defenders[i]->getDef()) *
                                  attackMult);
                     totalDam += dam;
                     log->addToEventLog(getFullName() + " dealt " +

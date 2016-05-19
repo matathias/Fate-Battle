@@ -220,8 +220,8 @@ int ServantSaberClaymore::activateNP1(vector<Servant *> defenders)
                         attackMult *= 3;
 
                     // Deal the damage
-                    dam = (int) (capZero(getStr() - defenders[i]->getDef()) *
-                                 attackMult);
+                    dam = (int) capOne(capOne(getStr() - defenders[i]->getDef())
+                                       * attackMult);
 
                     log->addToEventLog(getFullName() + " dealt " +
                                        to_string(dam) + " damage to " +
