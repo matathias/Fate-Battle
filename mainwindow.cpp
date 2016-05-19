@@ -503,8 +503,17 @@ void MainWindow::populateScene(int w, int l)
             int red = 150;
             int green = 150;
             int blue = 150;
-            if (gs->getTurnState() == 3 && gs->isSpaceSelection(xx,yy))
+            if (gs->getCurrentServant()->getCurrLoc().x == xx &&
+                    gs->getCurrentServant()->getCurrLoc().y == yy)
             {
+                blue = 0;
+                green = 255;
+                red = 0;
+            }
+            else if (gs->getTurnState() == 3 && gs->isSpaceSelection(xx,yy))
+            {
+                blue = 0;
+                green = 0;
                 red = 255;
             }
             else if ((gs->getTurnState() == 1 || gs->getTurnState() == 5) &&
@@ -514,8 +523,9 @@ void MainWindow::populateScene(int w, int l)
             }
             else if (gs->isSpaceRealityMarble(xx,yy))
             {
-                green = 0;
-                blue = 0;
+                green = 50;
+                blue = 50;
+                red = 50;
             }
             else if (gs->isSpaceDebuff(xx,yy))
             {
@@ -534,9 +544,9 @@ void MainWindow::populateScene(int w, int l)
                 }
                 else
                 {
-                    red = 0;
+                    red = 100;
                     green = 100;
-                    blue = 0;
+                    blue = 100;
                 }
             }
             string imgPath = "";
@@ -576,7 +586,14 @@ void MainWindow::reColorScene()
         int red = 150;
         int green = 150;
         int blue = 150;
-        if (gs->getTurnState() == 3 && gs->isSpaceSelection(x,y))
+        if (gs->getCurrentServant()->getCurrLoc().x == x &&
+                gs->getCurrentServant()->getCurrLoc().y == y)
+        {
+            blue = 0;
+            green = 255;
+            red = 0;
+        }
+        else if (gs->getTurnState() == 3 && gs->isSpaceSelection(x,y))
         {
             blue = 0;
             green = 0;
@@ -610,9 +627,9 @@ void MainWindow::reColorScene()
             }
             else
             {
-                red = 0;
+                red = 100;
                 green = 100;
-                blue = 0;
+                blue = 100;
             }
         }
         string imgPath = "";

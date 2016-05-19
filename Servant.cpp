@@ -888,3 +888,8 @@ Coordinate Servant::getEndLocation(Coordinate c, int range)
     else
         return err;
 }
+
+bool Servant::isBerserk()
+{
+    return false;
+}

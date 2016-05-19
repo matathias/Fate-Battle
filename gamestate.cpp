@@ -491,7 +491,8 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
             moves.push_back(moveLocation);
         }
     }
-    else if (s->getClass() == Berserker && !s->isGodmindActive())
+    else if ((s->getClass() == Berserker && !s->isGodmindActive()) ||
+             s->isBerserk())
     {
         // Find closest enemy unit, then locate closest tile to said unit
         vector<Servant*> enemies = getEnemyTeam(s);

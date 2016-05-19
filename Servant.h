@@ -124,6 +124,8 @@ class Servant
         // Only need to define this for the berserkers
         virtual bool isGodmindActive();
 
+        virtual bool isBerserk();
+
         virtual vector<Coordinate> getActionRange(int action);
 
         vector<vector<string>> getNoblePhantasms();
