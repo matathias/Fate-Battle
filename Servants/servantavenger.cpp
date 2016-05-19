@@ -131,7 +131,7 @@ Debuff* ServantAvenger::finalRevenge()
     vector<Stat> tStats;
     //tStats.push_back(MAXHP);
     //tStats.push_back(MAXMP);
-    tStats.push_back(MOV);
+    //tStats.push_back(MOV);
     tStats.push_back(STR);
     tStats.push_back(MAG);
     tStats.push_back(DEF);
@@ -142,7 +142,7 @@ Debuff* ServantAvenger::finalRevenge()
     vector<int> tAmounts;
     //tAmounts.push_back(statBonus);
     //tAmounts.push_back(statBonus);
-    tAmounts.push_back(statBonus);
+    //tAmounts.push_back(statBonus);
     tAmounts.push_back(statBonus);
     tAmounts.push_back(statBonus);
     tAmounts.push_back(statBonus);
