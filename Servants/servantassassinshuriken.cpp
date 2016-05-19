@@ -253,7 +253,7 @@ int ServantAssassinShuriken::activateNP3(vector<Servant *> defenders)
 
     // 30 times in a row, randomly pick a target and do damage
     bool allDead = false;
-    for (int i = 0; i < 45 && !allDead; i++)
+    for (int i = 0; i < 45 && !allDead && defenders.size() > 0; i++)
     {
         // Randomly pick a target
         Servant *target = defenders[0];

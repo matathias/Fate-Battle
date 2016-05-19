@@ -1247,6 +1247,8 @@ int GameState::turnStatePreTurn()
     actionListTypes = currentServant->getActionListTypes();
     actionMPCosts = currentServant->getActionMPCosts();
 
+    servStart = currentServant->getCurrLoc();
+
     turnState++;
     return 0;
 }

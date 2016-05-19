@@ -34,5 +34,10 @@
         <file>ServantIcons/Archer Minion.png</file>
         <file>ServantIcons/Caster Minion.png</file>
         <file>ServantIcons/Saber Minion.png</file>
+        <file>ServantIcons/Dallas Jones.png</file>
+        <file>ServantIcons/Gilgamesh.png</file>
+        <file>ServantIcons/Mikaela.png</file>
+        <file>ServantIcons/Rin Tohsaka.png</file>
+        <file>ServantIcons/Yuichiro.png</file>
     </qresource>
 </RCC>
