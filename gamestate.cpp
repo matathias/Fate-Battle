@@ -1287,7 +1287,7 @@ int GameState::turnStateMove()
 
 int GameState::turnStateChoseAction()
 {
-    if (turnState != 2)
+    if (turnState != 2 && turnState != 1)
         return 30;
 
     // Ensure that an action was actually chosen
@@ -1508,7 +1508,7 @@ int GameState::turnStateChoseAction()
         return turnStateApplyAction();
     }
 
-    turnState++;
+    turnState = 3;
     log->addToEventLog("Chose action " +
                        currentServant->getActionName(chosenAction)
                        + ".");
