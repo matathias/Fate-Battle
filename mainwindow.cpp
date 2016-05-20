@@ -1372,6 +1372,8 @@ void MainWindow::initGameState()
             all.push_back(new ServantArcherMinion(ascLevel, te, log));
         else if (servName.compare("Minion: Caster") == 0)
             all.push_back(new ServantCasterMinion(ascLevel, te, log));
+        else if (servName.compare("Boss: Mika") == 0)
+            all.push_back(new BossMika(ascLevel, te, log));
         else if (servName.compare("Boss: Yuu") == 0)
             all.push_back(new BossYuu(ascLevel, te, log));
     }
@@ -1427,6 +1429,8 @@ void MainWindow::initGameState()
             all.push_back(new ServantArcherMinion(ascLevel, te, log));
         else if (servName.compare("Minion: Caster") == 0)
             all.push_back(new ServantCasterMinion(ascLevel, te, log));
+        else if (servName.compare("Boss: Mika") == 0)
+            all.push_back(new BossMika(ascLevel, te, log));
         else if (servName.compare("Boss: Yuu") == 0)
             all.push_back(new BossYuu(ascLevel, te, log));
     }

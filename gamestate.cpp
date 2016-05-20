@@ -495,7 +495,7 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
              s->isBerserk())
     {
         // Find closest enemy unit, then locate closest tile to said unit
-        vector<Servant*> enemies = getEnemyTeam(s);
+        vector<Servant*> enemies = getOpposingTeamAlive(s->getTeam());
 
         int minDist = 1000;
         Coordinate closeLoc;
@@ -1013,12 +1013,12 @@ int GameState::turnStatePreTurn()
     int mpSub = currentServant->getDebuffAmount(MP);
     int currHP = currentServant->getCurrHP();
 
-    if (currHP - hpSub <= 0)
+    if (currHP + hpSub <= 0)
         currentServant->setHP(1);
-    else if (hpSub > 0)
-        currentServant->subHP(hpSub, OMNI);
+    else
+        currentServant->addHP(hpSub);
 
-    currentServant->subMP(mpSub);
+    currentServant->addMP(mpSub);
 
     // Determine if there are any ongoing combat effects that belong to this
     // Servant (e.g. Reality Marbles or Caster Territories) and if the player

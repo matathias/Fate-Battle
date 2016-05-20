@@ -375,7 +375,7 @@ Coordinate PlayField::getRandomCoord()
 // This function assumes that a valid coordinate exists on the playing field.
 Coordinate PlayField::getNearestValidCoord(Coordinate c)
 {
-    std::cout << "getNearestValidCoord: (" << c.x << "," << c.y << ")\n" << std::flush;
+    //std::cout << "getNearestValidCoord: (" << c.x << "," << c.y << ")\n" << std::flush;
 
     Coordinate ret;
     if (isValidCoordinate(c))
@@ -413,7 +413,7 @@ Coordinate PlayField::getNearestValidCoord(Coordinate c)
         }
     }
 
-    std::cout << "getNearestValidCoord result: (" << c.x << "," << c.y << ")\n" << std::flush;
+    //std::cout << "getNearestValidCoord result: (" << c.x << "," << c.y << ")\n" << std::flush;
     return ret;
 }
 

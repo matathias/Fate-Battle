@@ -111,7 +111,7 @@ int ServantRiderWyvern::dragonborn()
         log->addToErrorLog("You already killed your mount!");
         return 41;
     }
-    else if (getCurrHP() <= 0.2 * getMaxHP())
+    else if (getCurrHP() > 0.25 * getMaxHP())
     {
         log->addToErrorLog("Your HP isn't low enough to use Skill: Dragonborn!");
         return 41;
@@ -230,7 +230,7 @@ int ServantRiderWyvern::activateNP1(vector<Servant *> defenders)
         else if (fromPlayer == EAST)
         {
             finalLoc.x = targetLoc.x + shoveDistance;
-            finalLoc.y = finalLoc.y;
+            finalLoc.y = targetLoc.y;
             if (finalLoc.x >= field->getFieldWidth())
                 finalLoc.x = field->getFieldWidth() - 1;
         }
@@ -298,7 +298,7 @@ int ServantRiderWyvern::activateNP2(vector<Servant *> defenders)
         else if (fromPlayer == EAST)
         {
             finalLoc.x = targetLoc.x + shoveDistance;
-            finalLoc.y = finalLoc.y;
+            finalLoc.y = targetLoc.y;
             if (finalLoc.x >= field->getFieldWidth())
                 finalLoc.x = field->getFieldWidth() - 1;
         }
@@ -363,7 +363,7 @@ int ServantRiderWyvern::activateNP3(vector<Servant *> defenders)
         else if (fromPlayer == EAST)
         {
             finalLoc.x = field->getFieldWidth() - 1;
-            finalLoc.y = finalLoc.y;
+            finalLoc.y = targetLoc.y;
         }
         else // West
         {
