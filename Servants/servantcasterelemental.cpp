@@ -137,7 +137,7 @@ void ServantCasterElemental::setPlayField(PlayField *f)
 
     // Both Meteor Slam and Searing Maelstron have the entire field as their
     //  range, though for slightly different reasons
-    vector<Coordinate> npc2;
+    /*vector<Coordinate> npc2;
     for (int i = 0; i < field->getLargestDimension(); i++)
     {
         for (int j = 0; j < field->getLargestDimension(); j++)
@@ -147,7 +147,7 @@ void ServantCasterElemental::setPlayField(PlayField *f)
             if (!(j == 0 && i == 0))
                 npc2.push_back(tc);
         }
-    }
+    }*/
 
     npRanges.push_back(npc1);
     npRanges.push_back(getLowToHighRange(1, field->getLargestDimension() * 2));

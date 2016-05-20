@@ -12,6 +12,7 @@
 #include "Servants/servantsaber.h"
 #include "Servants/servantavenger.h"
 #include "Servants/servantberserker.h"
+#include "Servants/bossrin.h"
 #include <cmath>
 #include <iostream>
 
@@ -825,6 +826,14 @@ int GameState::turnStatePreTurn()
     {
         ServantAvenger *currServ = dynamic_cast<ServantAvenger*>(currentServant);
         currServ->updateAvengersRage();
+    }
+
+    // If the current servant is Rin Tohsaka, run her turnUpdate method for her
+    // willpower skill
+    if (currentServant->getName().compare("Rin Tohsaka") == 0)
+    {
+        BossRin *currServ = dynamic_cast<BossRin*>(currentServant);
+        currServ->turnUpdate();
     }
 
     // Check for a Doom debuff. If turns remaining is 1, do the checks. If they

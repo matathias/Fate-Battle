@@ -1376,6 +1376,8 @@ void MainWindow::initGameState()
             all.push_back(new BossMika(ascLevel, te, log));
         else if (servName.compare("Boss: Yuu") == 0)
             all.push_back(new BossYuu(ascLevel, te, log));
+        else if (servName.compare("Boss: Rin Tohsaka") == 0)
+            all.push_back(new BossRin(ascLevel, te, log));
     }
     for (unsigned int i = 0; i < teamTwo.size(); i++)
     {
@@ -1433,6 +1435,8 @@ void MainWindow::initGameState()
             all.push_back(new BossMika(ascLevel, te, log));
         else if (servName.compare("Boss: Yuu") == 0)
             all.push_back(new BossYuu(ascLevel, te, log));
+        else if (servName.compare("Boss: Rin Tohsaka") == 0)
+            all.push_back(new BossRin(ascLevel, te, log));
     }
 
     gs = new GameState(all, fieldLen, fieldWid, log);

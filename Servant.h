@@ -67,7 +67,7 @@ class Servant
         void addCastedDebuff(Debuff* d);
         void decCastedDebuffs();
         void remCastedDebuffs();
-        vector<Skill> getSkills();
+        bool hasDebuff(string d);
 
         // Only relevant to casters
         bool isTerritoryActive();

@@ -394,9 +394,18 @@ int Servant::getDebuffAmount(Stat s)
     return d;
 }
 
-vector<Skill> Servant::getSkills()
+bool Servant::hasDebuff(string d)
 {
-    return skills;
+    bool cooldown = false;
+    for (int i = 0; i < (int) debuffs.size(); i++)
+    {
+        if(debuffs[i]->getDebuffName().compare(d) == 0)
+        {
+            cooldown = true;
+        }
+    }
+
+    return cooldown;
 }
 
 // Caster territory functions
