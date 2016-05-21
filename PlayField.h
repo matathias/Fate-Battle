@@ -10,6 +10,7 @@ bool isInVector(vector<Coordinate> vec, Coordinate c);
 Direction getDirectionAtoB(Coordinate a, Coordinate b);
 vector<Coordinate> getLowToHighRange(int low, int high);
 vector<Coordinate> getAbsoluteRange(int low, int high, Servant* s);
+int getDistance(Coordinate a, Coordinate b);
 
 class PlayField
 {

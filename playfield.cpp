@@ -95,6 +95,11 @@ vector<Coordinate> getAbsoluteRange(int low, int high, Servant *s)
     return range;
 }
 
+int getDistance(Coordinate a, Coordinate b)
+{
+    return abs(a.x - b.x) + abs(a.y - b.y);
+}
+
 /********** Function Definitions **********/
 // Constructor
 PlayField::PlayField(int l, int w, vector<Servant *> servantList,

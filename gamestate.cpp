@@ -1851,7 +1851,6 @@ int GameState::turnStateChoseTargets()
         string tPlayers = "\n";
         for (unsigned int i = 0; i < chosenDefenders.size(); i++)
         {
-            cout << i << " " << chosenDefenders.size() << "\n" << std::flush;
             tPlayers = tPlayers + chosenDefenders[i]->getTeamName() + " " +
                        chosenDefenders[i]->getName() + "\n";
         }
