@@ -447,19 +447,75 @@ void MainWindow::mainSetup()
     nextServ->setAlignment(Qt::AlignCenter);
     nextServ->setFrameStyle(QFrame::Box | QFrame::Sunken);
 
+    /* Servant HP Widget */
+    vector<Servant*> teamOneHP = gs->getAlphaTeam();
+    vector<Servant*> teamTwoHP;
+    string tOneHP = "";
+    string tTwoHP = "";
+    if (teamOneHP.size() == 0)
+    {
+        tOneHP = "Omega Team HP\n\n";
+        teamOneHP = gs->getOmegaTeam();
+        tTwoHP = "Boss Team HP\n\n";
+        teamTwoHP = gs->getBossTeam();
+    }
+    else
+    {
+        tOneHP = "Alpha Team HP\n\n";
+        teamTwoHP = gs->getOmegaTeam();
+        tTwoHP = "Omega Team HP\n\n";
+        if (teamTwoHP.size() == 0)
+        {
+            tTwoHP = "Boss Team HP\n\n";
+            teamTwoHP = gs->getBossTeam();
+        }
+    }
+
+    for (unsigned int i = 0; i < teamOneHP.size(); i++)
+    {
+        tOneHP += teamOneHP[i]->getFullName() + ":  " +
+                to_string(teamOneHP[i]->getCurrHP()) + " / " +
+                to_string(teamOneHP[i]->getMaxHP()) + "\n\n";
+    }
+    for (unsigned int i = 0; i < teamTwoHP.size(); i++)
+    {
+        tTwoHP += teamTwoHP[i]->getFullName() + ":  " +
+                to_string(teamTwoHP[i]->getCurrHP()) + " / " +
+                to_string(teamTwoHP[i]->getMaxHP()) + "\n\n";
+    }
+
+    QLabel *teamOneHPLabel = new QLabel;
+    QLabel *teamTwoHPLabel = new QLabel;
+    teamOneHPLabel->setText(QString::fromStdString(tOneHP));
+    teamTwoHPLabel->setText(QString::fromStdString(tTwoHP));
+    teamOneHPLabel->setAlignment(Qt::AlignCenter);
+    teamTwoHPLabel->setAlignment(Qt::AlignCenter);
+    teamOneHPLabel->setFrameStyle(QFrame::Box | QFrame::Sunken);
+    teamTwoHPLabel->setFrameStyle(QFrame::Box | QFrame::Sunken);
+
     // Setup the layouts
     nameIcon->addLayout(allStats);
     //nameIcon->addLayout(debuffLayout);
 
+    QVBoxLayout *allHPLayout = new QVBoxLayout;
+    allHPLayout->addWidget(nextServ);
+    allHPLayout->addWidget(teamOneHPLabel);
+    allHPLayout->addWidget(teamTwoHPLabel);
+    allHPLayout->addWidget(quitButton);
+    allHPLayout->setStretch(0, 1);
+    allHPLayout->setStretch(1, 10);
+    allHPLayout->setStretch(2, 10);
+
     QVBoxLayout *layout2 = new QVBoxLayout;
-    layout2->addWidget(quitButton);
+    //layout2->addWidget(quitButton);
     layout2->addWidget(gameField);
-    layout2->addWidget(errorLabel);
+    //layout2->addWidget(errorLabel);
     //layout2->addWidget(errorLabel);
 
     QVBoxLayout *rightMost = new QVBoxLayout;
-    rightMost->addWidget(nextServ);
+    //rightMost->addWidget(nextServ);
     rightMost->addLayout(wholeActionList);
+    rightMost->addWidget(errorLabel);
     rightMost->addWidget(evLogLabel);
     rightMost->addWidget(evLogWid);
 
@@ -472,9 +528,13 @@ void MainWindow::mainSetup()
     allInformation->addLayout(debuffLayout);
 
     mainLayout = new QHBoxLayout;
+    mainLayout->addLayout(allHPLayout);
     mainLayout->addLayout(layout2);
     //mainLayout->addLayout(playerInformation);
     mainLayout->addLayout(allInformation);
+    mainLayout->setStretch(0, 1);
+    mainLayout->setStretch(1, 4);
+    mainLayout->setStretch(2, 3);
 
     setLayout(mainLayout);
 
