@@ -207,6 +207,8 @@ int BossRin::turnUpdate()
                                  getTeam(), tStats, tAmounts, 1);
 
     addDebuff(legRein);
+
+    return 0;
 }
 
 /***** Private Helper Functions *****/
@@ -535,12 +537,12 @@ int BossRin::activateNP2(vector<Servant *> defenders)
     vector<Servant*> targets = field->getAllInRange(defenders[0],
                                                     getLowToHighRange(0,2));
 
-    // Deal thrice normal damage (undodgeable)
+    // Deal twice normal damage (undodgeable)
     for (unsigned int i = 0; i < targets.size(); i++)
     {
         int dam = 0;
 
-        // No accuracy or crit check -- it always hits
+        // No accuracy check
         int attackMult = 2;
         int critChance = capZero(getCriticalRate() -
                          targets[i]->getCriticalEvade());
@@ -707,7 +709,7 @@ int BossRin::activateNP3(vector<Servant *> defenders)
         if (hit)
         {
             // Deal the damage
-            dam = getMag();
+            dam = getStr();
             log->addToEventLog(getFullName() + " dealt " +
                                to_string(dam) + " damage to " +
                                defenders[i]->getFullName() + ".");

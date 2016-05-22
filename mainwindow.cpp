@@ -1380,6 +1380,8 @@ void MainWindow::initGameState()
             all.push_back(new BossRin(ascLevel, te, log));
         else if (servName.compare("Boss: Dallas Jones") == 0)
             all.push_back(new BossDallas(ascLevel, te, log));
+        else if (servName.compare("Boss: Gilgamesh") == 0)
+            all.push_back(new BossGil(ascLevel, te, log));
     }
     for (unsigned int i = 0; i < teamTwo.size(); i++)
     {
@@ -1441,6 +1443,8 @@ void MainWindow::initGameState()
             all.push_back(new BossRin(ascLevel, te, log));
         else if (servName.compare("Boss: Dallas Jones") == 0)
             all.push_back(new BossDallas(ascLevel, te, log));
+        else if (servName.compare("Boss: Gilgamesh") == 0)
+            all.push_back(new BossGil(ascLevel, te, log));
     }
 
     gs = new GameState(all, fieldLen, fieldWid, log);

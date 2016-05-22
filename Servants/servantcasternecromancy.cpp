@@ -585,7 +585,7 @@ int ServantCasterNecromancy::activateNP1(vector<Servant *> defenders)
         tDebStat.push_back(MOV);
         vector<int> tDebAm;
         tDebAm.push_back(0);
-        Debuff *newDebuff = new Debuff("Permadeath",
+        Debuff *newDebuff = new Debuff("Cursed",
                                        "If you die while this debuff is active, you cannot be ressurected.",
                                        defenders[i]->getTeam(),
                                        tDebStat, tDebAm, 3);
@@ -681,7 +681,7 @@ int ServantCasterNecromancy::activateNP3(vector<Servant *> defenders)
                 tDebStat.push_back(MOV);
                 vector<int> tDebAm;
                 tDebAm.push_back(0);
-                Debuff *newDebuff = new Debuff("Permadeath",
+                Debuff *newDebuff = new Debuff("Cursed",
                                                "If you die while this debuff is active, you cannot be ressurected.",
                                                allServ[i][j]->getTeam(),
                                                tDebStat, tDebAm, 1);

@@ -923,7 +923,7 @@ int GameState::turnStatePreTurn()
             tDebStat.push_back(MOV);
             vector<int> tDebAm;
             tDebAm.push_back(0);
-            Debuff *newDebuff = new Debuff("Permadeath",
+            Debuff *newDebuff = new Debuff("Cursed",
                                            "If you die while this debuff is active, you cannot be ressurected.",
                                            currentServant->getTeam(),
                                            tDebStat, tDebAm, 1);
@@ -972,7 +972,7 @@ int GameState::turnStatePreTurn()
         tDebStat.push_back(MOV);
         vector<int> tDebAm;
         tDebAm.push_back(0);
-        Debuff *newDebuff = new Debuff("Permadeath",
+        Debuff *newDebuff = new Debuff("Cursed",
                                        "If you die while this debuff is active, you cannot be ressurected.",
                                        currentServant->getTeam(),
                                        tDebStat, tDebAm, 1);
@@ -1124,7 +1124,7 @@ int GameState::turnStatePreTurn()
                             if(aliveServants[j] == dead[i])
                             {
                                 f = true;
-                                aliveServants.erase(aliveServants.begin()+j);
+                                aliveServants.erase(aliveServants.begin() + j);
                             }
                         }
                     }
@@ -1155,8 +1155,8 @@ int GameState::turnStatePreTurn()
                     deathDialog->setLayout(finalLayout);
 
                     // Display the dialog and get the result
-                    int result = deathDialog->exec();
                     deathComboBoxIndex = 0;
+                    int result = deathDialog->exec();
 
                     if (result == QDialog::Rejected)
                     {
@@ -1198,6 +1198,8 @@ int GameState::turnStatePreTurn()
                                                " lucked out of taking damage!");
                         }
                     }
+
+                    deathComboBoxIndex = 0;
                 }
             }
         }

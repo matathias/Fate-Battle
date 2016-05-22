@@ -288,22 +288,19 @@ void Servant::decDebuffs()
 
 void Servant::remAllDebuffs(bool purgePermadead)
 {
-    if (purgePermadead)
-        debuffs.clear();
-
-    else
+    for (int i = 0; i < (int) debuffs.size(); i++)
     {
-        for (int i = 0; i < (int) debuffs.size(); i++)
+        if(!(debuffs[i]->getDebuffName().compare("Permadeath") == 0 && !purgePermadead) &&
+                !(debuffs[i]->getDebuffName().compare("Cursed") != 0 && !purgePermadead) &&
+                debuffs[i]->getDebuffDescrip().compare("Passive Skill") != 0 &&
+                debuffs[i]->getDebuffDescrip().compare("Passive Noble Phantasm") != 0)
         {
-            if(debuffs[i]->getDebuffName().compare("Permadeath") != 0)
-            {
-                debuffs.erase(debuffs.begin()+i);
-                i--;
-            }
-            else
-            {
-                debuffs[i]->setTurnsRemaining(-1);
-            }
+            debuffs.erase(debuffs.begin()+i);
+            i--;
+        }
+        else
+        {
+            debuffs[i]->setTurnsRemaining(-1);
         }
     }
 }
@@ -312,7 +309,8 @@ void Servant::remAllDebuffs2(bool purgePermadeath, bool purgeDoom)
 {
     for (int i = 0; i < (int) debuffs.size(); i++)
     {
-        if(purgePermadeath && debuffs[i]->getDebuffName().compare("Permadeath") == 0)
+        if((purgePermadeath && debuffs[i]->getDebuffName().compare("Permadeath") == 0) ||
+                (purgePermadeath && debuffs[i]->getDebuffName().compare("Cursed") == 0))
         {
             debuffs.erase(debuffs.begin()+i);
             i--;
@@ -323,7 +321,9 @@ void Servant::remAllDebuffs2(bool purgePermadeath, bool purgeDoom)
             i--;
         }
         else if (debuffs[i]->getDebuffName().compare("Permadeath") != 0 &&
-                 debuffs[i]->getDebuffName().compare("Doom") != 0)
+                 debuffs[i]->getDebuffName().compare("Doom") != 0 &&
+                 debuffs[i]->getDebuffDescrip().compare("Passive Skill") != 0 &&
+                 debuffs[i]->getDebuffDescrip().compare("Passive Noble Phantasm") != 0)
         {
             debuffs.erase(debuffs.begin()+i);
             i--;
@@ -670,7 +670,8 @@ bool Servant::isPermaDead()
     bool ret = false;
     for (unsigned int i = 0; i < debuffs.size() && !ret; i++)
     {
-        if (debuffs[i]->getDebuffName().compare("Permadeath") == 0)
+        if (debuffs[i]->getDebuffName().compare("Permadeath") == 0 ||
+                debuffs[i]->getDebuffName().compare("Cursed") == 0)
         {
             ret = true;
         }
