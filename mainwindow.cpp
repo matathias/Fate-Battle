@@ -533,8 +533,8 @@ void MainWindow::mainSetup()
     //mainLayout->addLayout(playerInformation);
     mainLayout->addLayout(allInformation);
     mainLayout->setStretch(0, 1);
-    mainLayout->setStretch(1, 4);
-    mainLayout->setStretch(2, 3);
+    mainLayout->setStretch(1, 5);
+    mainLayout->setStretch(2, 4);
 
     setLayout(mainLayout);
 

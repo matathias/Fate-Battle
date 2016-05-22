@@ -7,7 +7,7 @@ BossYuu::BossYuu(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     name = "Yuichiro";
 
     /** Stat modifiers **/
-    int strMod = 10;
+    /*int strMod = 10;
     int spdMod = 10;
     int sklMod = 5;
     int defMod = 5;
@@ -23,7 +23,7 @@ BossYuu::BossYuu(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     skl[2] += sklMod;
     def[0] += defMod;
     def[1] += defMod;
-    def[2] += defMod;
+    def[2] += defMod;*/
 
     actionList[0].push_back("4: Drugging Up");
     actionList[0].push_back("5: Asuramaru");
@@ -94,6 +94,21 @@ BossYuu::BossYuu(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     npRanges.push_back(getLowToHighRange(1,1));
     // Seraph of the End range (doesn't really have one)
     npRanges.push_back(getLowToHighRange(0,0));
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(STR);
+    hdS.push_back(DEF);
+    hdS.push_back(SPD);
+    hdS.push_back(SKL);
+    vector<int> hdA;
+    hdA.push_back(10);
+    hdA.push_back(5);
+    hdA.push_back(10);
+    hdA.push_back(5);
+    Debuff *highDivinity = new Debuff("Seraph Hybrid", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 /***** Active Skills *****/

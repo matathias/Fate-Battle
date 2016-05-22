@@ -8,10 +8,10 @@ ServantBerserkerFlail::ServantBerserkerFlail(int as, Team t, Logger *l) : Servan
     /*** Stat Modifiers ***/
     hiRange += 1;
 
-    int spdMod = 3;
+    /*int spdMod = 3;
     spd[0] += spdMod;
     spd[1] += spdMod;
-    spd[2] += spdMod;
+    spd[2] += spdMod;*/
 
     actionListTypes[2][0] = A;
     actionCounterable[2][0] = false;
@@ -40,6 +40,15 @@ ServantBerserkerFlail::ServantBerserkerFlail(int as, Team t, Logger *l) : Servan
     npRanges.push_back(npc1);
     npRanges.push_back(npc2);
     npRanges.push_back(npc3);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(SPD);
+    vector<int> hdA;
+    hdA.push_back(3);
+    Debuff *highDivinity = new Debuff("Chain Link", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 /***** Function Re-definitions *****/

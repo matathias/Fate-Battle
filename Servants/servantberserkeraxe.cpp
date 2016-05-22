@@ -42,6 +42,15 @@ ServantBerserkerAxe::ServantBerserkerAxe(int as, Team t, Logger *l) : ServantBer
     deathCount = 0;
     deathCeiling = 3;
     numDamageFreeTurns = 0;
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    vector<int> hdA;
+    hdA.push_back(0);
+    Debuff *highDivinity = new Debuff("Bleedout", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 /***** Active Skills *****/

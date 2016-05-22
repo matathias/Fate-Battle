@@ -68,6 +68,23 @@ ServantRider::ServantRider(int as, Team t, Logger *l) : Servant(as, t, l)
     actionCounterable.push_back(acCounter);
     actionCounterable.push_back(acCounter);
     actionCounterable.push_back(acCounter);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    vector<int> hdA;
+    hdA.push_back(0);
+    Debuff *highDivinity = new Debuff("Riding", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("Trample", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 int ServantRider::attack(vector<Servant *> defenders, bool counter)

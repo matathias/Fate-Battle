@@ -76,6 +76,23 @@ ServantAvenger::ServantAvenger(int as, Team t, Logger *l) : Servant(as, t, l)
     actionCounterable.push_back(acCounter);
 
     carriedTheTorch = false;
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    vector<int> hdA;
+    hdA.push_back(0);
+    Debuff *highDivinity = new Debuff("Vengeance", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("Final Revenge", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 void ServantAvenger::setTeam(vector<Servant *> ts)

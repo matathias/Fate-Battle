@@ -6,11 +6,11 @@ ServantCasterElemental::ServantCasterElemental(int as, Team t, Logger *l) : Serv
     name = "Elemental Caster";
 
     /** Stat modifiers **/
-    int magMod = 10;
+    /*int magMod = 10;
 
     mag[0] += magMod;
     mag[1] += magMod;
-    mag[2] += magMod;
+    mag[2] += magMod;*/
 
     // Action List
     actionList[0].push_back("5: Item Construction - Flame Blade");
@@ -121,6 +121,23 @@ ServantCasterElemental::ServantCasterElemental(int as, Team t, Logger *l) : Serv
     noblePhantasms.push_back(np3);
 
     flameBladeCreated = false;
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    vector<int> hdA;
+    hdA.push_back(0);
+    Debuff *highDivinity = new Debuff("Clensing Flame", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MAG);
+    hdA.clear();
+    hdA.push_back(10);
+    Debuff *highDivinity2 = new Debuff("Offensive Flames", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 void ServantCasterElemental::setPlayField(PlayField *f)

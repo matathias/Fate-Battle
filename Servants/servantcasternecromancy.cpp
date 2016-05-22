@@ -12,7 +12,7 @@ ServantCasterNecromancy::ServantCasterNecromancy(int as, Team t, Logger *l) : Se
     int harbingerOfDeathCost = 500;
 
     /** Stat modifiers **/
-    int resMod = 5;
+    /*int resMod = 5;
     int defMod = 10;
     int spdMod = -10;
     double hpMod = 1.1;
@@ -31,9 +31,9 @@ ServantCasterNecromancy::ServantCasterNecromancy(int as, Team t, Logger *l) : Se
 
     maxHP[0] *= hpMod;
     maxHP[1] *= hpMod;
-    maxHP[2] *= hpMod;
+    maxHP[2] *= hpMod;*/
 
-    currHP = maxHP[as];
+    //currHP = maxHP[as];
 
     // Action List
     actionList[0].push_back("5: Item Construction - Death Seal");
@@ -156,6 +156,23 @@ ServantCasterNecromancy::ServantCasterNecromancy(int as, Team t, Logger *l) : Se
     vector<Coordinate> npr;
     npr.push_back(tc);
     npRanges.push_back(npr);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(DEF);
+    hdS.push_back(RES);
+    hdS.push_back(SPD);
+    hdS.push_back(MAXHP);
+    vector<int> hdA;
+    hdA.push_back(15);
+    hdA.push_back(5);
+    hdA.push_back(-10);
+    hdA.push_back(getMaxHP() * 0.1);
+    Debuff *highDivinity = new Debuff("Pact With Death", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    currHP = getMaxHP();
 }
 
 /***** Active Skills *****/

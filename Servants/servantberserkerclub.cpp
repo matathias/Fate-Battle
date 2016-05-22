@@ -33,6 +33,15 @@ ServantBerserkerClub::ServantBerserkerClub(int as, Team t, Logger *l) : ServantB
     increases = 0;
     strIncrement = 5;
     sklIncrement = 2;
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    vector<int> hdA;
+    hdA.push_back(0);
+    Debuff *highDivinity = new Debuff("Crushing Blow", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 /***** Function Re-definitions *****/

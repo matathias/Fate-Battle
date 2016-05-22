@@ -5,7 +5,7 @@ ServantSaberKatana::ServantSaberKatana(int as, Team t, Logger *l) : ServantSaber
     name = "Katana Saber";
 
     /** Stat modifiers **/
-    int strMod = -5;
+    /*int strMod = -5;
     int spdMod = 5;
 
     spd[0] += spdMod;
@@ -14,7 +14,7 @@ ServantSaberKatana::ServantSaberKatana(int as, Team t, Logger *l) : ServantSaber
 
     str[0] += strMod;
     str[1] += strMod;
-    str[2] += strMod;
+    str[2] += strMod;*/
 
     actionList[0].push_back("4: NP: Tensutoraiki");
     actionList[1].push_back("4: NP: Tensutoraiki");
@@ -90,6 +90,26 @@ ServantSaberKatana::ServantSaberKatana(int as, Team t, Logger *l) : ServantSaber
     npRanges.push_back(npc1);
     npRanges.push_back(npc2);
     npRanges.push_back(npc3);
+
+    /** Passive Skills **/
+    vector<Stat> hdS;
+    hdS.push_back(MAXMP);
+    vector<int> hdA;
+    hdA.push_back(0);
+    Debuff *highDivinity3 = new Debuff("GLORIOUS NIPPON STEEL",
+                                       "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity3);
+
+    hdS.clear();
+    hdS.push_back(STR);
+    hdS.push_back(SPD);
+    hdA.clear();
+    hdA.push_back(-5);
+    hdA.push_back(8);
+    Debuff *highDivinity2 = new Debuff("Katanas Are Actually Pretty Weak", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 int ServantSaberKatana::doAction(int actionNum, vector<Servant *> defenders)

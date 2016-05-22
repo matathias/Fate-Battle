@@ -6,7 +6,7 @@ ServantSaberClaymore::ServantSaberClaymore(int as, Team t, Logger *l) : ServantS
     name = "Claymore Saber";
 
     /** Stat modifiers **/
-    int spdMod = -8;
+    /*int spdMod = -8;
     int strMod = 5;
     int lukMod = 10;
     int maxmpMod = -25;
@@ -26,7 +26,7 @@ ServantSaberClaymore::ServantSaberClaymore(int as, Team t, Logger *l) : ServantS
     maxMP[2] += maxmpMod;
     res[0] += resMod;
     res[1] += resMod;
-    res[2] += resMod;
+    res[2] += resMod;*/
 
     actionList[1].push_back("4: NP: Knights of the Square Table");
     actionList[2].push_back("4: NP: Knights of the Square Table");
@@ -99,6 +99,38 @@ ServantSaberClaymore::ServantSaberClaymore(int as, Team t, Logger *l) : ServantS
     //npRanges.push_back(npc1);
     npRanges.push_back(npc2);
     npRanges.push_back(npc3);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MAXMP);
+    hdS.push_back(RES);
+    hdS.push_back(LUK);
+    vector<int> hdA;
+    hdA.push_back(-25);
+    hdA.push_back(-5);
+    hdA.push_back(10);
+    Debuff *highDivinity3 = new Debuff("The Legend of King Erthure Is Totally A Thing",
+                                       "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity3);
+
+    hdS.clear();
+    hdS.push_back(STR);
+    hdS.push_back(SPD);
+    hdA.clear();
+    hdA.push_back(5);
+    hdA.push_back(-8);
+    Debuff *highDivinity2 = new Debuff("It's Not Two-handed For Nothing", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity = new Debuff("Valone", "Passive Noble Phantasm",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 void ServantSaberClaymore::subHP(int hp, DamageType dt)

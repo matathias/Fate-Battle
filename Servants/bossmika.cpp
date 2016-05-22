@@ -7,7 +7,7 @@ BossMika::BossMika(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     name = "Mikaela";
 
     /** Stat modifiers **/
-    int strMod = 10;
+    /*int strMod = 10;
     int spdMod = 10;
     int sklMod = 0;
     int defMod = 10;
@@ -23,7 +23,7 @@ BossMika::BossMika(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     skl[2] += sklMod;
     def[0] += defMod;
     def[1] += defMod;
-    def[2] += defMod;
+    def[2] += defMod;*/
 
     actionList[0].push_back("4: Bloodthirst");
     actionList[1].push_back("4: Bloodthirst");
@@ -79,6 +79,19 @@ BossMika::BossMika(int as, Team t, Logger *l) : ServantSaber(as, t, l)
     npRanges.push_back(getLowToHighRange(1,2));
     // Blood Blast range
     npRanges.push_back(getLowToHighRange(1,3));
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(STR);
+    hdS.push_back(DEF);
+    hdS.push_back(SPD);
+    vector<int> hdA;
+    hdA.push_back(10);
+    hdA.push_back(10);
+    hdA.push_back(10);
+    Debuff *highDivinity = new Debuff("True Noble Vampire", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 /***** Active Skills *****/
@@ -273,7 +286,7 @@ int BossMika::activateNP1(vector<Servant *> defenders)
 
     subMP(actionMPCosts[ascension][4]);
 
-    int shoveDistance = 6;
+    int shoveDistance = 8;
 
     log->addToEventLog(getFullName() + " used Blade Gust!");
 

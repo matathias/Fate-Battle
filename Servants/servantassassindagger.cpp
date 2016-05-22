@@ -6,11 +6,11 @@ ServantAssassinDagger::ServantAssassinDagger(int as, Team t, Logger *l) : Servan
     name = "Dagger Assassin";
 
     /** Stat modifiers **/
-    int strMod = 15;
+    /*int strMod = 15;
 
     str[0] += strMod;
     str[1] += strMod;
-    str[2] += strMod;
+    str[2] += strMod;*/
 
     actionList[0].push_back("4: NP: Backslash!");
     actionList[1].push_back("4: NP: Backslash!");
@@ -74,6 +74,23 @@ ServantAssassinDagger::ServantAssassinDagger(int as, Team t, Logger *l) : Servan
     classDebuff = new Debuff("Armor Scratcher",
                              "You took a hit from a Dagger Assassin, reducing the effectiveness of your armor.",
                              team, tempS, tempA, 3);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(STR);
+    vector<int> hdA;
+    hdA.push_back(15);
+    Debuff *highDivinity = new Debuff("Lethal Blade", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("Armor Scratcher", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 /***** Noble Phantasms *****/

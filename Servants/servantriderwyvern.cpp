@@ -7,7 +7,7 @@ ServantRiderWyvern::ServantRiderWyvern(int as, Team t, Logger *l) : ServantRider
     mountKilled = false;
 
     /** Stat modifiers **/
-    int resMod = 5;
+    /*int resMod = 5;
     int spdMod = -15;
     int strMod = 15;
     int defMod = 10;
@@ -27,7 +27,7 @@ ServantRiderWyvern::ServantRiderWyvern(int as, Team t, Logger *l) : ServantRider
     def[2] += defMod;
     mov[0] += movMod;
     mov[1] += movMod;
-    mov[2] += movMod;
+    mov[2] += movMod;*/
 
     actionList[0].push_back("2: Dragonborn");
     actionList[0].push_back("3: NP: Fus");
@@ -98,6 +98,23 @@ ServantRiderWyvern::ServantRiderWyvern(int as, Team t, Logger *l) : ServantRider
     npRanges.push_back(getLowToHighRange(1,2));
     // Fus Ro Dah range
     npRanges.push_back(getLowToHighRange(1,3));
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    hdS.push_back(STR);
+    hdS.push_back(DEF);
+    hdS.push_back(RES);
+    hdS.push_back(SPD);
+    vector<int> hdA;
+    hdA.push_back(-1);
+    hdA.push_back(15);
+    hdA.push_back(10);
+    hdA.push_back(5);
+    hdA.push_back(-15);
+    Debuff *highDivinity = new Debuff("Strength of the Dragon", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 /***** Active Skills *****/

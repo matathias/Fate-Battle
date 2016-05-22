@@ -8,10 +8,10 @@ ServantLancerHalberd::ServantLancerHalberd(int as, Team t, Logger *l) : ServantL
     name = "Halberd Lancer";
 
     /** Stat modifiers **/
-    int strMod = 5;
+    /*int strMod = 5;
     str[0] += strMod;
     str[1] += strMod;
-    str[2] += strMod;
+    str[2] += strMod;*/
 
     actionList[0].push_back("3: NP: Piercing Blow");
     actionList[1].push_back("3: NP: Piercing Blow");
@@ -99,6 +99,23 @@ ServantLancerHalberd::ServantLancerHalberd(int as, Team t, Logger *l) : ServantL
     npRanges.push_back(npc1);
     npRanges.push_back(npc2);
     npRanges.push_back(npc3);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    vector<int> hdA;
+    hdA.push_back(0);
+    Debuff *highDivinity = new Debuff("Anti-Cavalry", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(STR);
+    hdA.clear();
+    hdA.push_back(5);
+    Debuff *highDivinity2 = new Debuff("Heavy Blow", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 int ServantLancerHalberd::attack(vector<Servant *> defenders, bool counter)

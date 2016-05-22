@@ -6,7 +6,7 @@ BossRin::BossRin(int as, Team t, Logger *l) : ServantCaster(as, t, l)
     name = "Rin Tohsaka";
 
     /** Stat modifiers **/
-    int magMod = 15;
+    /*int magMod = 15;
     int resMod = 15;
     int defMod = 5;
     int sklMod = 5;
@@ -32,7 +32,7 @@ BossRin::BossRin(int as, Team t, Logger *l) : ServantCaster(as, t, l)
     maxHP[1] += maxHPMod;
     maxHP[2] += maxHPMod;
 
-    currHP = maxHP[ascension];
+    currHP = maxHP[ascension];*/
 
     // Action List
     actionList[0].push_back("5: Leg Reinforcement");
@@ -113,6 +113,27 @@ BossRin::BossRin(int as, Team t, Logger *l) : ServantCaster(as, t, l)
     noblePhantasms.push_back(np3);
 
     azothUseCount = 0;
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MAXHP);
+    hdS.push_back(DEF);
+    hdS.push_back(MAG);
+    hdS.push_back(RES);
+    hdS.push_back(SPD);
+    hdS.push_back(SKL);
+    vector<int> hdA;
+    hdA.push_back(50);
+    hdA.push_back(5);
+    hdA.push_back(10);
+    hdA.push_back(10);
+    hdA.push_back(5);
+    hdA.push_back(5);
+    Debuff *highDivinity = new Debuff("By the Power of the Command Seal", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    currHP = getMaxHP();
 }
 
 /***** Active Skills *****/

@@ -616,7 +616,7 @@ vector<Coordinate> PlayField::pathFind(Coordinate start, Coordinate end)
         if (!(numerator < longest))
         {
             numerator -= longest;
-            x += dy1;
+            x += dx1;
             y += dy1;
         }
         else

@@ -6,7 +6,7 @@ BossDallas::BossDallas(int as, Team t, Logger *l) : ServantArcher(as, t, l)
     name = "Dallas Jones";
 
     /** Stat modifiers **/
-    int sklMod = 50;
+    /*int sklMod = 50;
     int strMod = 10;
     int spdMod = 25;
     int lukMod = 15;
@@ -44,7 +44,7 @@ BossDallas::BossDallas(int as, Team t, Logger *l) : ServantArcher(as, t, l)
     maxHP[1] += maxHPMod;
     maxHP[2] += maxHPMod;
 
-    currHP = maxHP[ascension];
+    currHP = maxHP[ascension];*/
 
     hiRange += 1;
     lowRange += 1;
@@ -73,6 +73,59 @@ BossDallas::BossDallas(int as, Team t, Logger *l) : ServantArcher(as, t, l)
     noblePhantasms.push_back(np3);
 
     hiddenArsenalCount = 0;
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    vector<int> hdA;
+    hdA.push_back(4);
+    Debuff *highDivinity = new Debuff("Horse Gunner", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MAG);
+    hdS.push_back(RES);
+    hdA.clear();
+    hdA.push_back(-10);
+    hdA.push_back(-20);
+    Debuff *highDivinity2 = new Debuff("I Ain't No Mage", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
+
+    hdS.clear();
+    hdS.push_back(DEF);
+    hdS.push_back(MAXHP);
+    hdA.clear();
+    hdA.push_back(20);
+    hdA.push_back(100);
+    Debuff *highDivinity3 = new Debuff("Bulletproof Vest", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity3);
+
+    hdS.clear();
+    hdS.push_back(STR);
+    hdS.push_back(SPD);
+    hdS.push_back(SKL);
+    hdS.push_back(LUK);
+    hdA.clear();
+    hdA.push_back(10);
+    hdA.push_back(25);
+    hdA.push_back(50);
+    hdA.push_back(15);
+    Debuff *highDivinity4 = new Debuff("Master Duelist", "Passive Noble Phantasm",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity4);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity5 = new Debuff("Stand You Ground", "Passive Noble Phantasm",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity5);
+
+    currHP = getMaxHP();
 }
 
 /***** Private Helper Functions *****/

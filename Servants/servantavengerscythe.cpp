@@ -6,7 +6,7 @@ ServantAvengerScythe::ServantAvengerScythe(int as, Team t, Logger *l) : ServantA
     name = "Scythe Avenger";
 
     /** Stat modifiers **/
-    int strMod = 5;
+    /*int strMod = 5;
     int spdMod = -5;
 
     spd[0] += spdMod;
@@ -14,7 +14,7 @@ ServantAvengerScythe::ServantAvengerScythe(int as, Team t, Logger *l) : ServantA
     spd[2] += spdMod;
     str[0] += strMod;
     str[1] += strMod;
-    str[2] += strMod;
+    str[2] += strMod;*/
 
     actionList[1].push_back("3: NP: Soul Harvester");
     actionList[2].push_back("3: NP: Soul Harvester");
@@ -55,6 +55,33 @@ ServantAvengerScythe::ServantAvengerScythe(int as, Team t, Logger *l) : ServantA
     npRanges.push_back(getLowToHighRange(0,0));
     // Death Blow range (doesn't really have one)
     npRanges.push_back(getLowToHighRange(0,0));
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(SPD);
+    hdS.push_back(STR);
+    vector<int> hdA;
+    hdA.push_back(-5);
+    hdA.push_back(5);
+    Debuff *highDivinity = new Debuff("Why Did You...", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("Sharp Side Inwards", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity3 = new Debuff("Lifetaker", "Passive Noble Phantasm",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity3);
 }
 
 /***** Private Helper Functions *****/

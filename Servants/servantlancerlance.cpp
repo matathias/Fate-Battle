@@ -8,17 +8,17 @@ ServantLancerLance::ServantLancerLance(int as, Team t, Logger *l) : ServantLance
     name = "Lance Lancer";
 
     /** Stat modifiers **/
-    int strMod = 10;
-    int spdMod = -10;
-    hiRange = 2;
+    //int strMod = 10;
+    //int spdMod = -10;
+    hiRange += 1;
 
-    spd[0] += spdMod;
+    /*spd[0] += spdMod;
     spd[1] += spdMod;
     spd[2] += spdMod;
 
     str[0] += strMod;
     str[1] += strMod;
-    str[2] += strMod;
+    str[2] += strMod;*/
 
     actionList[0].push_back("3: NP: Titanreach");
     actionList[1].push_back("3: NP: Titanreach");
@@ -95,6 +95,25 @@ ServantLancerLance::ServantLancerLance(int as, Team t, Logger *l) : ServantLance
 
     npRanges.push_back(npc1);
     npRanges.push_back(npc2);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(STR);
+    hdS.push_back(SPD);
+    vector<int> hdA;
+    hdA.push_back(10);
+    hdA.push_back(-10);
+    Debuff *highDivinity = new Debuff("Lance Arent For Infantry", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("The Longest Polearm", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 void ServantLancerLance::setPlayField(PlayField *f)

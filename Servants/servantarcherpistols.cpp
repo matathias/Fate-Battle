@@ -6,7 +6,7 @@ ServantArcherPistols::ServantArcherPistols(int as, Team t, Logger *l) : ServantA
     name = "Pistol Archer";
 
     /** Stat modifiers **/
-    int sklMod = 10;
+    /*int sklMod = 10;
     int strMod = 10;
 
     skl[0] += sklMod;
@@ -14,7 +14,7 @@ ServantArcherPistols::ServantArcherPistols(int as, Team t, Logger *l) : ServantA
     skl[2] += sklMod;
     str[0] += strMod;
     str[1] += strMod;
-    str[2] += strMod;
+    str[2] += strMod;*/
 
     lowRange += 1;
     hiRange += 1;
@@ -93,6 +93,23 @@ ServantArcherPistols::ServantArcherPistols(int as, Team t, Logger *l) : ServantA
     vector<Coordinate> npc3;
     npc3.push_back(c);
     npRanges.push_back(npc3);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(SKL);
+    vector<int> hdA;
+    hdA.push_back(10);
+    Debuff *highDivinity = new Debuff("Sniper Scope", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(STR);
+    hdA.clear();
+    hdA.push_back(10);
+    Debuff *highDivinity2 = new Debuff("Rapid-Fire Mod", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 int ServantArcherPistols::doAction(int actionNum, vector<Servant *> defenders)

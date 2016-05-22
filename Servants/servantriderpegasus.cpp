@@ -6,7 +6,7 @@ ServantRiderPegasus::ServantRiderPegasus(int as, Team t, Logger *l) : ServantRid
     name = "Pegasus Rider";
 
     /** Stat modifiers **/
-    int resMod = 10;
+    /*int resMod = 10;
     int spdMod = 10;
     int movMod = 1;
 
@@ -20,7 +20,7 @@ ServantRiderPegasus::ServantRiderPegasus(int as, Team t, Logger *l) : ServantRid
 
     mov[0] += movMod;
     mov[1] += movMod;
-    mov[2] += movMod;
+    mov[2] += movMod;*/
 
     actionList[0].push_back("2: Wings of Icarus");
     actionList[0].push_back("3: NP: Rare Foal");
@@ -81,6 +81,27 @@ ServantRiderPegasus::ServantRiderPegasus(int as, Team t, Logger *l) : ServantRid
     npRanges.push_back(getLowToHighRange(0,0));
     // Legendary Stallion range
     npRanges.push_back(getLowToHighRange(1,10));
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(RES);
+    hdS.push_back(SPD);
+    hdS.push_back(MOV);
+    vector<int> hdA;
+    hdA.push_back(10);
+    hdA.push_back(10);
+    hdA.push_back(1);
+    Debuff *highDivinity = new Debuff("Is This Fire Emblem?", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("Mythical Steed", "Passive Noble Phantasm",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 /***** Active Skills *****/

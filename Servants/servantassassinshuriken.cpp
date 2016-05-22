@@ -6,7 +6,7 @@ ServantAssassinShuriken::ServantAssassinShuriken(int as, Team t, Logger *l) : Se
     name = "Shuriken Assassin";
 
     /** Stat modifiers **/
-    int sklMod = 10;
+    /*int sklMod = 10;
     int spdMod = 10;
 
     spd[0] += spdMod;
@@ -14,7 +14,7 @@ ServantAssassinShuriken::ServantAssassinShuriken(int as, Team t, Logger *l) : Se
     spd[2] += spdMod;
     skl[0] += sklMod;
     skl[1] += sklMod;
-    skl[2] += sklMod;
+    skl[2] += sklMod;*/
 
     actionList[0].push_back("4: NP: Shurikenfaire");
     actionList[1].push_back("4: NP: Shurikenfaire");
@@ -78,6 +78,25 @@ ServantAssassinShuriken::ServantAssassinShuriken(int as, Team t, Logger *l) : Se
     classDebuff = new Debuff("Caltrops",
                              "You fell for the trap set by a Shuriken Assassin, reducing your speed.",
                              team, tempS, tempA, 3);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(SKL);
+    hdS.push_back(SPD);
+    vector<int> hdA;
+    hdA.push_back(10);
+    hdA.push_back(10);
+    Debuff *highDivinity = new Debuff("Speedy Blade", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("Caltrops", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 /***** Noble Phantasms *****/

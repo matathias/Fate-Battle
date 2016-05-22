@@ -9,7 +9,7 @@ ServantAvengerSai::ServantAvengerSai(int as, Team t, Logger *l) : ServantAvenger
     lastDamage = 0;
 
     /** Stat modifiers **/
-    int strMod = -5;
+    /*int strMod = -5;
     int spdMod = 5;
 
     spd[0] += spdMod;
@@ -17,7 +17,7 @@ ServantAvengerSai::ServantAvengerSai(int as, Team t, Logger *l) : ServantAvenger
     spd[2] += spdMod;
     str[0] += strMod;
     str[1] += strMod;
-    str[2] += strMod;
+    str[2] += strMod;*/
 
     actionList[2].push_back("3: NP: Casual Causality");
 
@@ -48,6 +48,44 @@ ServantAvengerSai::ServantAvengerSai(int as, Team t, Logger *l) : ServantAvenger
     npRanges.push_back(getLowToHighRange(0,0));
     // Casual Causality range (doesn't really have one)
     npRanges.push_back(getLowToHighRange(0,0));
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(SPD);
+    hdS.push_back(STR);
+    vector<int> hdA;
+    hdA.push_back(5);
+    hdA.push_back(-5);
+    Debuff *highDivinity = new Debuff("Small and Fast", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("Bladecatcher", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity3 = new Debuff("Damage Forwarding", "Passive Noble Phantasm",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity3);
+
+    if (ascension >= 1)
+    {
+        hdS.clear();
+        hdS.push_back(MOV);
+        hdA.clear();
+        hdA.push_back(0);
+        Debuff *highDivinity4 = new Debuff("Essence of Fragarach", "Passive Noble Phantasm",
+                                          t, hdS, hdA, -1);
+        addDebuff(highDivinity4);
+    }
 }
 
 /***** Private Helper Functions *****/

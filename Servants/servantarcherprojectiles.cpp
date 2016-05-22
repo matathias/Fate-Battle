@@ -6,7 +6,7 @@ ServantArcherProjectiles::ServantArcherProjectiles(int as, Team t, Logger *l) : 
     name = "Projectile Archer";
 
     /** Stat modifiers **/
-    int fakMod = -3;
+    /*int fakMod = -3;
     int magMod = 15;
     int resMod = 10;
 
@@ -32,7 +32,7 @@ ServantArcherProjectiles::ServantArcherProjectiles(int as, Team t, Logger *l) : 
     spd[2] += fakMod;
     luk[0] += fakMod;
     luk[1] += fakMod;
-    luk[2] += fakMod;
+    luk[2] += fakMod;*/
 
     actionList[0].push_back("2: Counterfeit Life (MP to HP)");
     actionList[0].push_back("3: Counterfeit Life (HP to MP)");
@@ -124,6 +124,28 @@ ServantArcherProjectiles::ServantArcherProjectiles(int as, Team t, Logger *l) : 
     vector<Coordinate> npc3;
     npc3.push_back(c);
     npRanges.push_back(npc3);
+
+    /** Passive Skill modifiers **/
+    int mainBonus = -3;
+    vector<Stat> hdS;
+    hdS.push_back(STR);
+    hdS.push_back(DEF);
+    hdS.push_back(MAG);
+    hdS.push_back(RES);
+    hdS.push_back(SPD);
+    hdS.push_back(SKL);
+    hdS.push_back(LUK);
+    vector<int> hdA;
+    hdA.push_back(mainBonus);
+    hdA.push_back(mainBonus);
+    hdA.push_back(15);
+    hdA.push_back(10);
+    hdA.push_back(mainBonus);
+    hdA.push_back(mainBonus);
+    hdA.push_back(mainBonus);
+    Debuff *highDivinity = new Debuff("That's No Bow!", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 /***** Active Skills *****/

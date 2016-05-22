@@ -17,7 +17,7 @@ ServantCasterSummoner::ServantCasterSummoner(int as, Team t, Logger *l) : Servan
     minorGateCost = 50;
 
     /** Stat modifiers **/
-    int movMod = 1;
+    /*int movMod = 1;
     int spdMod = 5;
     int sklMod = 5;
 
@@ -29,7 +29,7 @@ ServantCasterSummoner::ServantCasterSummoner(int as, Team t, Logger *l) : Servan
     spd[2] += spdMod;
     skl[0] += sklMod;
     skl[1] += sklMod;
-    skl[2] += sklMod;
+    skl[2] += sklMod;*/
 
     // Action List
     actionList[0].push_back("5: Item Construction - Minor Gate");
@@ -144,6 +144,19 @@ ServantCasterSummoner::ServantCasterSummoner(int as, Team t, Logger *l) : Servan
 
     // Black Hole Rift Range
     npRanges.push_back(getLowToHighRange(1, 6));
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    hdS.push_back(SPD);
+    hdS.push_back(SKL);
+    vector<int> hdA;
+    hdA.push_back(1);
+    hdA.push_back(5);
+    hdA.push_back(5);
+    Debuff *highDivinity = new Debuff("Summoner's Contract", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 void ServantCasterSummoner::setPlayField(PlayField *f)

@@ -6,7 +6,7 @@ ServantArcherBow::ServantArcherBow(int as, Team t, Logger *l) : ServantArcher(as
     name = "Bow Archer";
 
     /** Stat modifiers **/
-    int strMod = 5;
+    /*int strMod = 5;
     int magMod = 25;
 
     str[0] += strMod;
@@ -14,7 +14,7 @@ ServantArcherBow::ServantArcherBow(int as, Team t, Logger *l) : ServantArcher(as
     str[2] += strMod;
     mag[0] += magMod;
     mag[1] += magMod;
-    mag[2] += magMod;
+    mag[2] += magMod;*/
 
     actionList[0].push_back("2: Magic Bow");
     actionList[0].push_back("3: NP: Ballista");
@@ -77,6 +77,28 @@ ServantArcherBow::ServantArcherBow(int as, Team t, Logger *l) : ServantArcher(as
     npRanges.push_back(getLowToHighRange(getLowRange(), getHighRange()));
     // Range for Rain of Arrows
     npRanges.push_back(getLowToHighRange(getLowRange(), 7));
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(STR);
+    hdS.push_back(MAG);
+    vector<int> hdA;
+    hdA.push_back(5);
+    hdA.push_back(25);
+    Debuff *highDivinity = new Debuff("Fictional Bows Are Stronger", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    if (ascension >= 1)
+    {
+        hdS.clear();
+        hdS.push_back(MOV);
+        hdA.clear();
+        hdA.push_back(0);
+        Debuff *highDivinity2 = new Debuff("Certain Blow", "Passive Noble Phantasm",
+                                          t, hdS, hdA, -1);
+        addDebuff(highDivinity2);
+    }
 }
 
 int ServantArcherBow::doAction(int actionNum, vector<Servant *> defenders)

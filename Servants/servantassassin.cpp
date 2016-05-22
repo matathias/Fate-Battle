@@ -85,6 +85,31 @@ ServantAssassin::ServantAssassin(int as, Team t, Logger *l) : Servant(as, t, l)
     vector<int> tempA;
     tempA.push_back(0);
     classDebuff = new Debuff("No Debuff", "No Effect", team, tempS, tempA, 1);
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(MOV);
+    vector<int> hdA;
+    hdA.push_back(0);
+    Debuff *highDivinity = new Debuff("Presence Detection", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("Clairvoyance", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity3 = new Debuff("Lethality", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity3);
 }
 
 /***** Active Skills *****/

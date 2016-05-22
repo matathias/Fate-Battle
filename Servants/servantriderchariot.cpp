@@ -6,7 +6,7 @@ ServantRiderChariot::ServantRiderChariot(int as, Team t, Logger *l) : ServantRid
     name = "Chariot Rider";
 
     /** Stat modifiers **/
-    int resMod = 5;
+    /*int resMod = 5;
     int spdMod = 5;
     int defMod = 5;
 
@@ -18,7 +18,7 @@ ServantRiderChariot::ServantRiderChariot(int as, Team t, Logger *l) : ServantRid
     res[2] += resMod;
     def[0] += defMod;
     def[1] += defMod;
-    def[2] += defMod;
+    def[2] += defMod;*/
 
     actionList[0].push_back("2: Whip of the Master");
     actionList[0].push_back("3: NP: Charge of the Vanguard");
@@ -89,6 +89,19 @@ ServantRiderChariot::ServantRiderChariot(int as, Team t, Logger *l) : ServantRid
     npRanges.push_back(getLowToHighRange(0,0));
     // Essence of Ionioi Hetairoi range (doesn't really have one)
     npRanges.push_back(getLowToHighRange(0,0));
+
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(DEF);
+    hdS.push_back(RES);
+    hdS.push_back(SPD);
+    vector<int> hdA;
+    hdA.push_back(5);
+    hdA.push_back(5);
+    hdA.push_back(5);
+    Debuff *highDivinity = new Debuff("Exemplar of the Ancients", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
 }
 
 /***** Active Skills *****/

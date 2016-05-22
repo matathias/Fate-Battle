@@ -6,14 +6,14 @@ ServantLancerNaginata::ServantLancerNaginata(int as, Team t, Logger *l) : Servan
     name = "Naginata Lancer";
 
     /** Stat modifiers **/
-    int strMod = -5;
+    /*int strMod = -5;
     int spdMod = 10;
     str[0] += strMod;
     str[1] += strMod;
     str[2] += strMod;
     spd[0] += spdMod;
     spd[1] += spdMod;
-    spd[2] += spdMod;
+    spd[2] += spdMod;*/
 
     actionList[0].push_back("3: NP: Blade Dash");
     actionList[1].push_back("3: NP: Blade Dash");
@@ -90,6 +90,24 @@ ServantLancerNaginata::ServantLancerNaginata(int as, Team t, Logger *l) : Servan
     npRanges.push_back(npc2);
     npRanges.push_back(npc3);
 
+    /** Passive Skill modifiers **/
+    vector<Stat> hdS;
+    hdS.push_back(STR);
+    hdS.push_back(SPD);
+    vector<int> hdA;
+    hdA.push_back(-5);
+    hdA.push_back(10);
+    Debuff *highDivinity = new Debuff("Dancing Blade", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity);
+
+    hdS.clear();
+    hdS.push_back(MOV);
+    hdA.clear();
+    hdA.push_back(0);
+    Debuff *highDivinity2 = new Debuff("Blade Deflector", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity2);
 }
 
 vector<int> ServantLancerNaginata::getEvade()
