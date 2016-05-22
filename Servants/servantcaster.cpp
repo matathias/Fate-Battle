@@ -3,9 +3,9 @@
 
 ServantCaster::ServantCaster(int as, Team t, Logger *l) : Servant(as, t, l)
 {
-    maxHP.push_back(100);
-    maxHP.push_back(125);
     maxHP.push_back(150);
+    maxHP.push_back(175);
+    maxHP.push_back(200);
     maxMP.push_back(500);
     maxMP.push_back(750);
     maxMP.push_back(1000);
@@ -15,15 +15,15 @@ ServantCaster::ServantCaster(int as, Team t, Logger *l) : Servant(as, t, l)
     str.push_back(10);
     str.push_back(10);
     str.push_back(10);
+    mag.push_back(40);
     mag.push_back(50);
-    mag.push_back(100);
-    mag.push_back(150);
+    mag.push_back(60);
     def.push_back(10);
     def.push_back(10);
     def.push_back(10);
+    res.push_back(30);
+    res.push_back(40);
     res.push_back(50);
-    res.push_back(75);
-    res.push_back(100);
     spd.push_back(30);
     spd.push_back(30);
     spd.push_back(40);
@@ -132,12 +132,12 @@ int ServantCaster::healAll()
             for (unsigned int j = 0; j < fi[i].size(); j++)
             {
                 if (fi[i][j] != NULL && fi[i][j]->getTeam() == getTeam())
-                    fi[i][j]->addHP(getMag() / 4);
+                    fi[i][j]->addHP(getMag() / 2);
             }
         }
 
         log->addToEventLog(getFullName() + " healed their whole team for " +
-                           to_string(getMag() / 4) + " HP!");
+                           to_string(getMag() / 2) + " HP!");
     }
 
     return 0;

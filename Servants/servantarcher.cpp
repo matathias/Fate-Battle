@@ -2,18 +2,18 @@
 
 ServantArcher::ServantArcher(int as, Team t, Logger *l) : Servant(as, t, l)
 {
-    maxHP.push_back(125);
-    maxHP.push_back(150);
     maxHP.push_back(175);
+    maxHP.push_back(200);
+    maxHP.push_back(225);
     maxMP.push_back(100);
     maxMP.push_back(150);
     maxMP.push_back(200);
     mov.push_back(5);
     mov.push_back(5);
     mov.push_back(6);
-    str.push_back(30);
-    str.push_back(40);
-    str.push_back(50);
+    str.push_back(35);
+    str.push_back(45);
+    str.push_back(55);
     mag.push_back(10);
     mag.push_back(10);
     mag.push_back(10);
