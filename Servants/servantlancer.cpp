@@ -29,7 +29,7 @@ ServantLancer::ServantLancer(int as, Team t, Logger *l) : Servant(as, t, l)
     skl.push_back(75);
     skl.push_back(40);
     skl.push_back(50);
-    luk.push_back(0);
+    luk.push_back(5);
     luk.push_back(5);
     luk.push_back(5);
 
@@ -147,13 +147,17 @@ void ServantLancer::subHP(int hp, DamageType dt)
     //  Does not activate against "Omni" or "Gae Bolg" damage
     if (currHP == 1 && dt != OMNI && dt != GAEBOLG)
     {
-        if (getRandNum() <= getLuk() / 2)
+        if (getRandNum() <= getLuk())
+        {
+            log->addToEventLog(getFullName() + "'s Battle Continuation prevented them from dying!");
             return;
+        }
     }
     else if (currHP - hp <= 0 && dt != OMNI && dt != GAEBOLG)
     {
-        if (getRandNum() <= getLuk())
+        if (getRandNum() <= getLuk() * 2)
         {
+            log->addToEventLog(getFullName() + "'s Battle Continuation prevented them from dying!");
             currHP = 1;
             return;
         }
