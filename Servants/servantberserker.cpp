@@ -29,9 +29,9 @@ ServantBerserker::ServantBerserker(int as, Team t, Logger *l) : Servant(as, t, l
     skl.push_back(25);
     skl.push_back(35);
     skl.push_back(40);
-    luk.push_back(10);
+    luk.push_back(15);
     luk.push_back(20);
-    luk.push_back(20);
+    luk.push_back(25);
 
     currHP = maxHP[as];
     currMP = maxMP[as];

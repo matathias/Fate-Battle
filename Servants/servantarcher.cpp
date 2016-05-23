@@ -29,9 +29,9 @@ ServantArcher::ServantArcher(int as, Team t, Logger *l) : Servant(as, t, l)
     skl.push_back(50);
     skl.push_back(75);
     skl.push_back(100);
-    luk.push_back(10);
-    luk.push_back(10);
-    luk.push_back(10);
+    luk.push_back(20);
+    luk.push_back(20);
+    luk.push_back(20);
 
     currHP = maxHP[as];
     currMP = maxMP[as];

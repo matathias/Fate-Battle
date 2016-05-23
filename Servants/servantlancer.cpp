@@ -29,9 +29,9 @@ ServantLancer::ServantLancer(int as, Team t, Logger *l) : Servant(as, t, l)
     skl.push_back(75);
     skl.push_back(40);
     skl.push_back(50);
-    luk.push_back(10);
-    luk.push_back(10);
-    luk.push_back(10);
+    luk.push_back(0);
+    luk.push_back(5);
+    luk.push_back(5);
 
     currHP = maxHP[as];
     currMP = maxMP[as];
