@@ -132,6 +132,11 @@ void PlayFieldSquare::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         result = gState->turnStateChoseTargets();
     else if (gState->getTurnState() == 5)
         result = gState->turnStateExtraMove();
+    else
+    {
+        // see if the space has a servant, if it does, show that Servant's
+        // stats
+    }
 
     if (result == 11 || result == 31 || result == 51)
     {

@@ -308,7 +308,11 @@ void MainWindow::mainSetup()
 
     debuffTable = new QTableView;
     debuffTable->setModel(debuffTab);
+    debuffTable->setWordWrap(true);
     debuffTable->resizeColumnsToContents();
+    debuffTable->setColumnWidth(0, 100);
+    debuffTable->setColumnWidth(1, 100);
+    debuffTable->resizeRowsToContents();
 
     QVBoxLayout *debuffLayout = new QVBoxLayout;
     debuffLayout->addWidget(debLabel);
