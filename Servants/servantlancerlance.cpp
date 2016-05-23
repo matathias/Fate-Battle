@@ -206,7 +206,7 @@ int ServantLancerLance::activateNP2(vector<Servant *> defenders)
             int dam = defenders[i]->getMaxHP();
 
             // See if the opposing servant passes the luck check
-            if (defenders[i]->getRandNum() <= defenders[i]->getLuk() - getLuk())
+            if (defenders[i]->getRandNum() <= (defenders[i]->getLuk() * 2) - getLuk())
             {
                 // They passed the check!
                 dam = 0;
@@ -271,7 +271,7 @@ int ServantLancerLance::activateNP3(vector<Servant *> defenders)
 
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
-            int attackMult = 20;
+            int attackMult = 10;
 
             // Deal the damage
             int dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;

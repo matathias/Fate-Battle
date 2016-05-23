@@ -1280,12 +1280,34 @@ void MainWindow::loadGame()
 
     // Check that the inputs are valid. If they aren't, tell the user and bring
     //  up the dialog box again.
-    if (tOne == tTwo || isTeamEmpty(teamOne) || isTeamEmpty(teamTwo) ||
-            ascLevel < 0 || ascLevel > 2)
+    bool invalidInputs = false;
+    string errString = "Invalid Input(s):\n";
+    if (tOne == tTwo)
+    {
+        errString += "Selected teams are the same.\n";
+        invalidInputs = true;
+    }
+    if (isTeamEmpty(teamOne))
+    {
+        errString += "Team One has no selected Servants.\n";
+        invalidInputs = true;
+    }
+    if (isTeamEmpty(teamTwo))
+    {
+        errString += "Team Two has no selected Servants.\n";
+        invalidInputs = true;
+    }
+    if (ascLevel < 0 || ascLevel > 2)
+    {
+        errString += "Invalid Ascension Level.\n";
+        invalidInputs = true;
+    }
+
+    if (invalidInputs)
     {
         QMessageBox checkMessage;
         checkMessage.setWindowTitle(QObject::tr("Final Fate"));
-        checkMessage.setText("Invalid Inputs!");
+        checkMessage.setText(QString::fromStdString(errString));
         checkMessage.setStandardButtons(QMessageBox::Ok);
         checkMessage.setDefaultButton(QMessageBox::Ok);
         checkMessage.exec();
