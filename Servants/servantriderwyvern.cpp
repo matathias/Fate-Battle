@@ -30,13 +30,13 @@ ServantRiderWyvern::ServantRiderWyvern(int as, Team t, Logger *l) : ServantRider
     mov[2] += movMod;*/
 
     actionList[0].push_back("2: Dragonborn");
-    actionList[0].push_back("3: NP: Fus");
+    actionList[0].push_back("3: NP: Yol Toor Shul");
     actionList[1].push_back("2: Dragonborn");
-    actionList[1].push_back("3: NP: Fus");
-    actionList[1].push_back("4: NP: Fus Ro");
+    actionList[1].push_back("3: NP: Yol Toor Shul");
+    actionList[1].push_back("4: NP: Gaan Lah Haas");
     actionList[2].push_back("2: Dragonborn");
-    actionList[2].push_back("3: NP: Fus");
-    actionList[2].push_back("4: NP: Fus Ro");
+    actionList[2].push_back("3: NP: Yol Toor Shul");
+    actionList[2].push_back("4: NP: Gaan Lah Haas");
     actionList[2].push_back("5: NP: Fus Ro Dah");
 
     actionListTypes[0].push_back(N);
@@ -50,13 +50,13 @@ ServantRiderWyvern::ServantRiderWyvern(int as, Team t, Logger *l) : ServantRider
     actionListTypes[2].push_back(A);
 
     actionMPCosts[0].push_back(0);
-    actionMPCosts[0].push_back(20);
+    actionMPCosts[0].push_back(40);
     actionMPCosts[1].push_back(0);
-    actionMPCosts[1].push_back(20);
-    actionMPCosts[1].push_back(85);
+    actionMPCosts[1].push_back(40);
+    actionMPCosts[1].push_back(140);
     actionMPCosts[2].push_back(0);
-    actionMPCosts[2].push_back(20);
-    actionMPCosts[2].push_back(85);
+    actionMPCosts[2].push_back(40);
+    actionMPCosts[2].push_back(140);
     actionMPCosts[2].push_back(175);
 
     actionDodgeable[0].push_back(false);
@@ -80,11 +80,11 @@ ServantRiderWyvern::ServantRiderWyvern(int as, Team t, Logger *l) : ServantRider
     actionCounterable[2].push_back(false);
 
     vector<string> np1;
-    np1.push_back("Fus");
-    np1.push_back("Behold the power of the voice! At a cost of 20 MP, shove all units within two spaces back by two spaces.");
+    np1.push_back("Yol Toor Shul");
+    np1.push_back("Inhale air, exhale flame, and behold the Thu’um as inferno. At a cost of 40 MP, deal unresisted magic damage to all in a 3-length cone, leaving all victims with a \"Burned\" (-10 HP/turn for 4 turns) debuff.");
     vector<string> np2;
-    np2.push_back("Fus Ro");
-    np2.push_back("At a cost of 85 MP, shove all units within two spaces back by four spaces. All enemy units receive 15 HP damage.");
+    np2.push_back("Gaan Lah Haas");
+    np2.push_back("Coax both magical and mortal energies from your hapless opponent. At an upfront cost of 100 MP, steal 15 HP and 10 MP from every opponent in a 2-length cone, leaving them with a \"Drain Vitality\" (-10 HP/turn and -5 MP/turn for 3 turns) debuff, and giving yourself a \"Gain Vitality\" (+10 HP/turn and +5 MP/turn for 3 turns) buff for each target.");
     vector<string> np3;
     np3.push_back("Fus Ro Dah");
     np3.push_back("At a cost of 175 MP, shove all units within three spaces to the edge of the map. All enemy units receive .15*MAXHP damage. All enemy units are immobilized for 1 turn.");
@@ -92,10 +92,43 @@ ServantRiderWyvern::ServantRiderWyvern(int as, Team t, Logger *l) : ServantRider
     noblePhantasms.push_back(np2);
     noblePhantasms.push_back(np3);
 
-    // Fus range
-    npRanges.push_back(getLowToHighRange(1,2));
-    // Fus Ro range
-    npRanges.push_back(getLowToHighRange(1,2));
+    Coordinate c1;
+    c1.x = 0; c1.y = -1;
+    Coordinate c2;
+    c2.x = 0; c2.y = 1;
+    Coordinate c3;
+    c3.x = 1; c3.y = 0;
+    Coordinate c4;
+    c4.x = -1; c4.y = 0;
+
+    Coordinate cn1, cn2, cn3, cn4, cn5, cn6, cn7, cn8;
+    cn1.x = -1; cn1.y = 2;
+    cn2.x = 0; cn2.y = 2;
+    cn3.x = 1; cn3.y = 2;
+    cn4.x = -2; cn4.y = 3;
+    cn5.x = -1; cn5.y = 3;
+    cn6.x = 0; cn6.y = 3;
+    cn7.x = 1; cn7.y = 3;
+    cn8.x = 2; cn8.y = 3;
+    vector<Coordinate> npc3;
+    npc3.push_back(c2);
+    npc3.push_back(cn1);
+    npc3.push_back(cn2);
+    npc3.push_back(cn3);
+    npc3.push_back(cn4);
+    npc3.push_back(cn5);
+    npc3.push_back(cn6);
+    npc3.push_back(cn7);
+    npc3.push_back(cn8);
+    vector<Coordinate> npc1;
+    npc1.push_back(c2);
+    npc1.push_back(cn1);
+    npc1.push_back(cn2);
+    npc1.push_back(cn3);
+    // Yol Toor Shul range
+    npRanges.push_back(npc3);
+    // Gaan Lah Haas range
+    npRanges.push_back(npc1);
     // Fus Ro Dah range
     npRanges.push_back(getLowToHighRange(1,3));
 
@@ -207,7 +240,7 @@ int ServantRiderWyvern::doAction(int actionNum, vector<Servant *> defenders)
 }
 
 /***** Noble Phantasms *****/
-// Fus
+// Yol Toor Shul
 int ServantRiderWyvern::activateNP1(vector<Servant *> defenders)
 {
     if (actionMPCosts[ascension][2] > currMP)
@@ -215,7 +248,8 @@ int ServantRiderWyvern::activateNP1(vector<Servant *> defenders)
 
     subMP(actionMPCosts[ascension][2]);
 
-    int shoveDistance = 2;
+    // Original Fus Version
+    /*int shoveDistance = 2;
 
     log->addToEventLog(getFullName() + " used the Shout \"Fus\"!");
 
@@ -270,12 +304,56 @@ int ServantRiderWyvern::activateNP1(vector<Servant *> defenders)
                            to_string(targetLoc.x) + "," + to_string(targetLoc.y)
                            + ") to (" + to_string(actualLoc.x) + "," +
                            to_string(actualLoc.y) + ").");
+    }*/
+
+    log->addToEventLog(getFullName() + " used Yol Toor Shul!");
+
+    for (unsigned int i = 0; i < defenders.size(); i++)
+    {
+        // Unresisted Magic Damage
+        int dam = getMag();
+
+        vector<Stat> tStats;
+        tStats.push_back(HP);
+        vector<int> tAmounts;
+        tAmounts.push_back(-10);
+        Debuff *flameDeb = new Debuff("Burn", "You have been burned!",
+                                      defenders[i]->getTeam(), tStats,
+                                      tAmounts, 5);
+
+        defenders[i]->addDebuff(flameDeb);
+
+        log->addToEventLog(getFullName() + " dealt " +
+                           to_string(dam) + " damage to " +
+                           defenders[i]->getFullName() + ".");
+        defenders[i]->subHP(dam, NP_MAG);
+
+        // Check to see if the defender is dead.
+        if(defenders[i]->getCurrHP() <= 0)
+        {
+            if (defenders[i]->getClass() == Avenger)
+            {
+                // Activate Final Revenge
+                Debuff *finRev = defenders[i]->finalRevenge();
+                addDebuff(finRev);
+                if (defenders[i]->getAscensionLvl() == 2)
+                {
+                    subHP(.1 * getMaxHP(), OMNI);
+                    subMP(.1 * getMaxMP());
+
+                    if (getCurrHP() == 0)
+                    {
+                        setHP(1);
+                    }
+                }
+            }
+        }
     }
 
     return 0;
 }
 
-// Fus Ro
+// Gaan Lah Haas
 int ServantRiderWyvern::activateNP2(vector<Servant *> defenders)
 {
     if (actionMPCosts[ascension][3] > currMP)
@@ -283,7 +361,8 @@ int ServantRiderWyvern::activateNP2(vector<Servant *> defenders)
 
     subMP(actionMPCosts[ascension][3]);
 
-    int shoveDistance = 5;
+    // Original Fus Ro code
+    /*int shoveDistance = 5;
 
     log->addToEventLog(getFullName() + " used the Shout \"Fus Ro\"!");
 
@@ -341,6 +420,66 @@ int ServantRiderWyvern::activateNP2(vector<Servant *> defenders)
                            to_string(targetLoc.x) + "," + to_string(targetLoc.y)
                            + ") to (" + to_string(actualLoc.x) + "," +
                            to_string(actualLoc.y) + ") and took 15 damage.");
+    }*/
+
+    log->addToEventLog(getFullName() + " used Gaan Lah Haas!");
+
+    for (unsigned int i = 0; i < defenders.size(); i++)
+    {
+        int dam = 15;
+        int mpDam = 10;
+
+        defenders[i]->subHP(dam, NP_MAG);
+        addHP(dam);
+        defenders[i]->subMP(mpDam);
+        addMP(mpDam);
+
+        vector<Stat> tStats;
+        tStats.push_back(HP);
+        tStats.push_back(MP);
+        vector<int> tAmounts;
+        tAmounts.push_back(-10);
+        tAmounts.push_back(-5);
+        Debuff *drain = new Debuff("Drain Vitality", "You fell victim to the Thu'um...",
+                                   defenders[i]->getTeam(), tStats,
+                                   tAmounts, 4);
+        defenders[i]->addDebuff(drain);
+
+        vector<Stat> tStat;
+        tStat.push_back(HP);
+        tStat.push_back(MP);
+        vector<int> tAmount;
+        tAmount.push_back(10);
+        tAmount.push_back(5);
+        Debuff *gain = new Debuff("Gain Vitality",
+                                  "Your Thu'um strengthens you.",
+                                  getTeam(), tStat, tAmount, 4);
+        addDebuff(gain);
+
+        log->addToEventLog(getFullName() + " absorbed " +
+                           to_string(dam) + " HP and " + to_string(mpDam) +
+                           " MP from " + defenders[i]->getFullName() + ".");
+
+        // Check to see if the defender is dead.
+        if(defenders[i]->getCurrHP() <= 0)
+        {
+            if (defenders[i]->getClass() == Avenger)
+            {
+                // Activate Final Revenge
+                Debuff *finRev = defenders[i]->finalRevenge();
+                addDebuff(finRev);
+                if (defenders[i]->getAscensionLvl() == 2)
+                {
+                    subHP(.1 * getMaxHP(), OMNI);
+                    subMP(.1 * getMaxMP());
+
+                    if (getCurrHP() == 0)
+                    {
+                        setHP(1);
+                    }
+                }
+            }
+        }
     }
 
     return 0;
