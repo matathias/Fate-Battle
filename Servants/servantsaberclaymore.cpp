@@ -151,8 +151,8 @@ void ServantSaberClaymore::subHP(int hp, DamageType dt)
         {
             log->addToEventLog("Valone activated! " +
                                getTeamName() + " " + getName() + " heals " +
-                               to_string(mhp / 10) + " HP!");
-            addHP(mhp / 5);
+                               to_string(hp / 10) + " HP!");
+            addHP(hp / 10);
         }
     }
 }
