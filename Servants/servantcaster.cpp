@@ -150,9 +150,12 @@ int ServantCaster::resurrect(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][2]);
-        // Double the MP cost
-        actionMPCosts[ascension][2] *= 2;
-        ressurectCount++;
+        // Double the MP cost if the ascension is less than 2
+        if (ascension < 2)
+        {
+            actionMPCosts[ascension][2] *= 2;
+            ressurectCount++;
+        }
 
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
