@@ -414,7 +414,7 @@ int ServantCasterSummoner::attack(vector<Servant *> defenders, bool counter)
                                    to_string(dam) + " damage to " +
                                    defenders[i]->getFullName() + ".");
                 defenders[i]->subHP(dam, D_MAG);
-
+                /*
                 // If the Caster has a golem, see if they attack
                 r = getRandNum();
                 if (golemSummoned && r <= (getMag() + getLuk()))
@@ -424,7 +424,7 @@ int ServantCasterSummoner::attack(vector<Servant *> defenders, bool counter)
                                        to_string(dam) + " damage to " +
                                        defenders[i]->getFullName() + "!");
                     defenders[i]->subHP(dam, D_MAG);
-                }
+                }*/
             }
             else
             {

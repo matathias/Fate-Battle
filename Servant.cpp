@@ -321,6 +321,7 @@ void Servant::remAllDebuffs2(bool purgePermadeath, bool purgeDoom)
             i--;
         }
         else if (debuffs[i]->getDebuffName().compare("Permadeath") != 0 &&
+                 debuffs[i]->getDebuffName().compare("Cursed") != 0 &&
                  debuffs[i]->getDebuffName().compare("Doom") != 0 &&
                  debuffs[i]->getDebuffDescrip().compare("Passive Skill") != 0 &&
                  debuffs[i]->getDebuffDescrip().compare("Passive Noble Phantasm") != 0)
