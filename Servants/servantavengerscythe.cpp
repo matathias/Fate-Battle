@@ -382,7 +382,7 @@ int ServantAvengerScythe::activateNP2(vector<Servant *> defenders)
     tDebAm.push_back(0);
     Debuff *newDebuff = new Debuff("Death Blow",
                                    "Your scythe brings death upon all it strikes!",
-                                   getTeam(), tDebStat, tDebAm, 4);
+                                   getTeam(), tDebStat, tDebAm, 6);
     addDebuff(newDebuff);
 
     return 0;

@@ -174,9 +174,9 @@ vector<int> ServantRiderPegasus::getEvade()
     // Evasion = Speed * 2 + Luck
     vector<int> evade;
     evade.push_back(getInitialEvade());
-    // Mythical Steed = Luck * 1.5 (only add this one at the right ascension)
+    // Mythical Steed = Luck (only add this one at the right ascension)
     if (ascension >= 1)
-        evade.push_back(getLuk() * 1.5);
+        evade.push_back(getLuk());
     return evade;
 }
 

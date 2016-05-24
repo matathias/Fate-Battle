@@ -365,6 +365,7 @@ void ServantBerserkerAxe::subHP(int hp, DamageType dt)
                 def[ascension] *= 1.1;
                 currHP = maxHP[ascension];
                 remAllDebuffs(true);
+                log->addToEventLog(getFullName() + "'s Godhand activated, reviving them!");
             }
             else if (isGodmindActive())
             {
