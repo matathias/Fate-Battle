@@ -210,6 +210,10 @@ int ServantArcherBow::attack(vector<Servant *> defenders, bool counter)
                 if (critChance >= r)
                     attackMult *= 3;
 
+                // Archers deal thrice damage to Pegasus Riders
+                if (defenders[i]->getName().compare("Pegasus Rider") == 0)
+                    attackMult *= 3;
+
                 // Deal the damage
                 dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
                 log->addToEventLog(getFullName() + " dealt " +
@@ -332,6 +336,10 @@ int ServantArcherBow::magicBow(vector<Servant *> defenders)
                                  defenders[i]->getCriticalEvade());
                 int r = getRandNum();
                 if (critChance >= r)
+                    attackMult *= 3;
+
+                // Archers deal thrice damage to Pegasus Riders
+                if (defenders[i]->getName().compare("Pegasus Rider") == 0)
                     attackMult *= 3;
 
                 // Deal the damage
@@ -460,6 +468,10 @@ int ServantArcherBow::activateNP1(vector<Servant *> defenders)
                 if (critChance >= r)
                     attackMult *= 3;
 
+                // Archers deal thrice damage to Pegasus Riders
+                if (defenders[i]->getName().compare("Pegasus Rider") == 0)
+                    attackMult *= 3;
+
                 // Deal the damage
                 dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;
                 log->addToEventLog(getFullName() + " dealt " +
@@ -528,6 +540,10 @@ int ServantArcherBow::activateNP2(vector<Servant *> defenders)
                              defenders[i]->getCriticalEvade());
             int r = getRandNum();
             if (critChance >= r)
+                attackMult *= 3;
+
+            // Archers deal thrice damage to Pegasus Riders
+            if (defenders[i]->getName().compare("Pegasus Rider") == 0)
                 attackMult *= 3;
 
             // Deal the damage
