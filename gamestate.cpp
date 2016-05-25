@@ -470,7 +470,7 @@ vector<Coordinate> GameState::getValidMoves(Servant *s, int mov)
     if (isProvoked) //unit is provoked by opponent saber
     {
         // Get the location of the enemy saber
-        vector<Servant*> enemies = getEnemyTeam(s);
+        vector<Servant*> enemies = getOpposingTeamAlive(s->getTeam());
         Coordinate saberLoc;
         bool foundSaber = false;
         for (unsigned int i = 0; i < enemies.size() && !foundSaber; i++)
@@ -2002,6 +2002,36 @@ int GameState::turnStateApplyAction()
             archerSecondTurn = true;
             turnState = 1;
             validMoves = getValidMoves(currentServant, currentServant->getMov());
+
+            // Process death and revivals
+
+            // Check if anyone has died and modify the death list accordingly.
+            for (unsigned int i = 0; i < turnOrder.size(); i++)
+            {
+                if (turnOrder[i]->getCurrHP() <= 0 && !isServantDead(turnOrder[i]))
+                {
+                    addDead(turnOrder[i]);
+                }
+            }
+
+            // Make sure that everyone in the dead list is off of the playing field.
+            for (unsigned int i = 0; i < dead.size(); i++)
+            {
+                field->servantDead(dead[i]);
+            }
+
+            // If a Servant has been revived, put them back on the playing field.
+            for (int i = 0; i < (int) dead.size(); i++)
+            {
+                if (dead[i]->getCurrHP() > 0)
+                {
+                    field->servantRevived(dead[i]);
+                    removeDead(dead[i]);
+                    i--;
+                }
+            }
+            revived.clear(); // Don't want to revive the servants a second time
+
             return 0;
         }
     }
@@ -2021,6 +2051,36 @@ int GameState::turnStateApplyAction()
             ionioiSecondTurn = true;
             turnState = 1;
             validMoves = getValidMoves(currentServant, currentServant->getMov());
+
+            // Process death and revivals
+
+            // Check if anyone has died and modify the death list accordingly.
+            for (unsigned int i = 0; i < turnOrder.size(); i++)
+            {
+                if (turnOrder[i]->getCurrHP() <= 0 && !isServantDead(turnOrder[i]))
+                {
+                    addDead(turnOrder[i]);
+                }
+            }
+
+            // Make sure that everyone in the dead list is off of the playing field.
+            for (unsigned int i = 0; i < dead.size(); i++)
+            {
+                field->servantDead(dead[i]);
+            }
+
+            // If a Servant has been revived, put them back on the playing field.
+            for (int i = 0; i < (int) dead.size(); i++)
+            {
+                if (dead[i]->getCurrHP() > 0)
+                {
+                    field->servantRevived(dead[i]);
+                    removeDead(dead[i]);
+                    i--;
+                }
+            }
+            revived.clear(); // Don't want to revive the servants a second time
+
             return 0;
         }
     }

@@ -11,6 +11,8 @@ ServantCasterNecromancy::ServantCasterNecromancy(int as, Team t, Logger *l) : Se
     int baneOfLifeCost = 150;
     int harbingerOfDeathCost = 500;
 
+    necroallyBase = 25;
+
     /** Stat modifiers **/
     /*int resMod = 5;
     int defMod = 10;
@@ -577,6 +579,12 @@ int ServantCasterNecromancy::doAction(int actionNum, vector<Servant *> defenders
                 break;
         }
     }
+
+    if (ascension == 2)
+        actionMPCosts[ascension][7] = necroallyBase * pow(2, ressurectCount);
+    else
+        actionMPCosts[ascension][6] = necroallyBase * pow(2, ressurectCount);
+
     return ret;
 }
 

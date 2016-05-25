@@ -243,7 +243,7 @@ int ServantLancerHalberd::activateNP1(vector<Servant *> defenders)
     {
         subMP(actionMPCosts[ascension][2]);
 
-        log->addToEventLog(getFullName() + "used Piercing Blow!");
+        log->addToEventLog(getFullName() + " used Piercing Blow!");
 
         return piercingBlow(defenders, 1);
     }

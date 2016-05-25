@@ -291,7 +291,7 @@ void Servant::remAllDebuffs(bool purgePermadead)
     for (int i = 0; i < (int) debuffs.size(); i++)
     {
         if(!(debuffs[i]->getDebuffName().compare("Permadeath") == 0 && !purgePermadead) &&
-                !(debuffs[i]->getDebuffName().compare("Cursed") != 0 && !purgePermadead) &&
+                !(debuffs[i]->getDebuffName().compare("Cursed") == 0 && !purgePermadead) &&
                 debuffs[i]->getDebuffDescrip().compare("Passive Skill") != 0 &&
                 debuffs[i]->getDebuffDescrip().compare("Passive Noble Phantasm") != 0)
         {
@@ -822,9 +822,10 @@ int Servant::doAction(int actionNum, vector<Servant *> defenders)
 
 int Servant::getRandNum()
 {
-    int rand1 = rand() % 101;
-    int rand2 = rand() % 101;
-    return (rand1 + rand2) / 2;
+    //int rand1 = rand() % 101;
+    //int rand2 = rand() % 101;
+    //return (rand1 + rand2) / 2;
+    return rand() % 101;
 }
 
 int Servant::capZero(int num)

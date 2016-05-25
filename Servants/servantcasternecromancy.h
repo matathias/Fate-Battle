@@ -35,6 +35,7 @@ public:
 private:
     bool deathSealCreated;
     int deathSealCost;
+    int necroallyBase;
 };
 
 #endif // SERVANTCASTERNECROMANCY_H

@@ -2,9 +2,9 @@
 
 ServantSaber::ServantSaber(int as, Team t, Logger *l) : Servant(as, t, l)
 {
+    maxHP.push_back(200);
     maxHP.push_back(250);
     maxHP.push_back(300);
-    maxHP.push_back(350);
     maxMP.push_back(100);
     maxMP.push_back(125);
     maxMP.push_back(150);
@@ -20,9 +20,9 @@ ServantSaber::ServantSaber(int as, Team t, Logger *l) : Servant(as, t, l)
     def.push_back(30);
     def.push_back(40);
     def.push_back(40);
-    res.push_back(30);
-    res.push_back(30);
-    res.push_back(30);
+    res.push_back(20);
+    res.push_back(20);
+    res.push_back(25);
     spd.push_back(30);
     spd.push_back(30);
     spd.push_back(40);

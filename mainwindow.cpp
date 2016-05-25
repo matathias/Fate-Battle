@@ -878,14 +878,6 @@ void MainWindow::open()
             ascLevel = ascLvl;
             fieldWid = fieldWidth;
             fieldLen = fieldLength;
-            while (teamOne.size() > 8)
-            {
-                teamOne.erase(teamOne.begin()+8);
-            }
-            while (teamTwo.size() > 8)
-            {
-                teamTwo.erase(teamTwo.begin()+8);
-            }
         }
     }
 }
@@ -1505,10 +1497,12 @@ void MainWindow::initGameState()
 {
     log = new Logger;
     vector<Servant*> all;
-    for (unsigned int i = 0; i < teamOne.size(); i++)
+    int valid = 0;
+    for (unsigned int i = 0; i < teamOne.size() && valid < 8; i++)
     {
         string servName = teamOne[i];
         Team te = tOne;
+        unsigned int allSize = all.size();
         if (servName.compare("Saber - Claymore") == 0)
             all.push_back(new ServantSaberClaymore(ascLevel, te, log));
         else if (servName.compare("Saber - Katana") == 0)
@@ -1567,11 +1561,16 @@ void MainWindow::initGameState()
             all.push_back(new BossDallas(ascLevel, te, log));
         else if (servName.compare("Boss: Gilgamesh") == 0)
             all.push_back(new BossGil(ascLevel, te, log));
+
+        if (all.size() > allSize)
+            valid++;
     }
-    for (unsigned int i = 0; i < teamTwo.size(); i++)
+    valid = 0;
+    for (unsigned int i = 0; i < teamTwo.size() && valid < 8; i++)
     {
         string servName = teamTwo[i];
         Team te = tTwo;
+        unsigned int allSize = all.size();
         if (servName.compare("Saber - Claymore") == 0)
             all.push_back(new ServantSaberClaymore(ascLevel, te, log));
         else if (servName.compare("Saber - Katana") == 0)
@@ -1630,6 +1629,9 @@ void MainWindow::initGameState()
             all.push_back(new BossDallas(ascLevel, te, log));
         else if (servName.compare("Boss: Gilgamesh") == 0)
             all.push_back(new BossGil(ascLevel, te, log));
+
+        if (all.size() > allSize)
+            valid++;
     }
 
     gs = new GameState(all, fieldLen, fieldWid, log);

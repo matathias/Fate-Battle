@@ -80,7 +80,7 @@ ServantLancerLance::ServantLancerLance(int as, Team t, Logger *l) : ServantLance
     Coordinate cn1, cn2, cn3;
     cn1.x = -1; cn1.y = 2;
     cn2.x = 0; cn2.y = 2;
-    cn3.x = 1; cn2.y = 2;
+    cn3.x = 1; cn3.y = 2;
     vector<Coordinate> npc1;
     npc1.push_back(c2);
     npc1.push_back(cn1);

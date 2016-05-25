@@ -139,10 +139,26 @@ void BossGil::setPlayField(PlayField *f)
 
 void BossGil::subHP(int hp, DamageType dt)
 {
-    currHP -= hp;
-    int mhp = getMaxHP();
-    if (currHP > mhp)
-        currHP = mhp;
+    bool applyDamage = true;
+    if (currHP >= 0.1 * getMaxHP() && currHP - hp <= 1)
+    {
+        log->addToEventLog(getFullName() + "'s High Divinity allowed him to resist damage!");
+        applyDamage = false;
+    }
+    else if (hp >= 0.05 * getMaxHP())
+    {
+        hp = 0.05 * getMaxHP();
+        log->addToEventLog(getFullName() + "'s High Divinity capped the damage he takes at "
+                           + to_string(hp) + "!");
+    }
+
+    if (applyDamage)
+    {
+        currHP -= hp;
+        int mhp = getMaxHP();
+        if (currHP > mhp)
+            currHP = mhp;
+    }
 
     if (currHP <= 0)
     {

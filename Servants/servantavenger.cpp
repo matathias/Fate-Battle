@@ -3,27 +3,27 @@
 
 ServantAvenger::ServantAvenger(int as, Team t, Logger *l) : Servant(as, t, l)
 {
+    maxHP.push_back(100);
     maxHP.push_back(150);
     maxHP.push_back(200);
-    maxHP.push_back(250);
     maxMP.push_back(75);
     maxMP.push_back(100);
     maxMP.push_back(125);
     mov.push_back(5);
     mov.push_back(5);
     mov.push_back(6);
-    str.push_back(20);
     str.push_back(25);
     str.push_back(30);
+    str.push_back(35);
     mag.push_back(20);
     mag.push_back(20);
     mag.push_back(20);
     def.push_back(20);
-    def.push_back(30);
-    def.push_back(40);
-    res.push_back(20);
-    res.push_back(20);
-    res.push_back(20);
+    def.push_back(25);
+    def.push_back(35);
+    res.push_back(10);
+    res.push_back(10);
+    res.push_back(15);
     spd.push_back(20);
     spd.push_back(20);
     spd.push_back(20);
@@ -202,7 +202,7 @@ void ServantAvenger::updateAvengersRage()
         totalHPLoss = totalHPLoss / teamServants.size();
 
         // Get the stat bonus from this loss
-        int statBonus = totalHPLoss / 3;
+        int statBonus = totalHPLoss / 4;
 
         // Make a new debuff with statBonus
         vector<Stat> tStats;

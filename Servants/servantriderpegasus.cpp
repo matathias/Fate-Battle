@@ -95,13 +95,16 @@ ServantRiderPegasus::ServantRiderPegasus(int as, Team t, Logger *l) : ServantRid
                                       t, hdS, hdA, -1);
     addDebuff(highDivinity);
 
-    hdS.clear();
-    hdS.push_back(MOV);
-    hdA.clear();
-    hdA.push_back(0);
-    Debuff *highDivinity2 = new Debuff("Mythical Steed", "Passive Noble Phantasm",
-                                      t, hdS, hdA, -1);
-    addDebuff(highDivinity2);
+    if (ascension >= 1)
+    {
+        hdS.clear();
+        hdS.push_back(MOV);
+        hdA.clear();
+        hdA.push_back(0);
+        Debuff *highDivinity2 = new Debuff("Mythical Steed", "Passive Noble Phantasm",
+                                          t, hdS, hdA, -1);
+        addDebuff(highDivinity2);
+    }
 }
 
 /***** Active Skills *****/
