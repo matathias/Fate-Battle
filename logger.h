@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <cstdlib>
+#include <fstream>
 
 using namespace std;
 
@@ -23,12 +24,17 @@ public:
     int getEventNum();
     int getErrorNum();
 
+    void closeFiles();
+
     void addEventStartTurn(string tn, string sn);
     void addEventEndTurn(string tn, string sn);
 
 private:
     int eventNum;
     int errorNum;
+
+    std::ofstream evFile;
+    std::ofstream erFile;
 
     vector<string> eventLog;
     vector<string> errorLog;

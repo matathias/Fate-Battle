@@ -39,5 +39,8 @@
         <file>ServantIcons/Mikaela.png</file>
         <file>ServantIcons/Yuichiro.png</file>
         <file>ServantIcons/Rin Tohsaka.png</file>
+        <file>Credits/Logo - Alpha.png</file>
+        <file>Credits/Logo - Omega.png</file>
+        <file>Credits/Logo - Psi.png</file>
     </qresource>
 </RCC>

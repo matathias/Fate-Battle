@@ -69,6 +69,8 @@ private slots:
     void endTurn();
     void cancelAction();
 
+    void showCredits();
+
     void loadCBTeam1_0(int index);
     void loadCBTeam1_1(int index);
     void loadCBTeam1_2(int index);

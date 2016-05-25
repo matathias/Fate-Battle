@@ -95,9 +95,13 @@ void MainWindow::mainSetup()
     quitButton = new QPushButton(tr("Quit"));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
 
-    QLabel *seperator = new QLabel(this);
+    // Setup the credits button
+    QPushButton *creditsButton = new QPushButton(tr("Credits"));
+    connect(creditsButton, SIGNAL(clicked(bool)), this, SLOT(showCredits()));
+
+    //QLabel *seperator = new QLabel(this);
     //seperator->setText(" ");
-    seperator->setFrameStyle(QFrame::HLine);
+    //seperator->setFrameStyle(QFrame::HLine);
 
     // Setup the Error warning
     errorLabel = new QLabel(this);
@@ -506,6 +510,7 @@ void MainWindow::mainSetup()
     allHPLayout->addWidget(teamOneHPLabel);
     allHPLayout->addWidget(teamTwoHPLabel);
     allHPLayout->addWidget(quitButton);
+    allHPLayout->addWidget(creditsButton);
     allHPLayout->setStretch(0, 1);
     allHPLayout->setStretch(1, 10);
     allHPLayout->setStretch(2, 10);
@@ -741,8 +746,9 @@ void MainWindow::clearLayout(QLayout *layout)
 
 void MainWindow::quitGame()
 {
-    printErrorLog();
-    printEventLog();
+    //printErrorLog();
+    //printEventLog();
+    log->closeFiles();
 
     QMessageBox messageBox;
     messageBox.setWindowTitle(QObject::tr("Final Fate"));
@@ -784,6 +790,7 @@ void MainWindow::printEventLog()
 
 void MainWindow::open()
 {
+    cout << "In open()\n" << std::flush;
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
                        tr("Text Files (*.txt);;C++ Files (*.cpp *.h)"));
 
@@ -802,8 +809,8 @@ void MainWindow::open()
         int ascLvl = -1;
         int fieldWidth = -1;
         int fieldLength = -1;
-        Team tOne = All;
-        Team tTwo = All;
+        Team ttOne = All;
+        Team ttTwo = All;
         vector<string> tOneNames;
         vector<string> tTwoNames;
         QString line;
@@ -821,20 +828,20 @@ void MainWindow::open()
                 fieldWidth = stoi(input.substr(13));
             else if (input.substr(0,14).compare("Field Length: ") == 0)
                 fieldLength = stoi(input.substr(14));
-            else if (input.compare("Alpha") == 0 && tOne == All)
-                tOne = Alpha;
-            else if (input.compare("Omega") == 0 && tOne == All)
-                tOne = Omega;
-            else if (input.compare("Boss") == 0 && tOne == All)
-                tOne = Boss;
+            else if (input.compare("Alpha") == 0 && ttOne == All)
+                ttOne = Alpha;
+            else if (input.compare("Omega") == 0 && ttOne == All)
+                ttOne = Omega;
+            else if (input.compare("Boss") == 0 && ttOne == All)
+                ttOne = Boss;
             else if (input.compare("Alpha") == 0)
-                tTwo = Alpha;
+                ttTwo = Alpha;
             else if (input.compare("Omega") == 0)
-                tTwo = Omega;
+                ttTwo = Omega;
             else if (input.compare("Boss") == 0)
-                tTwo = Boss;
+                ttTwo = Boss;
             // Parse servant names
-            else if (tOne != All && tTwo == All)
+            else if (ttOne != All && ttTwo == All)
             {
                 // First team's servants
                 tOneNames.push_back(input);
@@ -849,16 +856,36 @@ void MainWindow::open()
         file.close();
 
         // If the file did not give enough data to start a new game
-        if (ascLvl == -1 || tOne == All || tTwo == All || tOneNames.size() == 0
+        if (ascLvl == -1 || ttOne == All || ttTwo == All || tOneNames.size() == 0
                 || tTwoNames.size() == 0 || fieldWidth == -1 || fieldLength == -1)
         {
-            QMessageBox::critical(this, tr("Error"), tr("File did not give enough information to start new game"));
+            QMessageBox::critical(this, tr("Error"), tr("File did not give enough information to start a game."));
             return;
         }
         else
         {
-            restartGameState(tOneNames, tTwoNames, tOne, tTwo, ascLvl,
-                             fieldWidth, fieldLength);
+            QMessageBox checkMessage;
+            checkMessage.setWindowTitle(QObject::tr("Final Fate"));
+            checkMessage.setText("File parsed correctly!\n\nClick 'Start Game' to begin!");
+            checkMessage.setStandardButtons(QMessageBox::Ok);
+            checkMessage.setDefaultButton(QMessageBox::Ok);
+            checkMessage.exec();
+
+            tOne = ttOne;
+            tTwo = ttTwo;
+            teamOne = tOneNames;
+            teamTwo = tTwoNames;
+            ascLevel = ascLvl;
+            fieldWid = fieldWidth;
+            fieldLen = fieldLength;
+            while (teamOne.size() > 8)
+            {
+                teamOne.erase(teamOne.begin()+8);
+            }
+            while (teamTwo.size() > 8)
+            {
+                teamTwo.erase(teamTwo.begin()+8);
+            }
         }
     }
 }
@@ -980,6 +1007,75 @@ void MainWindow::cancelAction()
         gs->prevTurnState();
         reColorScene();
     }
+}
+
+void MainWindow::showCredits()
+{
+    QDialog *creditsDialog = new QDialog;
+    QLabel *psiLogo = new QLabel;
+    QLabel *alphaLogo = new QLabel;
+    QLabel *omegaLogo = new QLabel;
+    QLabel *ditchDay = new QLabel;
+    QLabel *gameCredits = new QLabel;
+    QLabel *stackCredits = new QLabel;
+    QPushButton *okButton = new QPushButton("OK");
+    connect(okButton, SIGNAL(clicked(bool)), creditsDialog, SLOT(accept()));
+
+    QPixmap p, a, o;
+    bool result = p.load(":/Credits/Logo - Psi.png");
+    if (result)
+        psiLogo->setPixmap(p);
+    else
+        psiLogo->setText("Psi Logo failed to load");
+
+    result = a.load(":/Credits/Logo - Alpha.png");
+    if (result)
+        alphaLogo->setPixmap(a);
+    else
+        alphaLogo->setText("Alpha Logo failed to load");
+
+    result = o.load(":/Credits/Logo - Omega.png");
+    if (result)
+        omegaLogo->setPixmap(o);
+    else
+        omegaLogo->setText("Omega Logo failed to load");
+
+    string ditch = "CALTECH DITCH DAY 2016";
+    string gameCreds = "----- GAME CREDITS -----\n\nProgrammer: David Warrick";
+    gameCreds += "\n\nDebug and Feature Assistance: Charles Nelson, Bertrand Ottino-Loffler";
+    string stackCreds = "----- STACK CREDITS -----\n\nKayane Dingilian -*- David Warrick";
+    stackCreds += "\nJimmy Cuy -*- Natalie DeFries -*- John Michael Clark";
+    stackCreds += "\n\nALUM ASSISTANCE:\nHelen Evans -*- Daisy Lin\nHannah Dotson";
+    ditchDay->setText(QString::fromStdString(ditch));
+    gameCredits->setText(QString::fromStdString(gameCreds));
+    stackCredits->setText(QString::fromStdString(stackCreds));
+
+    psiLogo->setAlignment(Qt::AlignCenter);
+    alphaLogo->setAlignment(Qt::AlignCenter);
+    omegaLogo->setAlignment(Qt::AlignCenter);
+    ditchDay->setAlignment(Qt::AlignCenter);
+    gameCredits->setAlignment(Qt::AlignCenter);
+    stackCredits->setAlignment(Qt::AlignCenter);
+
+    gameCredits->setFrameStyle(QFrame::Box | QFrame::Sunken);
+    stackCredits->setFrameStyle(QFrame::Box | QFrame::Sunken);
+
+    QHBoxLayout *logos = new QHBoxLayout;
+    logos->addWidget(alphaLogo);
+    //logos->addWidget(psiLogo);
+    //logos->addWidget(omegaLogo);
+
+    QVBoxLayout *allLayout = new QVBoxLayout;
+    allLayout->addLayout(logos);
+    allLayout->addWidget(ditchDay);
+    allLayout->addWidget(gameCredits);
+    allLayout->addWidget(stackCredits);
+    allLayout->addWidget(okButton);
+
+    creditsDialog->setLayout(allLayout);
+    creditsDialog->setWindowTitle("Final Fate Credits");
+
+    creditsDialog->exec();
 }
 
 // Load Dialog Comboboxes
@@ -1128,6 +1224,7 @@ void MainWindow::loadGame()
     QSpinBox *fieldLengthBox = new QSpinBox;
     QSpinBox *fieldWidthBox = new QSpinBox;
 
+    QPushButton *openButton = new QPushButton("Load Preset");
     QPushButton *startGameButton = new QPushButton("Start Game");
     QPushButton *quitGameButton = new QPushButton("Quit");
 
@@ -1187,6 +1284,7 @@ void MainWindow::loadGame()
 
     connect(startGameButton, SIGNAL(clicked()), initDialog, SLOT(accept()));
     connect(quitGameButton, SIGNAL(clicked()), initDialog, SLOT(reject()));
+    connect(openButton, SIGNAL(clicked()), this, SLOT(open()));
 
     // Create all the labels
     QLabel *team1Label = new QLabel("Team One");
@@ -1267,6 +1365,7 @@ void MainWindow::loadGame()
     // Everything Layout
     QVBoxLayout *everythingLayout = new QVBoxLayout;
     everythingLayout->addLayout(mainLayout);
+    everythingLayout->addWidget(openButton);
     everythingLayout->addWidget(startGameButton);
     everythingLayout->addWidget(quitGameButton);
 
