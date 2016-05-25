@@ -1035,9 +1035,9 @@ void MainWindow::showCredits()
     string ditch = "CALTECH DITCH DAY 2016";
     string gameCreds = "----- GAME CREDITS -----\n\nProgrammer: David Warrick";
     gameCreds += "\n\nDebug and Feature Assistance: Charles Nelson, Bertrand Ottino-Loffler";
-    string stackCreds = "----- STACK CREDITS -----\n\nKayane Dingilian -*- David Warrick";
-    stackCreds += "\nJimmy Cuy -*- Natalie DeFries -*- John Michael Clark";
-    stackCreds += "\n\nALUM ASSISTANCE:\nHelen Evans -*- Daisy Lin\nHannah Dotson";
+    string stackCreds = "----- STACK CREDITS -----\n\nKayane Dingilian --- David Warrick";
+    stackCreds += "\nJimmy Cuy --- Natalie DeFries --- John Michael Clark";
+    stackCreds += "\n\nALUM ASSISTANCE:\nHelen Evans --- Daisy Lin\nHannah Dotson";
     ditchDay->setText(QString::fromStdString(ditch));
     gameCredits->setText(QString::fromStdString(gameCreds));
     stackCredits->setText(QString::fromStdString(stackCreds));
@@ -1053,8 +1053,8 @@ void MainWindow::showCredits()
     stackCredits->setFrameStyle(QFrame::Box | QFrame::Sunken);
 
     QHBoxLayout *logos = new QHBoxLayout;
-    logos->addWidget(alphaLogo);
-    //logos->addWidget(psiLogo);
+    //logos->addWidget(alphaLogo);
+    logos->addWidget(psiLogo);
     //logos->addWidget(omegaLogo);
 
     QVBoxLayout *allLayout = new QVBoxLayout;

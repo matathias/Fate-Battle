@@ -271,7 +271,7 @@ int ServantLancerLance::activateNP3(vector<Servant *> defenders)
 
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
-            int attackMult = 10;
+            int attackMult = 6;
 
             // Deal the damage
             int dam = capZero(getStr() - defenders[i]->getDef()) * attackMult;

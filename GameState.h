@@ -5,6 +5,7 @@
 #include "PlayField.h"
 #include "logger.h"
 
+#include <QObject>
 #include <QWidget>
 #include <QComboBox>
 
@@ -13,6 +14,8 @@ using namespace std;
 
 class GameState : public QWidget
 {
+    Q_OBJECT
+
     public:
         // Initialize the playing field within this constructor. Can also sort
         // the servants into teams from the turnOrder list.
