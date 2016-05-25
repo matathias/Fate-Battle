@@ -23,10 +23,10 @@ ServantLancer::ServantLancer(int as, Team t, Logger *l) : Servant(as, t, l)
     res.push_back(20);
     res.push_back(20);
     res.push_back(20);
-    spd.push_back(50);
     spd.push_back(40);
-    spd.push_back(60);
-    skl.push_back(75);
+    spd.push_back(55);
+    spd.push_back(70);
+    skl.push_back(40);
     skl.push_back(40);
     skl.push_back(50);
     luk.push_back(5);

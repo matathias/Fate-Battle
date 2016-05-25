@@ -24,11 +24,11 @@ ServantArcher::ServantArcher(int as, Team t, Logger *l) : Servant(as, t, l)
     res.push_back(10);
     res.push_back(10);
     spd.push_back(30);
+    spd.push_back(35);
     spd.push_back(40);
-    spd.push_back(50);
     skl.push_back(50);
-    skl.push_back(75);
-    skl.push_back(100);
+    skl.push_back(60);
+    skl.push_back(70);
     luk.push_back(20);
     luk.push_back(20);
     luk.push_back(20);

@@ -23,9 +23,9 @@ ServantSaber::ServantSaber(int as, Team t, Logger *l) : Servant(as, t, l)
     res.push_back(30);
     res.push_back(30);
     res.push_back(30);
+    spd.push_back(30);
+    spd.push_back(30);
     spd.push_back(40);
-    spd.push_back(40);
-    spd.push_back(50);
     skl.push_back(30);
     skl.push_back(30);
     skl.push_back(30);

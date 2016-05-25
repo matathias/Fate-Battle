@@ -26,7 +26,7 @@ ServantCaster::ServantCaster(int as, Team t, Logger *l) : Servant(as, t, l)
     res.push_back(50);
     spd.push_back(30);
     spd.push_back(30);
-    spd.push_back(40);
+    spd.push_back(30);
     skl.push_back(30);
     skl.push_back(40);
     skl.push_back(50);

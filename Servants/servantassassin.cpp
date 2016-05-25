@@ -26,10 +26,10 @@ ServantAssassin::ServantAssassin(int as, Team t, Logger *l) : Servant(as, t, l)
     res.push_back(10);
     spd.push_back(40);
     spd.push_back(50);
-    spd.push_back(75);
+    spd.push_back(65);
     skl.push_back(40);
     skl.push_back(50);
-    skl.push_back(75);
+    skl.push_back(70);
     luk.push_back(30);
     luk.push_back(40);
     luk.push_back(50);
