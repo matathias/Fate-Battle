@@ -2,9 +2,9 @@
 
 ServantRider::ServantRider(int as, Team t, Logger *l) : Servant(as, t, l)
 {
-    maxHP.push_back(150);
+    maxHP.push_back(125);
     maxHP.push_back(175);
-    maxHP.push_back(200);
+    maxHP.push_back(225);
     maxMP.push_back(125);
     maxMP.push_back(175);
     maxMP.push_back(250);

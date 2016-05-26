@@ -109,7 +109,7 @@ BossDallas::BossDallas(int as, Team t, Logger *l) : ServantArcher(as, t, l)
     hdS.push_back(SKL);
     hdS.push_back(LUK);
     hdA.clear();
-    hdA.push_back(10);
+    hdA.push_back(20);
     hdA.push_back(25);
     hdA.push_back(50);
     hdA.push_back(15);

@@ -2,9 +2,9 @@
 
 ServantArcher::ServantArcher(int as, Team t, Logger *l) : Servant(as, t, l)
 {
-    maxHP.push_back(125);
+    maxHP.push_back(100);
     maxHP.push_back(150);
-    maxHP.push_back(175);
+    maxHP.push_back(200);
     maxMP.push_back(100);
     maxMP.push_back(150);
     maxMP.push_back(200);
@@ -17,18 +17,18 @@ ServantArcher::ServantArcher(int as, Team t, Logger *l) : Servant(as, t, l)
     mag.push_back(10);
     mag.push_back(10);
     mag.push_back(10);
-    def.push_back(30);
-    def.push_back(30);
-    def.push_back(30);
+    def.push_back(20);
+    def.push_back(20);
+    def.push_back(20);
     res.push_back(10);
     res.push_back(10);
     res.push_back(10);
     spd.push_back(30);
     spd.push_back(35);
     spd.push_back(40);
-    skl.push_back(50);
-    skl.push_back(60);
-    skl.push_back(70);
+    skl.push_back(35);
+    skl.push_back(45);
+    skl.push_back(55);
     luk.push_back(20);
     luk.push_back(20);
     luk.push_back(20);

@@ -218,12 +218,12 @@ int ServantBerserkerAxe::extendGodmind()
     tStats.push_back(LUK);
     vector<int> tAmounts;
     tAmounts.push_back(10);
-    tAmounts.push_back(-10);
-    tAmounts.push_back(-10);
-    tAmounts.push_back(-10);
-    tAmounts.push_back(-10);
-    tAmounts.push_back(-10);
-    tAmounts.push_back(-10);
+    tAmounts.push_back(-5);
+    tAmounts.push_back(-5);
+    tAmounts.push_back(-5);
+    tAmounts.push_back(-5);
+    tAmounts.push_back(-5);
+    tAmounts.push_back(-5);
     Debuff* gEx = new Debuff("Godking",
                              "You have become godlike, rendering you invulnerable to all but the strongest attacks.",
                              getTeam(), tStats, tAmounts, 5 + turnsLeft);
@@ -304,12 +304,12 @@ void ServantBerserkerAxe::turnUpdate()
             tStats.push_back(LUK);
             vector<int> tAmounts;
             tAmounts.push_back(10);
-            tAmounts.push_back(-10);
-            tAmounts.push_back(-10);
-            tAmounts.push_back(-10);
-            tAmounts.push_back(-10);
-            tAmounts.push_back(-10);
-            tAmounts.push_back(-10);
+            tAmounts.push_back(-5);
+            tAmounts.push_back(-5);
+            tAmounts.push_back(-5);
+            tAmounts.push_back(-5);
+            tAmounts.push_back(-5);
+            tAmounts.push_back(-5);
             Debuff* gEx = new Debuff("Godmind",
                                      "You have temporarily regained your sanity.",
                                      getTeam(), tStats, tAmounts, 3);

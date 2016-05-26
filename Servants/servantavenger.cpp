@@ -18,9 +18,9 @@ ServantAvenger::ServantAvenger(int as, Team t, Logger *l) : Servant(as, t, l)
     mag.push_back(20);
     mag.push_back(20);
     mag.push_back(20);
+    def.push_back(15);
     def.push_back(20);
-    def.push_back(25);
-    def.push_back(35);
+    def.push_back(30);
     res.push_back(10);
     res.push_back(10);
     res.push_back(15);

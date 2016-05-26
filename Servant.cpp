@@ -470,7 +470,7 @@ int Servant::getHighRange()
 int Servant::getHitRate()
 {
     // Originally was = Skill * 2 + Luck
-    return (getSkl() * 3) + getLuk();
+    return (getSkl() * 4.5) + (getLuk());
 }
 
 // This function should be overridden by Servants with multiple evasion
@@ -486,7 +486,7 @@ vector<int> Servant::getEvade()
 int Servant::getInitialEvade()
 {
     // Original was Speed * 2 + Luck
-    return getSpd() + getLuk();
+    return (getSpd() * 2) + (getLuk() * 0.75);
 }
 
 int Servant::getCriticalRate()

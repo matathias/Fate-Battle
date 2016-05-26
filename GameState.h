@@ -67,6 +67,7 @@ class GameState : public QWidget
         vector<Servant*> getDead();
         vector<Servant*> getTeamDead(Team t);
         vector<Servant*> getTeamAlive(Team t);
+        double getTeamAvgHP(Team t);
         // Returns NULL if there is no alive Servant of class c on team t.
         Servant* getTeamAliveServant(Team t, Class c);
         vector<Servant*> getOpposingTeamDead(Team t);

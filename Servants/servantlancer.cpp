@@ -2,8 +2,8 @@
 
 ServantLancer::ServantLancer(int as, Team t, Logger *l) : Servant(as, t, l)
 {
+    maxHP.push_back(100);
     maxHP.push_back(150);
-    maxHP.push_back(175);
     maxHP.push_back(200);
     maxMP.push_back(75);
     maxMP.push_back(100);
@@ -17,18 +17,18 @@ ServantLancer::ServantLancer(int as, Team t, Logger *l) : Servant(as, t, l)
     mag.push_back(20);
     mag.push_back(20);
     mag.push_back(20);
-    def.push_back(30);
-    def.push_back(30);
-    def.push_back(40);
+    def.push_back(25);
+    def.push_back(25);
+    def.push_back(35);
     res.push_back(15);
     res.push_back(15);
     res.push_back(20);
-    spd.push_back(40);
-    spd.push_back(55);
-    spd.push_back(70);
-    skl.push_back(40);
-    skl.push_back(40);
-    skl.push_back(50);
+    spd.push_back(45);
+    spd.push_back(60);
+    spd.push_back(75);
+    skl.push_back(45);
+    skl.push_back(55);
+    skl.push_back(65);
     luk.push_back(5);
     luk.push_back(5);
     luk.push_back(5);

@@ -4,8 +4,8 @@
 ServantAssassin::ServantAssassin(int as, Team t, Logger *l) : Servant(as, t, l)
 {
     maxHP.push_back(100);
-    maxHP.push_back(125);
     maxHP.push_back(150);
+    maxHP.push_back(200);
     maxMP.push_back(75);
     maxMP.push_back(100);
     maxMP.push_back(125);
@@ -18,21 +18,21 @@ ServantAssassin::ServantAssassin(int as, Team t, Logger *l) : Servant(as, t, l)
     mag.push_back(10);
     mag.push_back(10);
     mag.push_back(10);
+    def.push_back(15);
     def.push_back(20);
     def.push_back(25);
-    def.push_back(30);
     res.push_back(10);
     res.push_back(10);
     res.push_back(10);
-    spd.push_back(40);
-    spd.push_back(50);
-    spd.push_back(65);
+    spd.push_back(35);
+    spd.push_back(45);
+    spd.push_back(55);
     skl.push_back(40);
     skl.push_back(50);
     skl.push_back(70);
+    luk.push_back(20);
     luk.push_back(30);
     luk.push_back(40);
-    luk.push_back(50);
 
     currHP = maxHP[as];
     currMP = maxMP[as];

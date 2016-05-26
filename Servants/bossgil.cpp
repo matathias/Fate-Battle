@@ -34,8 +34,8 @@ BossGil::BossGil(int as, Team t, Logger *l) : ServantArcher(as, t, l)
     dcS.push_back(MAXHP);
     dcS.push_back(MAXMP);
     vector<int> dcA;
-    dcA.push_back(200);
-    dcA.push_back(200);
+    dcA.push_back(150);
+    dcA.push_back(150);
     Debuff *drankCup = new Debuff("Drank From The Cup", "Passive Skill",
                                   t, dcS, dcA, -1);
     addDebuff(drankCup);

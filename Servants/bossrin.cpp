@@ -123,7 +123,7 @@ BossRin::BossRin(int as, Team t, Logger *l) : ServantCaster(as, t, l)
     hdS.push_back(SPD);
     hdS.push_back(SKL);
     vector<int> hdA;
-    hdA.push_back(50);
+    hdA.push_back(100);
     hdA.push_back(5);
     hdA.push_back(10);
     hdA.push_back(10);

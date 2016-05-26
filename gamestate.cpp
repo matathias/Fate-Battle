@@ -579,6 +579,20 @@ vector<Servant*> GameState::getTeamAlive(Team t)
     return res;
 }
 
+double GameState::getTeamAvgHP(Team t)
+{
+    vector<Servant*> res = getAlliedTeam(t);
+    double totalHP = 0;
+    double totalMaxHP = 0;
+    for (unsigned int j = 0; j < res.size(); j++)
+    {
+        totalHP += res[j]->getCurrHP();
+        totalMaxHP += res[j]->getMaxHP();
+    }
+
+    return (totalHP / totalMaxHP) * 100;
+}
+
 Servant* GameState::getTeamAliveServant(Team t, Class c)
 {
     vector<Servant*> res = getTeamAlive(t);
@@ -2033,6 +2047,8 @@ int GameState::turnStateApplyAction()
             archerSecondTurn = true;
             turnState = 1;
             validMoves = getValidMoves(currentServant, currentServant->getMov());
+            chosenDefenders.clear();
+            selectionRange.clear();
             return 0;
         }
     }
@@ -2052,6 +2068,8 @@ int GameState::turnStateApplyAction()
             ionioiSecondTurn = true;
             turnState = 1;
             validMoves = getValidMoves(currentServant, currentServant->getMov());
+            chosenDefenders.clear();
+            selectionRange.clear();
             return 0;
         }
     }

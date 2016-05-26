@@ -2,7 +2,7 @@
 
 ServantBerserker::ServantBerserker(int as, Team t, Logger *l) : Servant(as, t, l)
 {
-    maxHP.push_back(200);
+    maxHP.push_back(175);
     maxHP.push_back(300);
     maxHP.push_back(400);
     maxMP.push_back(50);
@@ -17,18 +17,18 @@ ServantBerserker::ServantBerserker(int as, Team t, Logger *l) : Servant(as, t, l
     mag.push_back(10);
     mag.push_back(10);
     mag.push_back(20);
-    def.push_back(30);
-    def.push_back(40);
-    def.push_back(50);
+    def.push_back(25);
+    def.push_back(35);
+    def.push_back(45);
     res.push_back(10);
     res.push_back(10);
     res.push_back(20);
     spd.push_back(20);
     spd.push_back(25);
     spd.push_back(30);
-    skl.push_back(25);
-    skl.push_back(35);
     skl.push_back(40);
+    skl.push_back(50);
+    skl.push_back(60);
     luk.push_back(15);
     luk.push_back(20);
     luk.push_back(25);

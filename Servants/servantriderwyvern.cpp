@@ -177,10 +177,12 @@ int ServantRiderWyvern::dragonborn()
     vector<Stat> dStats;
     dStats.push_back(STR);
     dStats.push_back(DEF);
+    dStats.push_back(SPD);
     dStats.push_back(MOV);
     vector<int> dAmounts;
-    dAmounts.push_back(0.2 * getStr());
-    dAmounts.push_back(0.2 * getDef());
+    dAmounts.push_back(0.5 * getStr());
+    dAmounts.push_back(0.5 * getDef());
+    dAmounts.push_back(0.25 * getSpd());
     dAmounts.push_back(-1 * (getMov() - 4));
     Debuff *dragon = new Debuff("Dragonborn",
                                 "You absorbed the soul of a dragon, thereby gaining a stat boost.",

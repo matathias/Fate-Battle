@@ -170,7 +170,11 @@ void MainWindow::mainSetup()
 
     // Movement
     QLabel *movLab = new QLabel(this);
-    movLab->setText(QString::fromStdString("Movement Range: " +
+    movLab->setText(QString::fromStdString("High Range: " +
+                                 to_string(gs->getCurrentServant()->getHighRange()) +
+                                           "\nLow Range: " +
+                                 to_string(gs->getCurrentServant()->getLowRange()) +
+                                           "\n\nMovement Range: " +
                                  to_string(gs->getCurrentServant()->getMov())));
     movLab->setAlignment(Qt::AlignCenter);
     movLab->setFrameStyle(QFrame::Box | QFrame::Sunken);
@@ -460,21 +464,41 @@ void MainWindow::mainSetup()
     vector<Servant*> teamTwoHP;
     string tOneHP = "";
     string tTwoHP = "";
+    string tOneAlive = "";
+    string tTwoAlive = "";
+    string tOneAvgHP = "";
+    string tTwoAvgHP = "";
+
     if (teamOneHP.size() == 0)
     {
         tOneHP = "Omega Team HP\n\n";
         teamOneHP = gs->getOmegaTeam();
+        tOneAlive = to_string(gs->getTeamAlive(Omega).size()) + " / " +
+                    to_string(gs->getAlliedTeam(Omega).size());
+        tOneAvgHP = to_string((int) gs->getTeamAvgHP(Omega));
         tTwoHP = "Boss Team HP\n\n";
         teamTwoHP = gs->getBossTeam();
+        tTwoAlive = to_string(gs->getTeamAlive(Boss).size()) + " / " +
+                    to_string(gs->getAlliedTeam(Boss).size());
+        tTwoAvgHP = to_string((int) gs->getTeamAvgHP(Boss));
     }
     else
     {
+        tOneAlive = to_string(gs->getTeamAlive(Alpha).size()) + " / " +
+                    to_string(gs->getAlliedTeam(Alpha).size());
+        tOneAvgHP = to_string((int) gs->getTeamAvgHP(Alpha));
         tOneHP = "Alpha Team HP\n\n";
         teamTwoHP = gs->getOmegaTeam();
+        tTwoAlive = to_string(gs->getTeamAlive(Omega).size()) + " / " +
+                    to_string(gs->getAlliedTeam(Omega).size());
+        tTwoAvgHP = to_string((int) gs->getTeamAvgHP(Omega));
         tTwoHP = "Omega Team HP\n\n";
         if (teamTwoHP.size() == 0)
         {
             tTwoHP = "Boss Team HP\n\n";
+            tTwoAlive = to_string(gs->getTeamAlive(Boss).size()) + " / " +
+                        to_string(gs->getAlliedTeam(Boss).size());
+            tTwoAvgHP = to_string((int) gs->getTeamAvgHP(Boss));
             teamTwoHP = gs->getBossTeam();
         }
     }
@@ -491,6 +515,11 @@ void MainWindow::mainSetup()
                 to_string(teamTwoHP[i]->getCurrHP()) + " / " +
                 to_string(teamTwoHP[i]->getMaxHP()) + "\n\n";
     }
+
+    tOneHP += "\n\nServants Alive: " + tOneAlive + "\n\nTotal Team HP: " +
+              tOneAvgHP + "%\n\n";
+    tTwoHP += "\n\nServants Alive: " + tTwoAlive + "\n\nTotal Team HP: " +
+              tTwoAvgHP + "%\n\n";
 
     QLabel *teamOneHPLabel = new QLabel;
     QLabel *teamTwoHPLabel = new QLabel;

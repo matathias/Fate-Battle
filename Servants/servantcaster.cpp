@@ -4,8 +4,8 @@
 ServantCaster::ServantCaster(int as, Team t, Logger *l) : Servant(as, t, l)
 {
     maxHP.push_back(100);
-    maxHP.push_back(125);
     maxHP.push_back(150);
+    maxHP.push_back(200);
     maxMP.push_back(500);
     maxMP.push_back(750);
     maxMP.push_back(1000);
@@ -30,9 +30,9 @@ ServantCaster::ServantCaster(int as, Team t, Logger *l) : Servant(as, t, l)
     skl.push_back(30);
     skl.push_back(40);
     skl.push_back(50);
+    luk.push_back(30);
+    luk.push_back(35);
     luk.push_back(40);
-    luk.push_back(50);
-    luk.push_back(50);
 
     currHP = maxHP[as];
     currMP = maxMP[as];
