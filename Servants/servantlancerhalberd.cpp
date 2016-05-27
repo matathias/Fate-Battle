@@ -426,6 +426,9 @@ int ServantLancerHalberd::piercingBlow(vector<Servant *> defenders, int damMult)
 {
     for (unsigned int i = 0; i < defenders.size(); i++)
     {
+        if (defenders[i]->getCurrHP() <= 0)
+            continue;
+
         // Deal the damage
 
         // If the opponent is a Rider, do triple damage
@@ -529,6 +532,10 @@ int ServantLancerHalberd::swingingLunge(vector<Servant *> defenders, int damMult
 {
     for (unsigned int i = 0; i < defenders.size(); i++)
     {
+        // Don't attack someone who's already dead...
+        if (defenders[i]->getCurrHP() <= 0)
+            continue;
+
         int dam = 0;
         // Check if you hit the targets
         vector<int> opEvade = defenders[i]->getEvade();
