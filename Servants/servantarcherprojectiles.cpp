@@ -138,7 +138,7 @@ ServantArcherProjectiles::ServantArcherProjectiles(int as, Team t, Logger *l) : 
     vector<int> hdA;
     hdA.push_back(mainBonus);
     hdA.push_back(mainBonus);
-    hdA.push_back(15);
+    hdA.push_back(30);
     hdA.push_back(10);
     hdA.push_back(mainBonus);
     hdA.push_back(mainBonus);
@@ -375,6 +375,9 @@ int ServantArcherProjectiles::activateNP2(vector<Servant *> defenders)
         subMP(actionMPCosts[ascension][4]);
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
+            if (defenders[i]->getTeam() == getTeam())
+                continue;
+
             // Attack the target 5 times in a row
             bool enemyDead = false;
             for (int j = 0; j < 5 && !enemyDead; j++)
@@ -433,6 +436,16 @@ int ServantArcherProjectiles::activateNP3(vector<Servant *> defenders)
     else
     {
         subMP(actionMPCosts[ascension][5]);
+
+        // Remove all teammates from defenders
+        for (int i = 0; i < (int) defenders.size(); i++)
+        {
+            if (defenders[i]->getTeam() == getTeam())
+            {
+                defenders.erase(defenders.begin() + i);
+                i--;
+            }
+        }
 
         // Randomly remove servants from the defenders vector until there are
         //  only four left

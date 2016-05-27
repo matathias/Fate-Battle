@@ -1929,7 +1929,8 @@ int GameState::turnStateApplyAction()
         for (unsigned int i = 0; i < chosenDefenders.size() && activateNP; i++)
         {
             if(chosenDefenders[i]->getName().compare("Sai Avenger") == 0 &&
-                    chosenDefenders[i]->getCurrMP() > 40)
+                    chosenDefenders[i]->getCurrMP() > 40 &&
+                    chosenDefenders[i]->getTeam() != currentServant->getTeam())
             {
                 activateNP = false;
                 log->addToEventLog("Sai Avenger's Essence of Fragarach activated! " +

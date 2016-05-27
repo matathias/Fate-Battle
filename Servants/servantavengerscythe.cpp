@@ -24,8 +24,8 @@ ServantAvengerScythe::ServantAvengerScythe(int as, Team t, Logger *l) : ServantA
     actionListTypes[2].push_back(D);
     actionListTypes[2].push_back(N);
 
-    actionMPCosts[1].push_back(maxMP[1] * 0.3);
-    actionMPCosts[2].push_back(maxMP[2] * 0.3);
+    actionMPCosts[1].push_back(maxMP[1] * 0.6);
+    actionMPCosts[2].push_back(maxMP[2] * 0.6);
     actionMPCosts[2].push_back(100);
 
     actionDodgeable[1].push_back(false);
@@ -41,7 +41,7 @@ ServantAvengerScythe::ServantAvengerScythe(int as, Team t, Logger *l) : ServantA
     np1.push_back("Passive Noble Phantasm. Have a LUK chance of healing for half the damage you deal.");
     vector<string> np2;
     np2.push_back("Soul Harvester");
-    np2.push_back("For a cost of .3*MAXMP, harvest a dead unit -- be they friend or foe -- and add a quarter of all their stats to your own. The buffs last until the end of the battle. Any harvested units cannot be revived. The bonuses provided by Soul Harvester carry over if Carrying On the Torch is used.");
+    np2.push_back("For a cost of .6*MAXMP, harvest a dead unit -- be they friend or foe -- and add a quarter of all their stats to your own. The buffs last until the end of the battle. Any harvested units cannot be revived. The bonuses provided by Soul Harvester carry over if Carrying On the Torch is used.");
     vector<string> np3;
     np3.push_back("Death Blow");
     np3.push_back("Costs 100 MP. Your attacks are not guaranteed, but anyone you successfully attack (including counterattacks) within the next four turns suffers the “Doom” debuff. Anyone with the “Doom” debuff will die after two turns if they fail a LUK check (have a LUK chance of surviving), no matter how much HP they have, and they cannot be revived.");
@@ -176,7 +176,7 @@ int ServantAvengerScythe::attack(vector<Servant *> defenders, bool counter)
 
         // Skill: The Sharp Side Is Pointing Toward You
         r = getRandNum();
-        if (r <= 60 - (getSkl() + getLuk()))
+        if (r <= 100 - (getSkl() + getLuk()))
         {
             subHP(getStr() / 10, D_STR);
             log->addToEventLog(getFullName() + " accidentally grazed themself with their scythe, taking " +

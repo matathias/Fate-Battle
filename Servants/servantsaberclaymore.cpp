@@ -292,14 +292,6 @@ int ServantSaberClaymore::activateNP1(vector<Servant *> defenders)
                             subHP(dam, C_STR);
                         }
                     }
-                    // Call "attack" on the defending servant for their
-                    // counterattack, if you are in their range.
-                    if (defenders[i]->isInRange(this))
-                    {
-                        vector<Servant *> you;
-                        you.push_back(this);
-                        defenders[i]->attack(you, false);
-                    }
                 }
                 else
                 {

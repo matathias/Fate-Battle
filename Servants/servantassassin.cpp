@@ -4,7 +4,7 @@
 ServantAssassin::ServantAssassin(int as, Team t, Logger *l) : Servant(as, t, l)
 {
     maxHP.push_back(100);
-    maxHP.push_back(150);
+    maxHP.push_back(125);
     maxHP.push_back(200);
     maxMP.push_back(75);
     maxMP.push_back(100);

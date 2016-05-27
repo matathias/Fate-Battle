@@ -3,7 +3,7 @@
 ServantSaber::ServantSaber(int as, Team t, Logger *l) : Servant(as, t, l)
 {
     maxHP.push_back(150);
-    maxHP.push_back(225);
+    maxHP.push_back(200);
     maxHP.push_back(300);
     maxMP.push_back(100);
     maxMP.push_back(125);
@@ -241,8 +241,8 @@ Debuff* ServantSaber::getCharisma()
 
     buffedStats.push_back(STR);
     buffedStats.push_back(DEF);
-    buffedAmounts.push_back(getStr() / 20);
-    buffedAmounts.push_back(getDef() / 20);
+    buffedAmounts.push_back(getStr() / 10);
+    buffedAmounts.push_back(getDef() / 10);
 
     Debuff *charBuff = new Debuff("Charisma",
                                   "Standing close to a friendly Saber gives you a boost to STR and DEF!",

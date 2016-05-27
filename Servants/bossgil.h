@@ -12,6 +12,7 @@ public:
 
     virtual void setPlayField(PlayField *f);
 
+    virtual void setHP(int hp);
     virtual void subHP(int hp, DamageType dt);
 
     virtual int doAction(int actionNum, vector<Servant *> defenders);

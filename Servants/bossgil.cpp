@@ -34,8 +34,8 @@ BossGil::BossGil(int as, Team t, Logger *l) : ServantArcher(as, t, l)
     dcS.push_back(MAXHP);
     dcS.push_back(MAXMP);
     vector<int> dcA;
-    dcA.push_back(150);
-    dcA.push_back(150);
+    dcA.push_back(250);
+    dcA.push_back(250);
     Debuff *drankCup = new Debuff("Drank From The Cup", "Passive Skill",
                                   t, dcS, dcA, -1);
     addDebuff(drankCup);
@@ -135,6 +135,65 @@ void BossGil::setPlayField(PlayField *f)
 
     // Ea range (whole playfield)
     npRanges.push_back(getLowToHighRange(1, field->getLargestDimension() * 2));
+}
+
+void BossGil::setHP(int hp)
+{
+    bool applyDamage = true;
+    if (currHP - hp >= 0.1 * getMaxHP() && hp <= 1)
+    {
+        log->addToEventLog(getFullName() + "'s High Divinity allowed him to resist damage!");
+        applyDamage = false;
+    }
+
+    if (applyDamage)
+    {
+        currHP = hp;
+        int mhp = getMaxHP();
+        if (currHP > mhp)
+            currHP = mhp;
+    }
+
+    if (currHP <= 0)
+    {
+        currHP = 0;
+        remAllDebuffs(false);
+    }
+    else
+    {
+        // If The Facade is already added, remove the old one and add the new one
+        for (int i = 0; i < (int) debuffs.size(); i++)
+        {
+            if (debuffs[i]->getDebuffName().compare("The Facade") == 0)
+            {
+                debuffs.erase(debuffs.begin() + i);
+                i--;
+            }
+        }
+
+        /** Skill: The Facade **/
+        int malus = -1 * ((double) (getMaxHP() - currHP) / (double) getMaxHP()) * 10;
+        int bonus = ((double) (getMaxHP() - currHP) / (double) getMaxHP()) * 20;
+        vector<Stat> hdS;
+        hdS.push_back(STR);
+        hdS.push_back(DEF);
+        hdS.push_back(MAG);
+        hdS.push_back(RES);
+        hdS.push_back(SPD);
+        hdS.push_back(SKL);
+        hdS.push_back(LUK);
+        vector<int> hdA;
+        hdA.push_back(bonus);
+        hdA.push_back(malus);
+        hdA.push_back(malus);
+        hdA.push_back(malus);
+        hdA.push_back(malus);
+        hdA.push_back(malus);
+        hdA.push_back(malus);
+        Debuff *facade = new Debuff("The Facade", "Passive Skill",
+                                    getTeam(), hdS, hdA, -1);
+        addDebuff(facade);
+    }
 }
 
 void BossGil::subHP(int hp, DamageType dt)

@@ -89,6 +89,14 @@ ServantArcherBow::ServantArcherBow(int as, Team t, Logger *l) : ServantArcher(as
                                       t, hdS, hdA, -1);
     addDebuff(highDivinity);
 
+    hdS.clear();
+    hdS.push_back(STR);
+    hdA.clear();
+    hdA.push_back(5);
+    Debuff *highDivinity3 = new Debuff("The Archer Class...", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity3);
+
     if (ascension >= 1)
     {
         hdS.clear();

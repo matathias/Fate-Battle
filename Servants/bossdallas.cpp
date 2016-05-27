@@ -97,8 +97,8 @@ BossDallas::BossDallas(int as, Team t, Logger *l) : ServantArcher(as, t, l)
     hdS.push_back(DEF);
     hdS.push_back(MAXHP);
     hdA.clear();
-    hdA.push_back(20);
-    hdA.push_back(100);
+    hdA.push_back(15);
+    hdA.push_back(150);
     Debuff *highDivinity3 = new Debuff("Bulletproof Vest", "Passive Skill",
                                       t, hdS, hdA, -1);
     addDebuff(highDivinity3);
@@ -110,7 +110,7 @@ BossDallas::BossDallas(int as, Team t, Logger *l) : ServantArcher(as, t, l)
     hdS.push_back(LUK);
     hdA.clear();
     hdA.push_back(20);
-    hdA.push_back(25);
+    hdA.push_back(10);
     hdA.push_back(50);
     hdA.push_back(15);
     Debuff *highDivinity4 = new Debuff("Master Duelist", "Passive Noble Phantasm",

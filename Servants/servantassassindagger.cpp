@@ -192,12 +192,21 @@ int ServantAssassinDagger::activateNP2(vector<Servant *> defenders)
     // Get the landing location
     //  If there is no valid landing location next to the target servant,
     //  stop processing and return 41.
-    Coordinate landingCoord = getEndLocation(defenders[0]->getCurrLoc(), 1);
-    if(landingCoord.x == -1 && landingCoord.y == -1)
+    Coordinate landingCoord;
+    if (abs(currLoc.x - defenders[0]->getCurrLoc().x) +
+            abs(currLoc.y - defenders[0]->getCurrLoc().y) == 1)
     {
-        // No valid adjacent space
-        log->addToErrorLog("No valid adjacent space to target.");
-        return 41;
+        landingCoord = currLoc;
+    }
+    else
+    {
+        landingCoord = getEndLocation(defenders[0]->getCurrLoc(), 1);
+        if(landingCoord.x == -1 && landingCoord.y == -1)
+        {
+            // No valid adjacent space
+            log->addToErrorLog("No valid adjacent space to target.");
+            return 41;
+        }
     }
 
     subMP(actionMPCosts[ascension][4]);

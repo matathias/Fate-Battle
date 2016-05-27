@@ -133,6 +133,34 @@ BossRin::BossRin(int as, Team t, Logger *l) : ServantCaster(as, t, l)
                                       t, hdS, hdA, -1);
     addDebuff(highDivinity);
 
+    if (ascension >= 2)
+    {
+        int bonus = 5;
+        hdS.clear();
+        hdS.push_back(MAXHP);
+        hdS.push_back(MAXMP);
+        hdS.push_back(STR);
+        hdS.push_back(DEF);
+        hdS.push_back(MAG);
+        hdS.push_back(RES);
+        hdS.push_back(SPD);
+        hdS.push_back(SKL);
+        hdS.push_back(LUK);
+        hdA.clear();
+        hdA.push_back(200);
+        hdA.push_back(200);
+        hdA.push_back(bonus + bonus); // STR
+        hdA.push_back(bonus);
+        hdA.push_back(bonus + bonus); // MAG
+        hdA.push_back(bonus);
+        hdA.push_back(bonus);
+        hdA.push_back(bonus);
+        hdA.push_back(bonus);
+        Debuff *highDivinity2 = new Debuff("By the Power of the Command Seal", "Passive Skill",
+                                          t, hdS, hdA, -1);
+        addDebuff(highDivinity2);
+    }
+
     currHP = getMaxHP();
 }
 

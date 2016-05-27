@@ -361,7 +361,7 @@ void ServantBerserkerAxe::subHP(int hp, DamageType dt)
             if (ascension >= 1 && deathCount < deathCeiling && !isGodmindActive())
             {
                 deathCount++;
-                maxHP[ascension] *= 0.75;
+                maxHP[ascension] *= 0.5;
                 def[ascension] *= 1.1;
                 currHP = maxHP[ascension];
                 remAllDebuffs(true);

@@ -184,7 +184,7 @@ void BossMika::subHP(int hp, DamageType dt)
         // Blade of the Vampire passive Noble Phantasm
         double cHPLoss = getMaxHP() - (currHP * 1.0);
         double mHP = getMaxHP() * 1.0;
-        int statBonus = (cHPLoss / mHP) * 20;
+        int statBonus = (cHPLoss / mHP) * 10;
 
         vector<Stat> tStats;
         tStats.push_back(STR);

@@ -11,9 +11,9 @@ ServantRider::ServantRider(int as, Team t, Logger *l) : Servant(as, t, l)
     mov.push_back(8);
     mov.push_back(9);
     mov.push_back(10);
-    str.push_back(30);
-    str.push_back(40);
-    str.push_back(50);
+    str.push_back(35);
+    str.push_back(45);
+    str.push_back(55);
     mag.push_back(30);
     mag.push_back(40);
     mag.push_back(40);

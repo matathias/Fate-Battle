@@ -110,6 +110,14 @@ ServantArcherPistols::ServantArcherPistols(int as, Team t, Logger *l) : ServantA
     Debuff *highDivinity2 = new Debuff("Rapid-Fire Mod", "Passive Skill",
                                       t, hdS, hdA, -1);
     addDebuff(highDivinity2);
+
+    hdS.clear();
+    hdS.push_back(STR);
+    hdA.clear();
+    hdA.push_back(5);
+    Debuff *highDivinity3 = new Debuff("The Archer Class...", "Passive Skill",
+                                      t, hdS, hdA, -1);
+    addDebuff(highDivinity3);
 }
 
 int ServantArcherPistols::doAction(int actionNum, vector<Servant *> defenders)

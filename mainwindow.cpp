@@ -642,9 +642,9 @@ void MainWindow::populateScene(int w, int l)
                 }
                 else
                 {
-                    red = 100;
-                    green = 100;
-                    blue = 100;
+                    red = 50;
+                    green = 50;
+                    blue = 50;
                 }
             }
             string imgPath = "";
@@ -725,9 +725,9 @@ void MainWindow::reColorScene()
             }
             else
             {
-                red = 100;
-                green = 100;
-                blue = 100;
+                red = 50;
+                green = 50;
+                blue = 50;
             }
         }
         string imgPath = "";
