@@ -917,14 +917,6 @@ int GameState::turnStatePreTurn()
                                to_string(teleCoord.x) + "," +
                                to_string(teleCoord.y) + ")!");
         }
-        else if (tDebuff->getDebuffDescrip().compare("Castle Doctrine") == 0)
-        {
-            // Servant takes "normal" damage at the beginning of their turn.
-            //  (attack is subject to accuracy and critical check)
-            vector<Servant*> tDef;
-            tDef.push_back(currentServant);
-            field->realityMarbleServant()->attack(tDef, false);
-        }
         else if (tDebuff->getDebuffDescrip().compare("Commander of Life and Death") == 0)
         {
             int hpLoss = currentServant->getMaxHP() / 10;
@@ -992,6 +984,16 @@ int GameState::turnStatePreTurn()
                                        currentServant->getTeam(),
                                        tDebStat, tDebAm, 1);
         currentServant->addDebuff(newDebuff);
+    }
+    else if (tDebuff != NULL &&
+             tDebuff->getTargetTeam() != currentServant->getTeam() &&
+             tDebuff->getDebuffDescrip().compare("Castle Doctrine") == 0)
+    {
+        // Servant takes "normal" damage at the beginning of their turn.
+        //  (attack is subject to accuracy and critical check)
+        vector<Servant*> tDef;
+        tDef.push_back(currentServant);
+        field->realityMarbleServant()->attack(tDef, false);
     }
     /*else if (tDebuff != NULL)
     {
@@ -2125,7 +2127,7 @@ int GameState::turnStatePostTurn()
     // Check the Servant's ending location to see if any end-of-turn affects
     // should be applied.
     Debuff *tDebuff = field->getDebuffOnSpace(currentServant->getCurrLoc());
-    if (tDebuff != NULL && tDebuff->getTargetTeam() == currentServant->getTeam())
+    if (tDebuff != NULL && tDebuff->getTargetTeam() != currentServant->getTeam())
     {
         if (tDebuff->getDebuffDescrip().compare("Castle Doctrine") == 0 &&
                 !(servStart.x == servEnd.x && servStart.y == servEnd.y))
