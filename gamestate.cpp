@@ -1934,12 +1934,24 @@ int GameState::turnStateApplyAction()
                     chosenDefenders[i]->getCurrMP() > 40 &&
                     chosenDefenders[i]->getTeam() != currentServant->getTeam())
             {
-                activateNP = false;
-                log->addToEventLog("Sai Avenger's Essence of Fragarach activated! " +
+                /* If a Reality Marble is active, the servant activating a NP is
+                 * Gilgamesh (BossGil), and he is using EA (his third NP), then
+                 * he is not actually targeting the Sai Avenger. Therefore,
+                 * Essence of Fragarach should not activate in this case. */
+                if(currentServant->getName().compare("Gilgamesh") == 0 &&
+                        chosenAction == 3 && field->isRealityMarbleOn())
+                {
+                    //Do Nothing
+                }
+                else
+                {
+                    activateNP = false;
+                    log->addToEventLog("Sai Avenger's Essence of Fragarach activated! " +
                                    currentServant->getFullName() +
                                    "'s Noble Phantasm was stopped!");
-                currentServant->subHP((currentServant->getMaxHP() * 8) / 10, OMNI);
-                chosenDefenders[i]->subMP(40);
+                    currentServant->subHP((currentServant->getMaxHP() * 8) / 10, OMNI);
+                    chosenDefenders[i]->subMP(40);
+                }
             }
         }
     }

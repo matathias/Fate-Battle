@@ -1,5 +1,6 @@
 #include "servantcaster.h"
 #include "PlayField.h"
+#include "servantavenger.h"
 
 ServantCaster::ServantCaster(int as, Team t, Logger *l) : Servant(as, t, l)
 {
@@ -160,6 +161,14 @@ int ServantCaster::resurrect(vector<Servant *> defenders)
         for (unsigned int i = 0; i < defenders.size(); i++)
         {
             defenders[i]->setHP(defenders[i]->getMaxHP() / 2);
+
+            /* If the resurrected servant is an Avenger, update their Avenger's
+             * Rage now. */
+            if (defenders[i]->getClass() == Avenger)
+            {
+                ServantAvenger *currServ = dynamic_cast<ServantAvenger*>(defenders[i]);
+                currServ->updateAvengersRage();
+            }
 
             log->addToEventLog(getFullName() + " resurrected " +
                                defenders[i]->getFullName() + "!");

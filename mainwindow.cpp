@@ -701,33 +701,35 @@ void MainWindow::reColorScene()
                  gs->isSpaceMove(x,y))
         {
             blue = 255;
+            red = 125;
+            green = 125;
         }
         else if (gs->isSpaceRealityMarble(x,y))
         {
             green = 50;
-            blue = 50;
-            red = 50;
+            blue  = 50;
+            red   = 50;
         }
-        else if (gs->isSpaceDebuff(x,y))
+        if (gs->isSpaceDebuff(x,y))
         {
             Team spaceTeam = gs->spaceDebuffTeam(x,y);
             if (spaceTeam == Alpha)
             {
-                blue = 100;
-                red = 0;
-                green = 0;
+                green = (green == 150 ? 0 : green/2);
+                blue  = (blue  == 150 ? 100 : (blue + 100)/2);
+                red   = (red   == 150 ? 0 : red/2);
             }
             else if (spaceTeam == Omega)
             {
-                red = 100;
-                blue = 0;
-                green = 0;
+                green = (green == 150 ? 0 : green/2);
+                blue  = (blue  == 150 ? 0 : (blue * 3)/4);
+                red   = (red   == 150 ? 100 : (red + 100)/2);
             }
             else
             {
-                red = 50;
-                green = 50;
-                blue = 50;
+                green = (green == 150 ? 75 : (green + 75)/2);
+                blue  = (blue  == 150 ? 75 : (blue  + 75)/2);
+                red   = (red   == 150 ? 75 : (red   + 75)/2);
             }
         }
         string imgPath = "";
